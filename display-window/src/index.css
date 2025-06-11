@@ -1,3 +1,49 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* index.css */
+
+/* 1) Fill the entire viewport */
+html, body, #root {
+  width:  100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2) Ensure the Player’s top‐level wrappers can fill too */
+#wrapper, .player‐root { /* if you have a #wrapper or similar */
+  width:  100%;
+  height: 100%;
+}
+
+/* 3) Make images & videos absolute‐fit */
+img, video {
+  position:   absolute;
+  top:        0;
+  left:       0;
+  width:      100%;
+  height:     100%;
+  object-fit: contain;
+}
+
+/* 4) Your YouTube container & injected divs */
+.yt-container {
+  position:   absolute;
+  top:        0;
+  left:       0;
+  width:      100%;
+  height:     100%;
+  overflow:   hidden;
+}
+.yt-container > div[id^="yt-player"] {
+  position: absolute;
+  top:      0;
+  left:     0;
+  width:    100%;
+  height:   100%;
+}
+.yt-container iframe {
+  position: absolute;
+  top:      0;
+  left:     0;
+  width:    100%;
+  height:   100%;
+}
