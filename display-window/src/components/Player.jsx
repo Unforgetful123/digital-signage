@@ -1,6 +1,6 @@
-  // display-window/src/components/Player.jsx
   import { useEffect, useState, useRef } from 'react';
   import { supabase } from '../api/supabase';
+  import BirthdayFeature from '../../../display-window/src/components/BirthdayFeature';
 
   export default function Player() {
     const [content, setContent]       = useState([]);    // Combined queue: birthdays + scheduled
@@ -52,7 +52,7 @@
         const todayMMDD = new Date().toISOString().slice(5, 10); // "MM-DD"
         const { data: bdData, error: bdError } = await supabase
           .from('birthdays')
-          .select('name, designation, dob, video_url');
+          .select('name, designation, dob, video_url, photo_url');
 
         if (bdError) {
           console.error("Birthdays fetch error:", bdError.message);
@@ -63,6 +63,7 @@
             type:        'birthday',
             title:       `Happy Birthday ${b.name}!`,
             designation: b.designation,
+            photo_url:   b.photo_url,
             media_url:   b.video_url || '',
           }));
 
@@ -83,6 +84,7 @@
           type:      item.type,     // 'image' | 'video' | 'youtube'
           title:     item.title,
           media_url: item.media_url,
+          
         }));
 
         // 2c) Combine birthdays first, then scheduled items
@@ -294,22 +296,14 @@
        <div className="w-screen h-screen bg-black overflow-hidden relative">
         <div className="w-full h-full relative">
 
-          {/* Birthday */}
+          {/* Birthday (using BirthdayFeature) */}
           {toShow.type === 'birthday' && (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-yellow-400 text-black p-6">
-              <h1 className="text-4xl font-bold mb-4">{toShow.title}</h1>
-              <p className="mb-6">{toShow.designation}</p>
-              {toShow.media_url && (
-                <video
-                  src={toShow.media_url}
-                  controls
-                  autoPlay
-                  muted
-                  onEnded={nextItem}
-                  className="w-full h-full object-contain rounded shadow-lg bg-black"
-                />
-              )}
-            </div>
+            <BirthdayFeature
+              name={toShow.name}
+              designation={toShow.designation}
+              photoUrl={toShow.photo_url}
+              videoUrl={toShow.media_url}
+            />
           )}
 
           {/* Emergency Alert */}
