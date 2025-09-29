@@ -1,0 +1,101 @@
+/* 1) The grid container: auto-flow into two columns on wide screens */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* 2) The “card” wrapper for each form */
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* 3) Optional: make the Emergency Alerts card stand out */
+.emergency-card {
+  border: 2px solid #e53e3e;
+}
+
+/* 4) Ensure headings inside cards don’t clash */
+.card h2 {
+  margin-top: 0;
+}
+
+/* 5) Make sure forms inside cards fill the width */
+.card form,
+.card > * {
+  width: 100%;
+}
+
+/* 1) grid container: auto-fit two (or more) cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* 2) card styling */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* 3) highlight emergency */
+.emergency-card {
+  border: 2px solid #e53e3e;
+}
+
+/* 4) ensure headings & forms look nice */
+.card-heading {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 5) button reset + common */
+button {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background: #2b6cb0;
+}
+

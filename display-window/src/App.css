@@ -1,0 +1,169 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 2) Full-screen, fixed-position overlay for Player */
+.display-window {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+canvas.confetti {
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important;  /* keep behind text */
+  pointer-events: none;
+}
+
+/* 3) Always fill height, auto width, preserve aspect ratio */
+.display-media {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Alert overlay, centered text */
+.display-alert {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: red;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Fallback “no content” screen */
+.no-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Logo styling when there’s no content */
+.display-no-content-logo {
+  width: 12rem;
+  margin-bottom: 1rem;
+}
+
+.youtube-iframe,
+.youtube-iframe iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* preserve aspect ratio with black bars */
+}
+
+/* Emergency full-screen overlay */
+.emergency-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  color: white;
+}
+
+/* Emergency message box */
+.emergency-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.emergency-content p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+.emergency-content button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Make sure your Player (below) still covers the full screen */
+.app-container > .player {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+}
+
+/* Parent container: split screen 50/50 */
+.birthday-ad {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to right, #fbcfe8, #e9d5ff, #bfdbfe);
+}
+
+/* Left: photo */
+.birthday-photo {
+  flex: 1; /* takes 50% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff; /* optional */
+  background: linear-gradient(to right, #bfdbfe, #e9d5ff);
+}
+
+.birthday-photo img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* Right: text */
+.birthday-text {
+  flex: 1; /* takes 50% */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Font control */
+.birthday-heading {
+  font-size: 5rem;
+  font-weight: 800;
+  color: #db2777; /* pink-600 */
+  margin-bottom: 0.5rem;
+}
+
+.birthday-name {
+  font-size: 4rem;
+  font-weight: 600;
+  color: #1f2937; /* gray-800 */
+}
+
+.birthday-designation {
+  font-size: 4rem;
+  color: #374151; /* gray-700 */
+  margin-top: 0.5rem;
+}
