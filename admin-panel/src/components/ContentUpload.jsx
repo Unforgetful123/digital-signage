@@ -1,6 +1,6 @@
 // src/components/ContentUpload.jsx
 import React, { useState } from 'react';
-import { supabase } from '../api/supabase';
+import pb from '../services/pocketbase';   // ✅ PocketBase client
 
 export default function ContentUpload() {
   const [title, setTitle] = useState('');
@@ -15,71 +15,48 @@ export default function ContentUpload() {
   const uploadContent = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !startTime || !endTime ||
-        ((type === 'image' || type === 'video') && !file) ||
-        (type === 'youtube' && !youtubeUrl.trim())) {
+    if (
+      !title.trim() || !startTime || !endTime ||
+      ((type === 'image' || type === 'video') && !file) ||
+      (type === 'youtube' && !youtubeUrl.trim()) ||
+      (type === 'alert' && !alertText.trim())
+    ) {
       return alert('Please fill in all required fields.');
     }
 
     setLoading(true);
     try {
-      // 0) sanity log for supabase url/key
-      console.log('[Upload] supabase URL:', supabase?.rest?.url);
+      // ✅ Build data depending on type
+      const common = {
+        title,
+        type,
+        start_time: new Date(startTime).toISOString(),
+        end_time: new Date(endTime).toISOString(),
+        priority: 1,
+      };
 
-      let mediaUrl = '';
       if (type === 'alert') {
-        mediaUrl = alertText.trim();
+        // text-only record
+        await pb.collection('content').create({
+          ...common,
+          alert_text: alertText.trim(),
+        });
       } else if (type === 'youtube') {
-        mediaUrl = youtubeUrl.trim();
+        // store link in field
+        await pb.collection('content').create({
+          ...common,
+          youtube_url: youtubeUrl.trim(),
+        });
       } else {
-        // 1) upload to storage
-        const path = `public/${Date.now()}_${file.name}`;
-        console.log('[Upload] uploading to', path);
-        const { data: uploadData, error: uploadError } = await supabase
-          .storage
-          .from('media')
-          .upload(path, file);
-
-        if (uploadError) {
-          console.error('[Upload] storage.upload error:', uploadError);
-          throw uploadError;
-        }
-        console.log('[Upload] storage.upload ok:', uploadData);
-
-        // 2) get public URL
-        const { data: urlData, error: urlError } = supabase
-          .storage
-          .from('media')
-          .getPublicUrl(uploadData.path);
-
-        if (urlError) {
-          console.error('[Upload] storage.getPublicUrl error:', urlError);
-          throw urlError;
-        }
-        mediaUrl = urlData.publicUrl;
-        console.log('[Upload] publicUrl:', mediaUrl);
+        // image or video with file upload
+        const formData = new FormData();
+        Object.entries(common).forEach(([k, v]) => formData.append(k, v));
+        formData.append('file', file); // ✅ field name must match PB schema
+        await pb.collection('content').create(formData);
       }
 
-      // 3) insert row
-      const { data: insertData, error: insertError } = await supabase
-        .from('content')
-        .insert([{
-          title,
-          type,
-          media_url: mediaUrl,
-          start_time: new Date(startTime).toISOString(),
-          end_time:   new Date(endTime).toISOString(),
-          priority:   1,
-        }])
-        .select(); // optional, for debug
-
-      if (insertError) {
-        console.error('[Upload] content.insert error:', insertError);
-        throw insertError;
-      }
-      console.log('[Upload] content.insert ok:', insertData);
-
-      alert('Content uploaded successfully!');
+      alert('✅ Content uploaded successfully!');
+      // Reset form
       setTitle('');
       setType('image');
       setFile(null);
@@ -89,15 +66,15 @@ export default function ContentUpload() {
       setAlertText('');
     } catch (err) {
       console.error('[Upload] FAILED:', err);
-      alert('Error: ' + (err?.message || String(err)));
+      alert('Error: ' + (err?.response?.message || err?.message || String(err)));
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={uploadContent} className="form-card">
-      <h2 className="card-heading">Upload &amp; Schedule Content</h2>
+      <div className="card-heading">Upload & Schedule Content</div>
 
       <div className="form-group">
         <label htmlFor="content-title">Title</label>
@@ -154,6 +131,7 @@ export default function ContentUpload() {
         <div className="form-group">
           <label htmlFor="alert-message">Alert Message</label>
           <textarea
+            id="alert-message"
             value={alertText}
             onChange={e => setAlertText(e.target.value)}
             rows={3}
@@ -172,6 +150,7 @@ export default function ContentUpload() {
           required
         />
       </div>
+
       <div className="form-group">
         <label htmlFor="end-time">End Time</label>
         <input
@@ -187,5 +166,5 @@ export default function ContentUpload() {
         {loading ? 'Uploading…' : 'Upload & Schedule'}
       </button>
     </form>
-  )
+  );
 }

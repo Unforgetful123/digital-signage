@@ -18,7 +18,7 @@ export default function EmergencyAlert() {
   };
 
   return (
-    <div style={{ padding: '1rem', border: '2px solid red' }}>
+    <div style={{ padding: '1rem'}}>
       <h2>Emergency Alert</h2>
 
       <label>Type</label>
@@ -27,7 +27,6 @@ export default function EmergencyAlert() {
         <option value="flood">🌊 Flood</option>
         <option value="quake">🌍 Quake</option>
       </select>
-
       <label>Message</label>
       <input
         type="text"

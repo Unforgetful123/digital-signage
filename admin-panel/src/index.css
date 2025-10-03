@@ -1,101 +1,112 @@
-/* 1) The grid container: auto-flow into two columns on wide screens */
+/* Global font */
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8fafc;
+  color: #2d3748;
+  margin: 0;
+  padding: 0;
+}
+
+/* Dashboard title */
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2b6cb0;
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+}
+
+/* Grid */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 28px;
   padding: 24px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  box-sizing: border-box;
 }
 
-/* 2) The “card” wrapper for each form */
-.card {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  padding: 24px;
-  box-sizing: border-box;
-}
-
-/* 3) Optional: make the Emergency Alerts card stand out */
-.emergency-card {
-  border: 2px solid #e53e3e;
-}
-
-/* 4) Ensure headings inside cards don’t clash */
-.card h2 {
-  margin-top: 0;
-}
-
-/* 5) Make sure forms inside cards fill the width */
-.card form,
-.card > * {
-  width: 100%;
-}
-
-/* 1) grid container: auto-fit two (or more) cards */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-/* 2) card styling */
+/* Card */
 .card {
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-radius: 12px;
   padding: 24px;
-  box-sizing: border-box;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: all 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
 }
 
-/* 3) highlight emergency */
-.emergency-card {
-  border: 2px solid #e53e3e;
-}
-
-/* 4) ensure headings & forms look nice */
+/* Card headings */
 .card-heading {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 1.25rem;
-  border-bottom: 1px solid #eee;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 18px;
+  border-bottom: 2px solid #edf2f7;
   padding-bottom: 8px;
 }
 
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-group label {
+/* Form labels */
+label {
+  font-weight: 500;
+  color: #4a5568;
   display: block;
-  margin-bottom: 4px;
-  font-weight: 600;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-size: 0.9rem;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+/* Inputs */
+input,
+select {
+  width: 90%;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f9fafc;
+  transition: all 0.2s ease;
+}
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 6px rgba(49, 130, 206, 0.4);
 }
 
-/* 5) button reset + common */
+/* Buttons */
 button {
   display: inline-block;
-  padding: 10px 16px;
-  background: #3182ce;
-  color: white;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-}
-button:hover {
-  background: #2b6cb0;
+  transition: all 0.25s ease;
+  margin-top: 12px;
 }
 
+/* Primary (blue) */
+button.primary {
+  background: linear-gradient(135deg, #3182ce, #2b6cb0);
+  color: white;
+}
+button.primary:hover {
+  background: linear-gradient(135deg, #2b6cb0, #2c5282);
+  transform: translateY(-2px);
+}
+
+/* Danger (red) */
+button.danger {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  color: white;
+}
+button.danger:hover {
+  background: linear-gradient(135deg, #c53030, #9b2c2c);
+  transform: translateY(-2px);
+}

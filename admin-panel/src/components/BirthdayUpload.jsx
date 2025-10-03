@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { supabase } from '../api/supabase'
+import pb from '../services/pocketbase'   // ✅ use PocketBase instead of Supabase
 
 export default function BirthdayUpload() {
-  const [name, setName]             = useState('')
+  const [name, setName] = useState('')
   const [designation, setDesignation] = useState('')
-  const [dob, setDob]               = useState('')
-  const [photoFile, setPhotoFile]   = useState(null)
-  const [videoFile, setVideoFile]   = useState(null)
-  const [staff, setStaff]           = useState(null)
-  const [loading, setLoading]       = useState(false)
+  const [dob, setDob] = useState('')
+  const [photoFile, setPhotoFile] = useState(null)
+  const [videoFile, setVideoFile] = useState(null)
+  const [staff, setStaff] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -19,49 +19,22 @@ export default function BirthdayUpload() {
 
     setLoading(true)
     try {
-      // 1️⃣ Upload photo if provided
-      let photoUrl = ''
-      if (photoFile) {
-        const { data: photoData, error: photoError } = await supabase
-          .storage.from('media')
-          .upload(`birthdays/photos/${Date.now()}_${photoFile.name}`, photoFile)
-        if (photoError) throw photoError
+      // ✅ Use FormData for PocketBase (handles files + text fields)
+      const formData = new FormData()
+      formData.append('name', name)
+      formData.append('designation', designation)
+      formData.append('dob', new Date(dob).toISOString()) // PB date field works with ISO strings
+      if (photoFile) formData.append('photo', photoFile)  // field name must match PB schema
+      if (videoFile) formData.append('video', videoFile)  // field name must match PB schema
 
-        const { data: photoUrlData, error: photoUrlError } = supabase
-          .storage.from('media')
-          .getPublicUrl(photoData.path)
-        if (photoUrlError) throw photoUrlError
+      // ✅ Insert record into PocketBase
+      await pb.collection('birthday').create(formData)
 
-        photoUrl = photoUrlData.publicUrl
-      }
-
-      // 2️⃣ Upload video if provided
-      let videoUrl = ''
-      if (videoFile) {
-        const { data: videoData, error: videoError } = await supabase
-          .storage.from('media')
-          .upload(`birthdays/videos/${Date.now()}_${videoFile.name}`, videoFile)
-        if (videoError) throw videoError
-
-        const { data: videoUrlData, error: videoUrlError } = supabase
-          .storage.from('media')
-          .getPublicUrl(videoData.path)
-        if (videoUrlError) throw videoUrlError
-
-        videoUrl = videoUrlData.publicUrl
-      }
-
-      // 3️⃣ Insert record without expecting data back
-      const { error: insertError } = await supabase
-        .from('birthdays')
-        .insert([{ name, designation, dob, photo_url: photoUrl, video_url: videoUrl }])
-      if (insertError) throw insertError
-
-      // 4️⃣ Show success using local state
+      // ✅ Show success using local state
       setStaff({ name, designation })
     } catch (err) {
       console.error('Birthday upload error:', err)
-      alert(err.message || "There was an error saving the birthday.")
+      alert(err?.response?.message || err.message || "There was an error saving the birthday.")
     } finally {
       setLoading(false)
     }
