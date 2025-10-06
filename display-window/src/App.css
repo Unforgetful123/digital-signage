@@ -74,34 +74,103 @@ canvas.confetti {
   object-fit: contain; /* preserve aspect ratio with black bars */
 }
 
-/* Emergency full-screen overlay */
+
+/* =========================
+   EMERGENCY OVERLAY
+   ========================= */
 .emergency-overlay {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999 !important;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  text-align: center;
   color: white;
+  font-family: 'Segoe UI', sans-serif;
+  animation: fadeIn 0.5s ease-out forwards;
+  transition: background 0.6s ease;
 }
 
-/* Emergency message box */
+/* 🔥 FIRE ALERT background */
+.emergency-overlay.fire {
+  background: radial-gradient(circle at center, #ff0000 0%, #7a0000 100%);
+}
+
+/* 🌊 FLOOD ALERT background */
+.emergency-overlay.flood {
+  background: radial-gradient(circle at center, #0080ff 0%, #001f3f 100%);
+}
+
+/* 🌪️ STORM ALERT background */
+.emergency-overlay.storm {
+  background: radial-gradient(circle at center, #5c6bc0 0%, #1a237e 100%);
+}
+
+/* 🌎 EARTHQUAKE ALERT background */
+.emergency-overlay.earthquake {
+  background: radial-gradient(circle at center, #ffa726 0%, #e65100 100%);
+}
+
+/* 💨 GAS LEAK or CHEMICAL ALERT */
+.emergency-overlay.gas {
+  background: radial-gradient(circle at center, #4caf50 0%, #1b5e20 100%);
+}
+
+/* =========================
+   EMERGENCY MESSAGE BOX
+   ========================= */
+.emergency-content {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 3rem 4rem;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  animation: popUp 0.5s ease-out forwards;
+  max-width: 80%;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+/* Title (Alert name) */
 .emergency-content h1 {
-  font-size: 3rem;
+  font-size: 4rem;
+  font-weight: 900;
   margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
+
+/* Message text */
 .emergency-content p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+  color: #fff;
 }
-.emergency-content button {
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  cursor: pointer;
+
+/* =========================
+   Animations
+   ========================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
+
+@keyframes popUp {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Optional: pulsing glow for urgent alerts */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 30px rgba(255,255,255,0.4); }
+  100% { box-shadow: 0 0 60px rgba(255,255,255,0.9); }
+}
+
 
 /* Make sure your Player (below) still covers the full screen */
 .app-container > .player {

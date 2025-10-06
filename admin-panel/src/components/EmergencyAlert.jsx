@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:4000');
+const SOCKET_HOST =
+  import.meta?.env?.VITE_SOCKET_HOST || window.location.hostname;
+const socket = io(`http://${SOCKET_HOST}:4000`);
 
 export default function EmergencyAlert() {
-  const [type, setType]       = useState('fire');
+  const [type, setType] = useState('fire');
   const [message, setMessage] = useState('');
 
   const trigger = () => {
     if (!message.trim()) return alert('Enter a message');
     socket.emit('triggerEmergency', { type, message });
+    alert(`🚨 ${type.toUpperCase()} alert sent!`);
     setMessage('');
   };
 
   const clear = () => {
     socket.emit('clearEmergency');
+    alert('❌ Emergency cleared');
   };
 
   return (
@@ -26,7 +30,10 @@ export default function EmergencyAlert() {
         <option value="fire">🔥 Fire</option>
         <option value="flood">🌊 Flood</option>
         <option value="quake">🌍 Quake</option>
+        <option value="medical">🚑 Medical</option>
+        <option value="intruder">🚨 Intruder</option>
       </select>
+
       <label>Message</label>
       <input
         type="text"
@@ -37,7 +44,7 @@ export default function EmergencyAlert() {
 
       <div style={{ marginTop: '0.5rem' }}>
         <button onClick={trigger} className="btn btn-danger">🚨 Trigger</button>
-        <button onClick={clear}   className="btn btn-secondary" style={{ marginLeft: '0.5rem' }}>
+        <button onClick={clear} className="btn btn-secondary" style={{ marginLeft: '0.5rem' }}>
           ❌ Clear
         </button>
       </div>

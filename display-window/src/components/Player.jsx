@@ -136,16 +136,27 @@ export default function Player() {
 
   // Emergency overlay
   if (emergency) {
-    return (
-      <div className="display-window emergency-view">
-        <audio src="/siren.mp3" autoPlay loop />
-        <div className="display-alert">
-          <h2>🚨 {emergency.type.toUpperCase()} ALERT</h2>
-          <p>{emergency.message}</p>
-        </div>
+  // style map by type
+    const typeStyles = {
+      fire:   { bg: "bg-red-700",    icon: "🔥", label: "FIRE" },
+      flood:  { bg: "bg-blue-700",   icon: "🌊", label: "FLOOD" },
+      quake:  { bg: "bg-yellow-600", icon: "🌍", label: "EARTHQUAKE" },
+      medical:{ bg: "bg-green-700",  icon: "🚑", label: "MEDICAL" },
+      intruder:{ bg: "bg-purple-700",icon: "🚨", label: "INTRUDER" },
+      default:{ bg: "bg-gray-800",   icon: "⚠️", label: "ALERT" },
+    };
+
+  const style = typeStyles[emergency.type] || typeStyles.default;
+
+  return (
+    <div className={`emergency-overlay ${emergency.type?.toLowerCase()}`}>
+      <div className="emergency-content">
+        <h1>{style.label} ALERT!</h1>
+        <p>{emergency.message}</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   // No items placeholder
   if (!carouselItems.length) {
