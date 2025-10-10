@@ -6,6 +6,7 @@ export default function ContentUpload() {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('image');
   const [file, setFile] = useState(null);
+  const [pptFile, setPptFile] = useState(null); // ✅ NEW
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -15,18 +16,20 @@ export default function ContentUpload() {
   const uploadContent = async (e) => {
     e.preventDefault();
 
+    // ✅ Basic validation
     if (
       !title.trim() || !startTime || !endTime ||
       ((type === 'image' || type === 'video') && !file) ||
       (type === 'youtube' && !youtubeUrl.trim()) ||
-      (type === 'alert' && !alertText.trim())
+      (type === 'alert' && !alertText.trim()) ||
+      (type === 'ppt' && !pptFile)
     ) {
       return alert('Please fill in all required fields.');
     }
 
     setLoading(true);
     try {
-      // ✅ Build data depending on type
+      // ✅ Common fields
       const common = {
         title,
         type,
@@ -36,30 +39,36 @@ export default function ContentUpload() {
       };
 
       if (type === 'alert') {
-        // text-only record
         await pb.collection('content').create({
           ...common,
           alert_text: alertText.trim(),
         });
       } else if (type === 'youtube') {
-        // store link in field
         await pb.collection('content').create({
           ...common,
           youtube_url: youtubeUrl.trim(),
         });
-      } else {
-        // image or video with file upload
+      } else if (type === 'ppt') {
+        // ✅ Upload PPT file
         const formData = new FormData();
         Object.entries(common).forEach(([k, v]) => formData.append(k, v));
-        formData.append('file', file); // ✅ field name must match PB schema
+        formData.append('ppt_file', pptFile); // ✅ matches new PocketBase column name
+        await pb.collection('content').create(formData);
+      } else {
+        // ✅ image or video
+        const formData = new FormData();
+        Object.entries(common).forEach(([k, v]) => formData.append(k, v));
+        formData.append('file', file);
         await pb.collection('content').create(formData);
       }
 
       alert('✅ Content uploaded successfully!');
+
       // Reset form
       setTitle('');
       setType('image');
       setFile(null);
+      setPptFile(null);
       setYoutubeUrl('');
       setStartTime('');
       setEndTime('');
@@ -97,7 +106,7 @@ export default function ContentUpload() {
           <option value="image">Image</option>
           <option value="video">Video File</option>
           <option value="youtube">YouTube Link</option>
-          <option value="alert">Alert (Text Only)</option>
+          <option value="ppt">PDF File</option> {/* ✅ NEW */}
         </select>
       </div>
 
@@ -127,18 +136,19 @@ export default function ContentUpload() {
         </div>
       )}
 
-      {type === 'alert' && (
+      {type === 'ppt' && (
         <div className="form-group">
-          <label htmlFor="alert-message">Alert Message</label>
-          <textarea
-            id="alert-message"
-            value={alertText}
-            onChange={e => setAlertText(e.target.value)}
-            rows={3}
+          <label htmlFor="ppt-upload">Upload PowerPoint File</label>
+          <input
+            id="ppt-upload"
+            type="file"
+            accept=".ppt,.pptx,.pps,.ppsx"
+            onChange={e => setPptFile(e.target.files[0])}
             required
           />
         </div>
       )}
+
 
       <div className="form-group">
         <label htmlFor="start-time">Start Time</label>
