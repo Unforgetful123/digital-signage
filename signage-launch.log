@@ -86,3 +86,440 @@ Updating pocketbase.js URL...
 Windows PowerShell transcript end
 End time: 20251024135042
 **********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251027214837
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 4528
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (25/25)
+âŒ Port 8090 did not open in time.
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251027215028
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251027221930
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 9520
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+**********************
+Windows PowerShell transcript start
+Start time: 20251027222423
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 19884
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (25/25)
+âŒ Port 8090 did not open in time.
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251027222616
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251027224011
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 3548
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 8090) failed
+â³ Waiting for port 8090... (25/25)
+âŒ Port 8090 did not open in time.
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251027224203
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251027233214
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 8664
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251027233222
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251028003221
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 22736
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251028003229
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251028003944
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 19376
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251028003952
+**********************
