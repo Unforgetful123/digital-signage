@@ -1,0 +1,88 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20251024134145
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -file  C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1 
+Process ID: 1420
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is C:\Users\johnm\Desktop\newproject\digital-signage\signage-launch.log
+
+Launching Smart Ad Display...
+Cleaning up old processes...
+Stopping existing pocketbase processes...
+Stopping existing node processes...
+Cleanup complete.
+Detected LAN IP: 172.29.128.1
+Updating pocketbase.js URL...
+Updated PocketBase URL to http://
+Starting PocketBase...
+PocketBase running on port 8090
+Starting Socket.IO Realtime Server...
+Socket.IO server running on port 4000
+Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+Waiting for port 3000... (1/15)
+Display Window running on port 3000
+Starting Admin Panel...
+Admin Panel running on port 5173
+Opening Display Window...
+Opening Admin Panel in floating window...
+**********************
+Windows PowerShell transcript end
+End time: 20251024134237
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251024135023
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -file  C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1 
+Process ID: 13616
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is C:\Users\johnm\Desktop\newproject\digital-signage\signage-launch.log
+
+ðŸš€ Launching Smart Ad Display...
+Cleaning up old processes...
+Cleanup complete.
+ðŸŒ Detected LAN IP: 172.29.128.1
+Updating pocketbase.js URL...
+âœ… Updated PocketBase URL to http://
+â–¶ Starting PocketBase...
+âœ… Port 8090 is now open.
+âœ… PocketBase running on port 8090
+â–¶ Starting Socket.IO server...
+âœ… Port 4000 is now open.
+âœ… Socket.IO server running on port 4000
+â–¶ Starting Display Window...
+âœ… Port 3000 is now open.
+âœ… Display Window running on port 3000
+â–¶ Starting Admin Panel...
+âœ… Port 5173 is now open.
+âœ… Admin Panel running on port 5173
+ðŸªŸ Opening Display Window...
+ðŸªŸ Opening Admin Panel...
+**********************
+Windows PowerShell transcript end
+End time: 20251024135042
+**********************
