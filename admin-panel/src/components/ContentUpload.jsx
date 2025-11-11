@@ -83,7 +83,7 @@ export default function ContentUpload() {
 
   return (
     <form onSubmit={uploadContent} className="form-card">
-      <div className="card-heading">Upload & Schedule Content</div>
+      <h2>Upload & Schedule Content</h2>
 
       <div className="form-group">
         <label htmlFor="content-title">Title</label>

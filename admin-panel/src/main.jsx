@@ -5,7 +5,6 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <h1 class="dashboard-title">VRL Smart Digital Signage</h1>
     <App />
   </React.StrictMode>
 )

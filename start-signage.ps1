@@ -90,16 +90,15 @@ $AdminURL = "http://127.0.0.1:$($Ports.Admin)"
 Write-Host "`n🌐 Opening Browser..."
 if (Test-Path $BrowserPath) {
     # Display window in kiosk mode
-    $DisplayArgs = "--kiosk --autoplay-policy=no-user-gesture-required --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --app=$AppURL"
+    $DisplayArgs = "--start-fullscreen --kiosk --autoplay-policy=no-user-gesture-required --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --app=$AppURL"
     Start-Process -FilePath $BrowserPath -ArgumentList $DisplayArgs
+    Write-Host "✅ Display window launched in fullscreen mode."
+    Write-Host "👉 Access admin panel manually at: $AdminURL"
 
-    # Admin panel in windowed mode
-    $AdminArgs = "--window-size=1200,800 --disable-extensions --disable-infobars --app=$AdminURL"
-    Start-Process -FilePath $BrowserPath -ArgumentList $AdminArgs
 } else {
     Write-Host "⚠️ Browser not found; opening in default browser..."
     Start-Process $AppURL
-    Start-Process $AdminURL
+    Write-Host "👉 Admin panel available at: $AdminURL"
 }
 
 Write-Host "`n✅ $AppName launched successfully!"

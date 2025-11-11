@@ -523,3 +523,893 @@ Admin:       http://127.0.0.1:5173
 Windows PowerShell transcript end
 End time: 20251028003952
 **********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251028004659
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 15464
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251028004707
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251029141603
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 21384
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251029141617
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251029141905
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 8548
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251029141914
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110124042
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 9096
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110124054
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110130544
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 4260
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Display Window only (Full Screen)...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110130551
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110130720
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 14308
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Display Window only (Full Screen)...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110130728
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110131118
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 16128
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Display Window only (Full Screen)...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110131126
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110131416
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 22140
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110131424
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110131746
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 15976
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream --app=http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110131759
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110131934
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 3472
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream --app=http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110131947
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110132713
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -file  C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1 
+Process ID: 4052
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110132727
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110132740
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 24160
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110132753
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110133212
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -file  C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1 
+Process ID: 27576
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110133224
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110133405
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 14300
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110133417
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110133447
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 27904
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream --app=http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110133500
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110160123
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 20664
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110160138
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110160209
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 16660
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--kiosk --start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110160221
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110160634
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 14192
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Preparing to launch Display Window...
+â–¶ Launching browser with arguments:
+--start-fullscreen --autoplay-policy=no-user-gesture-required --no-user-gesture-required --disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --use-fake-ui-for-media-stream http://127.0.0.1:3000
+âœ… Display window launched in fullscreen/kiosk mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110160648
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251110160828
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 10208
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251110160836
+**********************
