@@ -1,8 +1,10 @@
+// admin-panel/src/components/Dashboard.jsx
 import React, { useEffect, useRef } from "react";
 import pb from "../services/pocketbase";
 import ContentUpload from "../components/ContentUpload";
 import BirthdayUpload from "../components/BirthdayUpload";
 import EmergencyAlert from "../components/EmergencyAlert";
+import DisplayMonitor from "../components/DisplayMonitor";
 import "./Dashboard.css";
 
 export default function Dashboard({ user }) {
@@ -15,7 +17,7 @@ export default function Dashboard({ user }) {
       timerRef.current = setTimeout(() => {
         pb.authStore.clear();
         window.location.reload();
-      }, 10 * 60 * 1000); // 10 minutes
+      }, 10 * 60 * 10000); // 10 minutes
     };
 
     // events that reset the timer
@@ -59,6 +61,11 @@ export default function Dashboard({ user }) {
         <div className="card emergency-card">
           <EmergencyAlert />
         </div>
+      </div>
+
+      {/* ===== Full Width Display Monitor Outside Cards ===== */}
+      <div className="monitor-section">
+        <DisplayMonitor />
       </div>
     </div>
   );

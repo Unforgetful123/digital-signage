@@ -1413,3 +1413,1199 @@ Admin:       http://127.0.0.1:5173
 Windows PowerShell transcript end
 End time: 20251110160836
 **********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114153215
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 9808
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251114153226
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114155522
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 12064
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (4/25)
+**********************
+Windows PowerShell transcript start
+Start time: 20251114155634
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 27244
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (25/25)
+âŒ Port 4000 did not open in time.
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251114155821
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114162256
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 740
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (25/25)
+âŒ Port 4000 did not open in time.
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251114162443
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114213036
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 25524
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (25/25)
+âŒ Port 4000 did not open in time.
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251114213230
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114213644
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 18376
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251114213651
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114214613
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 26312
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251114214622
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251114220103
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 14036
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+**********************
+Windows PowerShell transcript start
+Start time: 20251114220129
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 24144
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (15/25)
+**********************
+Windows PowerShell transcript start
+Start time: 20251114233833
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 20948
+PSVersion: 5.1.26100.6899
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.6899
+BuildVersion: 10.0.26100.6899
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+**********************
+Windows PowerShell transcript start
+Start time: 20251117153148
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 8784
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 4000) failed
+â³ Waiting for port 4000... (25/25)
+âŒ Port 4000 did not open in time.
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117153343
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117161105
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 5676
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117161112
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117170021
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 17372
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117170034
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117171152
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 17128
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117171159
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117173535
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 14308
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117173541
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117174828
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 19608
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117174833
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117175855
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 15884
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117175901
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117180906
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 10072
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+âœ… Port 3000 active
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117180912
+**********************
+**********************
+Windows PowerShell transcript start
+Start time: 20251117223934
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 3620
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (8/25)
+**********************
+Windows PowerShell transcript start
+Start time: 20251117224016
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 19400
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (16/25)
+**********************
+Windows PowerShell transcript start
+Start time: 20251117224132
+Username: FRIDAY\johnm
+RunAs User: FRIDAY\johnm
+Configuration Name: 
+Machine: FRIDAY (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\Users\johnm\Desktop\newproject\digital-signage\start-signage.ps1
+Process ID: 148
+PSVersion: 5.1.26100.7019
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7019
+BuildVersion: 10.0.26100.7019
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+ðŸš€ Launching Smart Digital Signage...
+---------------------------------------------
+Cleaning up old Node/PocketBase processes...
+â–¶ Starting PocketBase...
+âœ… Port 8090 active
+â–¶ Starting Socket.IO Server...
+âœ… Port 4000 active
+â–¶ Starting Display Window...
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (1/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (2/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (3/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (4/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (5/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (6/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (7/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (8/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (9/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (10/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (11/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (12/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (13/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (14/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (15/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (16/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (17/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (18/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (19/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (20/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (21/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (22/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (23/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (24/25)
+WARNING: TCP connect to (127.0.0.1 : 3000) failed
+â³ Waiting for port 3000... (25/25)
+âŒ Port 3000 did not open in time.
+â–¶ Starting Admin Panel...
+âœ… Port 5173 active
+
+ðŸŒ Opening Browser...
+âœ… Display window launched in fullscreen mode.
+ðŸ‘‰ Access admin panel manually at: http://127.0.0.1:5173
+
+âœ… Smart Digital Signage launched successfully!
+---------------------------------------------
+PocketBase:  http://127.0.0.1:8090
+Server:      ws://127.0.0.1:4000
+Display:     http://127.0.0.1:3000
+Admin:       http://127.0.0.1:5173
+---------------------------------------------
+**********************
+Windows PowerShell transcript end
+End time: 20251117224320
+**********************

@@ -7,11 +7,34 @@ import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 import pb from "../services/pocketbase"; // ✅ PocketBase client
+import SetupScreen from "./SetupScreen"; // ✅ ensure this is imported at the top
 import "../App.css";
+
 
 const SOCKET_HOST =
   import.meta?.env?.VITE_SOCKET_HOST || window.location.hostname;
-const socket = io(`http://${SOCKET_HOST}:4000`);
+const socket = io(`http://${SOCKET_HOST}:4000`,{ transports: ["websocket"]});
+
+// Simple helper to get this screen’s identity
+function getDisplayConfig() {
+  const saved = localStorage.getItem("displayConfig");
+  if (!saved) return null;
+
+  try {
+    return JSON.parse(saved);
+  } catch (e) {
+    console.error("❌ Invalid displayConfig JSON:", e);
+    return null;
+  }
+}
+
+export function setDisplayConfig(newConfig) {
+  if (!newConfig) {
+    localStorage.removeItem("displayConfig");
+  } else {
+    localStorage.setItem("displayConfig", JSON.stringify(newConfig));
+  }
+}
 
 /* ============================================================
    🌍 Helper: Real Internet Connectivity Check
@@ -129,12 +152,142 @@ function OfflineYouTubeSkip({ advance }) {
    🧠 MAIN PLAYER COMPONENT
 ============================================================ */
 export default function Player() {
+  const [config, setConfig] = useState(getDisplayConfig());
   const [content, setContent] = useState([]);
   const [birthdays, setBirthdays] = useState([]);
   const [current, setCurrent] = useState(0);
   const [emergency, setEmergency] = useState(null);
   const [isOnline, setIsOnline] = useState(true);
   const videoRef = useRef(null);
+  // inside Player component
+  const [displayRecordId, setDisplayRecordId] = useState(null);
+  // This should be whichever state or variable you have that represents
+  // the currently playing item. Adjust the name if yours is different.
+  const currentItem = content[current] || null;  // example
+
+  if (!config) {
+    return <SetupScreen onComplete={(cfg) => { 
+      setDisplayConfig(cfg); 
+      setConfig(cfg);
+    }} />;
+  }
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function sendHeartbeat() {
+        const cfg = JSON.parse(localStorage.getItem("displayConfig") || "{}");
+
+        if (!cfg?.id) {
+            console.error("❌ No display ID found in displayConfig.");
+            return;
+        }
+
+        try {
+            // 1. Get the latest record to check for commands/existence
+            const existingRecord = await pb.collection("displays").getOne(cfg.id);
+
+            const updateData = { last_seen: new Date().toISOString() };
+
+            // 2. ONLY update content details IF no command/alert is currently set
+            if (existingRecord.current_type !== "command" && existingRecord.current_type !== "alert") {
+                updateData.current_type = currentItem?.type || null;
+                updateData.current_title = currentItem?.title || null;
+            }
+
+            // 3. Perform the update
+            await pb.collection("displays").update(cfg.id, updateData, {
+                requestKey: null // Prevent auto-cancel on overlapping updates
+            });
+
+        } catch (err) {
+            // Handle 404 (Display record deleted from monitor)
+            if (err?.status === 404) {
+                console.warn("🛑 Display record not found — clearing local config");
+                setDisplayConfig(null);
+                window.location.reload();
+                return;
+            }
+            console.error("💥 Display heartbeat failed:", err?.message || err);
+        }
+    }
+
+    sendHeartbeat();
+    const interval = setInterval(() => {
+        if (!isCancelled) sendHeartbeat();
+    }, 30000);
+
+    return () => {
+        isCancelled = true;
+        clearInterval(interval);
+    };
+}, [currentItem]); // Dependency is correct
+
+  // Inside the Player component, after the existing useEffects:
+useEffect(() => {
+    if (!config?.id) return;
+
+    let unsub = null;
+
+    async function subscribeToDisplay() {
+        try {
+            // Subscribe to real-time updates for *this specific display record*
+            unsub = pb.collection("displays").subscribe(config.id, ({ action, record }) => {
+                if (action !== "update") return;
+
+                const { current_type, current_title } = record;
+
+                // --- Handle Commands ---
+                if (current_type === "command") {
+                    console.log(`Command received: ${current_title}`);
+                    
+                    if (current_title === "REFRESH") {
+                        // Refresh command: Reloads the entire page (best practice for full refresh)
+                        window.location.reload(); 
+                    } else if (current_title === "RESTART") {
+                        // Restart command: Reruns the setup process by clearing local config
+                        setDisplayConfig(null);
+                        window.location.reload();
+                    }
+                    
+                    // Clear the command field immediately after execution
+                    clearCommand(config.id);
+                }
+                
+                // --- Handle Alert/Message ---
+                if (current_type === "alert" && current_title) {
+                    // Reusing your emergency state structure for a temporary alert message
+                    setEmergency({ type: "ALERT", message: current_title });
+                }
+            });
+        } catch (err) {
+            console.error("Failed to subscribe to display record:", err);
+        }
+    }
+
+    // Function to clear the command/alert fields in PocketBase
+    const clearCommand = async (id) => {
+        try {
+            await pb.collection("displays").update(id, {
+                current_type: null,
+                current_title: null,
+            }, { requestKey: null });
+        } catch (err) {
+            console.error("Failed to clear command fields:", err);
+        }
+    };
+
+    subscribeToDisplay();
+
+    // Cleanup subscription
+    return () => {
+        if (unsub) {
+            pb.collection("displays").unsubscribe(config.id);
+        }
+    };
+}, [config?.id]); // Only re-run if display config ID changes
+
+
 
   // 🌐 Real Internet detection (ping)
   useEffect(() => {
@@ -144,7 +297,7 @@ export default function Player() {
       setIsOnline(result);
     }
     monitorConnection();
-    timer = setInterval(monitorConnection, 5000);
+    timer = setInterval(monitorConnection, 5000);//
     return () => clearInterval(timer);
   }, []);
 
@@ -155,13 +308,52 @@ export default function Player() {
     }
   }, [isOnline]);
 
+  // In Player.jsx (assuming config and socket are defined)
+  // 🌐 Ensure the player joins its location room on load
+  useEffect(() => {
+      // 1. Check for required config values
+      if (!config?.id || !config?.location) {
+          console.warn("Display config incomplete. Cannot join Socket.IO room.");
+          return;
+      }
+
+      const area = config.location.toLowerCase();
+
+      const sendPlayerConnected = () => {
+          socket.emit('playerConnected', { 
+              id: config.id, 
+              location: area
+          });
+          console.log(`Player client emitted 'playerConnected' for room: ${area}`);
+      };
+      
+      // 2. Wait for socket to be explicitly connected before emitting
+      if (socket.connected) {
+        // Case 1: Socket is already connected (most common after initial load)
+        sendPlayerConnected();
+      } else {
+        // Case 2: Socket is connecting. Wait for the 'connect' event.
+        socket.on('connect', sendPlayerConnected);
+        console.log(`Socket not yet connected. Waiting to join room: ${area}`);
+      }
+
+      // Cleanup: Remove the 'connect' listener if it was added
+      return () => {
+          socket.off('connect', sendPlayerConnected);
+      };
+
+    // We only need to re-run this if the config changes (e.g., after initial setup)
+    // or if the socket connection state is unreliable, but depending on `config` is sufficient.
+  }, [config]);
+
+
   // 🚨 Emergency events
   useEffect(() => {
     // Create reusable audio element
     const siren = new Audio("/siren.wav");
     siren.loop = true; // continuous loop during alert
 
-    socket.on("emergencyTriggered", (data) => {
+    socket.on("triggerEmergency", (data) => {
       setEmergency(data);
       try {
         siren.currentTime = 0;
@@ -193,7 +385,7 @@ export default function Player() {
     // cleanup when component unmounts
     return () => {
       siren.pause();
-      socket.off("emergencyTriggered");
+      socket.off("triggerEmergency");
       socket.off("emergencyCleared");
     };
   }, []);
@@ -322,7 +514,7 @@ export default function Player() {
     return (
       <div className={`emergency-overlay ${type}`}>
         <div className="emergency-content">
-          <h1>{type.toUpperCase()} ALERT!</h1>
+          <h1>{emergency.type.toUpperCase()} ALERT!</h1>
           <p>{emergency.message}</p>
         </div>
       </div>
