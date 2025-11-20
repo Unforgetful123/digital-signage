@@ -233,6 +233,12 @@ useEffect(() => {
         try {
             // Subscribe to real-time updates for *this specific display record*
             unsub = pb.collection("displays").subscribe(config.id, ({ action, record }) => {
+                if (action === "delete") {
+                    console.warn("🛑 Display record deleted via Admin — clearing local config and reloading.");
+                    setDisplayConfig(null);
+                    window.location.reload();
+                    return; // Stop processing
+                }
                 if (action !== "update") return;
 
                 const { current_type, current_title } = record;
@@ -345,6 +351,45 @@ useEffect(() => {
     // We only need to re-run this if the config changes (e.g., after initial setup)
     // or if the socket connection state is unreliable, but depending on `config` is sufficient.
   }, [config]);
+
+  /* ============================================================
+  1. FIX: Content Fetching and Real-time Subscription
+============================================================ */
+useEffect(() => {
+    if (!config?.location) return;
+    const location = config.location;
+
+    // Define the content loading function (This is the critical part you need)
+    const loadContent = async (location) => {
+        try {
+            // This function needs to fetch content, filter by location, and set setContent()
+            const records = await pb.collection('content').getList(1, 100, {
+                filter: `location = "${location}" && start_time <= "${new Date().toISOString()}" && end_time >= "${new Date().toISOString()}"`,
+                sort: 'priority, start_time',
+            });
+            setContent(records.items);
+        } catch (error) {
+            console.error("Failed to load content:", error);
+            setContent([]);
+        }
+    };
+
+    // --- A. INITIAL/CONFIG CHANGE LOAD ---
+    loadContent(location); // ⬅️ CRITICAL: Call it immediately!
+
+    // --- B. REAL-TIME SUBSCRIPTION ---
+    const unsubscribe = pb.collection('content').subscribe(`location = "${location}"`, function (e) {
+        console.log('Realtime Content Update:', e.record);
+        // On ANY change, refresh the list of content
+        loadContent(location); 
+    });
+
+    // Cleanup subscription
+    return () => {
+        pb.collection('content').unsubscribe(`location = "${location}"`, unsubscribe);
+    };
+    
+}, [config.location]); // Depends on location
 
 
   // 🚨 Emergency events

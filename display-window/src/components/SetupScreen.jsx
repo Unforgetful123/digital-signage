@@ -29,6 +29,7 @@ export default function SetupScreen({ onComplete }) {
       };
       setDisplayConfig(config);
       onComplete(config);
+      window.location.reload();
     } catch (err) {
       console.error("Registration failed:", err);
       alert("Could not register display.");

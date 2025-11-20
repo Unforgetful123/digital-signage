@@ -6,8 +6,21 @@ $ErrorActionPreference = "SilentlyContinue"
 
 # === SETTINGS ===
 $AppName       = "Smart Digital Signage"
-$BasePath      = "C:\Users\johnm\Desktop\newproject\digital-signage"
+$BasePath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $BrowserChoice = "edge"    # Change to "chrome" or "edge"
+
+# --- Dynamic IP Resolution ---
+# Finds the primary IP address (excluding loopback and non-connected adapters)
+try {
+    # Get the primary IPV4 address that isn't loopback (127.0.0.1)
+    $LocalIP = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
+        $_.InterfaceAlias -notlike "Loopback*" -and $_.IPAddress -notlike "169.254.*" 
+    }).IPAddress | Select-Object -First 1
+    
+} catch {
+    $LocalIP = "127.0.0.1"
+    Write-Host "❌ Error determining local IP. Falling back to $LocalIP."
+}
 
 # --- Paths ---
 $PocketBaseExe = "$BasePath\pocketbase.exe"
@@ -84,10 +97,12 @@ if (Test-Path "$AdminFolder\package.json") {
 } else { Write-Host "⚠️ admin-panel missing package.json" }
 
 # === STEP 6: LAUNCH IN BROWSER ===
-$AppURL   = "http://127.0.0.1:$($Ports.Display)"
-$AdminURL = "http://127.0.0.1:$($Ports.Admin)"
+# Line 104
+$AppURL = "http://${LocalIP}:$($Ports.Display)" 
+# Line 105
+$AdminURL = "http://${LocalIP}:$($Ports.Admin)"
 
-Write-Host "`n🌐 Opening Browser..."
+Write-Host "`n🌐 Opening Browser (Target IP: $LocalIP)..."
 if (Test-Path $BrowserPath) {
     # Display window in kiosk mode
     $DisplayArgs = "--start-fullscreen --kiosk --autoplay-policy=no-user-gesture-required --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-component-update --app=$AppURL"
@@ -104,7 +119,7 @@ if (Test-Path $BrowserPath) {
 Write-Host "`n✅ $AppName launched successfully!"
 Write-Host "---------------------------------------------"
 Write-Host "PocketBase:  http://127.0.0.1:$($Ports.PB)"
-Write-Host "Server:      ws://127.0.0.1:$($Ports.Server)"
+Write-Host "Server: ws://${LocalIP}:$($Ports.Server)"
 Write-Host "Display:     $AppURL"
 Write-Host "Admin:       $AdminURL"
 Write-Host "---------------------------------------------"
