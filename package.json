@@ -1,0 +1,42 @@
+{
+  "name": "ad-player-pro",
+  "version": "1.0.0",
+  "description": "Digital Signage Player with PocketBase Integration",
+  "author": "John Mantraj",
+  "main": "main.js",
+  "scripts": {
+    "build:admin": "cd admin-panel && npm run build",
+    "build:player": "cd display-window && npm run build",
+    "build:all": "npm run build:admin && npm run build:player",
+    "electron:build": "npm run build:all && electron-builder"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "electron": "32.0.1",
+    "electron-builder": "^26.4.0"
+  },
+  "build": {
+    "appId": "com.adplayer.pro",
+    "productName": "Ad Player Pro",
+    "asar": true,
+    "extraResources": [
+      { "from": "pocketbase.exe", "to": "pocketbase.exe" },
+      { "from": "admin-panel/dist", "to": "admin-panel/dist" },
+      { "from": "display-window/dist", "to": "display-window/dist" },
+      { "from": "pb_data", "to": "pb_data" }
+    ],
+    "win": {
+      "target": "nsis",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

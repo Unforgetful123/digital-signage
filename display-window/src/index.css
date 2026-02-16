@@ -1,0 +1,13 @@
+/* Ensure the html and body are transparent */
+html, body {
+  background: rgba(0, 0, 0, 0) !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevents scrollbars from appearing */
+}
+
+/* If you want the app content to have a slight background but still be see-through */
+#root {
+  background: rgba(0, 0, 0, 0.05); /* 5% visibility - "Hardly visible" */
+  height: 100vh;
+}

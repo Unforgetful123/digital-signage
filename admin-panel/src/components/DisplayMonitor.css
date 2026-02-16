@@ -1,0 +1,100 @@
+/* Updated DisplayMonitor.css */
+
+.display-monitor {
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.display-monitor h2 {
+  margin-bottom: 0.25rem;
+}
+
+.display-monitor .subtitle {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.display-monitor .filter-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.display-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  margin-top: 1rem;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.display-table thead {
+  background: #222;
+  color: white;
+}
+
+.display-table th,
+.display-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.display-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-block;
+  color: #fff;
+}
+
+.status-badge.online {
+  background: #16a34a;
+}
+
+.status-badge.offline {
+  background: #dc2626;
+}
+
+.display-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.display-actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background: #eee;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.display-actions button:hover {
+  background: #ddd;
+}
+
+.display-actions button:last-child {
+  color: red;
+  font-weight: bold;
+  background: #f9f9f9;
+}
+
+.empty {
+  color: #999;
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
+}

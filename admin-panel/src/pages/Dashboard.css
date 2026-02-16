@@ -1,0 +1,73 @@
+.dashboard-wrapper {
+  padding: 24px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.dashboard-header {
+  display: flex;
+  justify-content: center;          /* centers the title */
+  align-items: center;
+  position: relative;               /* allows positioning admin info */
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.dashboard-title {
+  color: #1d4ed8;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.admin-info {
+  position: absolute;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-email {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.logout-btn {
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #2563eb;
+}
+
+/* ===== Dashboard Grid ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+.emergency-card {
+  border: 2px solid #d93025;
+}
