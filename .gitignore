@@ -1,1 +1,13 @@
-node_modules
+# PocketBase
+pb_data/
+
+# Node
+node_modules/
+admin-panel/node_modules/
+
+# Build output
+dist/
+build/
+
+# Env
+.env
