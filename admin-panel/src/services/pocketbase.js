@@ -2,6 +2,6 @@
 import PocketBase from 'pocketbase';
 
 const serverIp = window.location.hostname; 
-const pb = new PocketBase('https://chan-tip-patricia-ellis.trycloudflare.com');
+const pb = new PocketBase(`http://${serverIp}:8090`);
 
 export default pb;

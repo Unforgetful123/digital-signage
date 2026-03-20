@@ -4,7 +4,7 @@ import { setDisplayConfig } from "./Player";
 import "./SetupScreen.css";
 
 export default function SetupScreen({ onComplete }) {
-  const [ip, setIp] = useState(localStorage.getItem('server_url') || "https://postilioned-ema-nebulously.ngrok-free.dev");
+  const [ip, setIp] = useState(localStorage.getItem('server_url') || "http://192.168.1.X:8090");
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
