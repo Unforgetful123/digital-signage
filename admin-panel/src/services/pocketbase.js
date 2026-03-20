@@ -2,6 +2,6 @@
 import PocketBase from 'pocketbase';
 
 const serverIp = window.location.hostname; 
-const pb = new PocketBase('https://concept-flow-okay-meals.trycloudflare.com');
+const pb = new PocketBase('https://url-explains-model-forestry.trycloudflare.com');
 
 export default pb;
