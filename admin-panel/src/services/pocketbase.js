@@ -1,14 +1,7 @@
-﻿import PocketBase from 'pocketbase';
+﻿// src/services/pocketbase.js
+import PocketBase from 'pocketbase';
 
-const url = localStorage.getItem('server_url') || "https://postilioned-ema-nebulously.ngrok-free.dev";
-const pb = new PocketBase(url);
-
-// ADD THIS BLOCK TO BYPASS NGROK'S WARNING PAGE
-pb.beforeSend = function (url, reqOpts) {
-    reqOpts.headers = Object.assign({}, reqOpts.headers, {
-        'ngrok-skip-browser-warning': 'true'
-    });
-    return { url, reqOpts };
-};
+const serverIp = window.location.hostname; 
+const pb = new PocketBase('https://concept-flow-okay-meals.trycloudflare.com');
 
 export default pb;
