@@ -2,6 +2,6 @@
 import PocketBase from 'pocketbase';
 
 const serverIp = window.location.hostname; 
-const pb = new PocketBase(`http://${serverIp}:8090`);
+const pb = new PocketBase('https://postilioned-ema-nebulously.ngrok-free.dev');
 
 export default pb;
