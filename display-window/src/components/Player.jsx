@@ -32,17 +32,17 @@ function setDisplayConfig(newConfig) {
 export { setDisplayConfig };
 
 /* ============================================================
-   🌍 Helper: Real Internet Connectivity Check
+   🌍 Helper: Admin PC Connection Check
 ============================================================ */
 async function checkInternetConnection() {
   try {
-    await fetch("https://www.gstatic.com/generate_204", { mode: "no-cors" });
-    return true;
+    // This is a bulletproof, native background ping that bypasses CORS errors
+    const health = await pb.health.check();
+    return health.code === 200;
   } catch {
     return false;
   }
 }
-
 /* ============================================================
    📄 PDF Slideshow Component
 ============================================================ */
@@ -159,13 +159,6 @@ export default function Player() {
   // This should be whichever state or variable you have that represents
   // the currently playing item. Adjust the name if yours is different.
   const currentItem = content[current] || null;  // example
-
-  if (!config) {
-    return <SetupScreen onComplete={(cfg) => { 
-      setDisplayConfig(cfg); 
-      setConfig(cfg);
-    }} />;
-  }
 
   // Inside the Player component, after the existing useEffects:
   useEffect(() => {
@@ -326,36 +319,59 @@ useEffect(() => {
 
     const loadContent = async (currentLocation) => {
         try {
-            const now = new Date().toISOString();
-            // 🔄 Updated Filter Logic
+            // 1. Fetch Content (Using '~' for safe, case-insensitive matching)
             const records = await pb.collection('content').getList(1, 100, {
-                filter: `(location = "${currentLocation}" || location = "Global") && start_time <= "${now}" && end_time >= "${now}"`,
-                sort: 'priority, start_time',
+                filter: `location ~ "${currentLocation}" || location ~ "Global"`,
+                sort: '-created', 
                 requestKey: null
             });
-            setContent(records.items);
+
+            // 🚨 THE DIAGNOSTIC LOGS 🚨
+            console.log("1. RAW DATA FROM DATABASE:", records.items);
+            
+            const activeItems = records.items.filter(isActive);
+            
+            console.log("2. DATA AFTER DATE FILTER:", activeItems);
+            // -------------------------
+          
+            setContent(activeItems);
+
+            // 2. Fetch Birthdays (Restoring your missing logic!)
+            const today = new Date();
+            const mm = today.getMonth() + 1;
+            const dd = today.getDate();
+            
+            const bAll = await pb.collection("birthday").getFullList({ requestKey: null });
+            const todays = (bAll || []).filter((row) => {
+                if (!row?.dob) return false;
+                const d = new Date(row.dob);
+                return d.getMonth() + 1 === mm && d.getDate() === dd;
+            });
+            setBirthdays(todays);
+            
         } catch (error) {
             console.error("Failed to load content:", error);
         }
     };
 
-    // --- A. INITIAL/CONFIG CHANGE LOAD ---
-    loadContent(location); // ⬅️ CRITICAL: Call it immediately!
+    // --- A. INITIAL LOAD ---
+    loadContent(location);
 
-    // --- B. REAL-TIME SUBSCRIPTION ---
-    const unsub = pb.collection('content').subscribe('*', (e) => {
-        // Reload if the update is for THIS screen OR it's a Global update
-        if (e.record.location === location || e.record.location === "Global") {
-            loadContent(location);
-        }
+    // --- B. REAL-TIME SUBSCRIPTIONS ---
+    const unsubContent = pb.collection('content').subscribe('*', () => {
+        loadContent(location);
+    });
+    const unsubBirthday = pb.collection('birthday').subscribe('*', () => {
+        loadContent(location);
     });
 
-    // Cleanup subscription
+    // Cleanup subscriptions
     return () => {
         pb.collection("content").unsubscribe("*");
+        pb.collection("birthday").unsubscribe("*");
     };
     
-}, [config.location]); // Depends on location
+  }, [config?.location]);
 
 
   // 🚨 Emergency events
@@ -509,7 +525,7 @@ useEffect(() => {
       canvas.classList.add("confetti");
       document.body.appendChild(canvas);
       const myConfetti = confetti.create(canvas, { resize: true });
-      const end = Date.now() + 10000;
+      const end = Date.now() + 1000;
       (function frame() {
         myConfetti({ particleCount: 5, spread: 60, origin: { y: 0.6 } });
         if (Date.now() < end) requestAnimationFrame(frame);
@@ -523,7 +539,7 @@ useEffect(() => {
     if (emergency || !carouselItems.length) return;
     let timer;
     if (item?.type === "image" || item?.type === "birthday") {
-      timer = setTimeout(advance, 10000);
+      timer = setTimeout(advance, 1000);
     }
     return () => clearTimeout(timer);
   }, [item, emergency, carouselItems.length]);
@@ -533,6 +549,13 @@ useEffect(() => {
     const m = url.match(/(?:youtu\.be\/|v=)([^#&?]{11})/);
     return m ? m[1] : null;
   };
+
+  if (!config) {
+    return <SetupScreen onComplete={(cfg) => { 
+      setDisplayConfig(cfg); 
+      setConfig(cfg);
+    }} />;
+  }
 
   if (emergency) {
     return (

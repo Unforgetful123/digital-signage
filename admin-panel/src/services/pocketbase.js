@@ -1,7 +1,5 @@
-﻿// src/services/pocketbase.js
-import PocketBase from 'pocketbase';
+﻿import PocketBase from 'pocketbase';
 
-const serverIp = window.location.hostname; 
-const pb = new PocketBase(`http://${serverIp}:8090`);
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 export default pb;
