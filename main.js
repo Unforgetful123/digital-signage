@@ -6,24 +6,19 @@ const { spawn, exec } = require('child_process');
 let mainWindow;
 let pbProcess;
 
-// We store the config and the database in the Windows %APPDATA% folder 
-// so it NEVER gets overwritten when you update the .exe later!
+// We store the config and the live database in the Windows %APPDATA% folder 
 const userDataPath = app.getPath('userData');
 const configPath = path.join(userDataPath, 'signage-config.json');
 const pbDataPath = path.join(userDataPath, 'pb_data');
 
-// Helper to determine if we are running in dev mode or bundled .exe
 const isDev = !app.isPackaged;
 const resourcesPath = isDev ? __dirname : process.resourcesPath;
 
 // --- THE SEED DATABASE LOGIC ---
 function setupDatabase() {
-    // If pb_data doesn't exist in %APPDATA%, it's a brand new install!
     if (!fs.existsSync(pbDataPath)) {
         console.log("First launch detected: Copying seed database...");
         const seedPath = path.join(resourcesPath, 'pb_data');
-        
-        // Copy the pre-configured database from the .exe to the PC
         if (fs.existsSync(seedPath)) {
             fs.cpSync(seedPath, pbDataPath, { recursive: true });
         }
@@ -32,7 +27,7 @@ function setupDatabase() {
 
 function initApp() {
     setupDatabase(); // Ensure the database is ready BEFORE anything else
-    // Check if this PC has been assigned a role yet
+
     if (fs.existsSync(configPath)) {
         const config = JSON.parse(fs.readFileSync(configPath));
         if (config.role === 'admin') {
@@ -55,7 +50,6 @@ function showRoleSelector() {
         webPreferences: { nodeIntegration: true, contextIsolation: false }
     });
 
-    // A simple built-in HTML screen to pick the role
     const setupHTML = `
         <body style="font-family: Arial; background: #0f172a; color: white; text-align: center; padding: 50px;">
             <h2>Welcome to Ad Player Pro</h2>
@@ -77,7 +71,7 @@ function showRoleSelector() {
 ipcMain.on('set-role', (event, role) => {
     fs.writeFileSync(configPath, JSON.stringify({ role: role }));
     mainWindow.close();
-    initApp(); // Restart flow with new role
+    initApp();
 });
 
 
@@ -88,14 +82,15 @@ function startAdminServer() {
     // A. Open the Windows Firewall for Port 8090 silently
     exec('netsh advfirewall firewall add rule name="Ad Player Pro Database" dir=in action=allow protocol=TCP localport=8090');
 
-    // B. Launch PocketBase
+    // B. Launch PocketBase WITH THE WEB SERVER TRICK
     const pbExe = path.join(resourcesPath, 'pocketbase.exe');
+    const publicPath = path.join(resourcesPath, 'display-window/dist'); 
     
-    // Notice --http="0.0.0.0:8090" allows other PCs on the Wi-Fi to connect!
     pbProcess = spawn(pbExe, [
         'serve',
         `--http=0.0.0.0:8090`,
-        `--dir=${pbDataPath}`
+        `--dir=${pbDataPath}`,
+        `--publicDir=${publicPath}` // <-- This line unlocks the web browsers!
     ]);
 
     pbProcess.stdout.on('data', (data) => console.log(`PocketBase: ${data}`));
@@ -109,7 +104,6 @@ function startAdminServer() {
         webPreferences: { nodeIntegration: true }
     });
 
-    // Load the built React Admin Panel
     mainWindow.loadFile(path.join(resourcesPath, 'admin-panel/dist/index.html'));
 }
 
@@ -125,10 +119,9 @@ function startDisplayKiosk() {
         webPreferences: { nodeIntegration: true }
     });
 
-    // Load the built React Display Window
     mainWindow.loadFile(path.join(resourcesPath, 'display-window/dist/index.html'));
 
-    // Prevent closing via normal means (Press Esc to exit kiosk mode if needed during dev)
+    // Prevent closing via normal means
     mainWindow.on('close', (e) => {
         if (!isDev) e.preventDefault(); 
     });

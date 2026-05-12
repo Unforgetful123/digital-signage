@@ -336,16 +336,20 @@ useEffect(() => {
           
             setContent(activeItems);
 
-            // 2. Fetch Birthdays (Restoring your missing logic!)
+            // 2. Fetch Birthdays (Bulletproof Date Check!)
             const today = new Date();
-            const mm = today.getMonth() + 1;
-            const dd = today.getDate();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
             
             const bAll = await pb.collection("birthday").getFullList({ requestKey: null });
             const todays = (bAll || []).filter((row) => {
                 if (!row?.dob) return false;
-                const d = new Date(row.dob);
-                return d.getMonth() + 1 === mm && d.getDate() === dd;
+                
+                // Safely slice out the "YYYY-MM-DD" no matter how the database formatted it
+                const datePart = row.dob.split(' ')[0].split('T')[0]; 
+                const [, bMonth, bDay] = datePart.split('-');
+                
+                return bMonth === mm && bDay === dd;
             });
             setBirthdays(todays);
             
@@ -518,19 +522,39 @@ useEffect(() => {
   ============================================================ */
   const advance = () => setCurrent((prev) => (prev + 1) % (carouselItems.length || 1));
 
-  // Confetti Effect
+  // Confetti Effect (Plays continuously for the whole slide)
   useEffect(() => {
     if (item?.type === "birthday") {
       const canvas = document.createElement("canvas");
       canvas.classList.add("confetti");
+      
+      // Force canvas to cover the whole screen and let clicks pass through
+      canvas.style.position = "absolute";
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.style.pointerEvents = "none";
+      canvas.style.zIndex = "9999";
       document.body.appendChild(canvas);
+      
       const myConfetti = confetti.create(canvas, { resize: true });
-      const end = Date.now() + 1000;
-      (function frame() {
-        myConfetti({ particleCount: 5, spread: 60, origin: { y: 0.6 } });
-        if (Date.now() < end) requestAnimationFrame(frame);
-        else canvas.remove();
-      })();
+      let animationId;
+      
+      // Infinite loop function
+      const frame = () => {
+        // Lowered particle count slightly so it doesn't lag the TV over 10 seconds
+        myConfetti({ particleCount: 3, spread: 60, origin: { y: 0.6 } });
+        animationId = requestAnimationFrame(frame);
+      };
+      
+      frame(); // Start the loop
+
+      // Cleanup: Stop animation and delete canvas when slide changes
+      return () => {
+        cancelAnimationFrame(animationId);
+        canvas.remove();
+      };
     }
   }, [item]);
 
@@ -539,7 +563,7 @@ useEffect(() => {
     if (emergency || !carouselItems.length) return;
     let timer;
     if (item?.type === "image" || item?.type === "birthday") {
-      timer = setTimeout(advance, 1000);
+      timer = setTimeout(advance, 10000);
     }
     return () => clearTimeout(timer);
   }, [item, emergency, carouselItems.length]);
@@ -579,15 +603,35 @@ useEffect(() => {
   return (
     <>
       {item.type === "birthday" ? (
-        <div className="birthday-ad">
-          <div className="birthday-photo">
-            {item.media_url && <img src={item.media_url} alt={item.title} />}
-          </div>
-          <div className="birthday-text">
+        <div className="birthday-ad" style={{ 
+          display: 'flex', 
+          flexDirection: item.media_url ? 'row' : 'column', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          width: '100vw', 
+          height: '100vh', 
+          margin: 0,
+          boxSizing: 'border-box'
+        }}>
+          {item.media_url && (
+            <div className="birthday-photo" style={{ marginRight: '4rem' }}>
+              <img src={item.media_url} alt={item.title} />
+            </div>
+          )}
+          
+          {/* Bulletproof Flexbox for the text */}
+          <div className="birthday-text" style={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: item.media_url ? 'flex-start' : 'center',
+            textAlign: item.media_url ? 'left' : 'center',
+            margin: 0
+          }}>
             <h1 className="birthday-heading">🎉 Happy Birthday!</h1>
             <h2 className="birthday-name">{item.title}</h2>
             <p className="birthday-designation">{item.designation}</p>
           </div>
+          
           <audio src="/audio/happy-birthday.mp3" autoPlay loop />
         </div>
       ) : (

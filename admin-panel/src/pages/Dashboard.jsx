@@ -5,6 +5,7 @@ import ContentUpload from "../components/ContentUpload";
 import BirthdayUpload from "../components/BirthdayUpload";
 import EmergencyAlert from "../components/EmergencyAlert";
 import DisplayMonitor from "../components/DisplayMonitor";
+import PlaylistManager from "../components/PlaylistManager"; // ✅ Imported our new component
 import "./Dashboard.css";
 
 export default function Dashboard({ user }) {
@@ -17,14 +18,13 @@ export default function Dashboard({ user }) {
       timerRef.current = setTimeout(() => {
         pb.authStore.clear();
         window.location.reload();
-      }, 10 * 60 * 10000); // 10 minutes
+      }, 10 * 60 * 1000); // ✅ Fixed typo: 1000 ms makes it exactly 10 minutes
     };
 
-    // events that reset the timer
     const events = ["mousemove", "keydown", "click", "scroll"];
     events.forEach((evt) => window.addEventListener(evt, resetTimer));
 
-    resetTimer(); // initialize timer
+    resetTimer(); 
 
     return () => {
       events.forEach((evt) => window.removeEventListener(evt, resetTimer));
@@ -50,7 +50,7 @@ export default function Dashboard({ user }) {
         </div>
       </header>
 
-      {/* ===== Main Grid ===== */}
+      {/* ===== Main Grid (The Upload Tools) ===== */}
       <div className="dashboard-grid">
         <div className="card">
           <ContentUpload />
@@ -63,9 +63,15 @@ export default function Dashboard({ user }) {
         </div>
       </div>
 
-      {/* ===== Full Width Display Monitor Outside Cards ===== */}
-      <div className="monitor-section">
+      {/* ===== Full Width Managers (Software & Hardware) ===== */}
+      <div className="monitor-section" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+        {/* The Hardware Manager */}
         <DisplayMonitor />
+        
+        {/* The Software Manager */}
+        <PlaylistManager />
+        
       </div>
     </div>
   );
