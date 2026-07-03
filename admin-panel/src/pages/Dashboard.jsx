@@ -1,29 +1,32 @@
 // admin-panel/src/components/Dashboard.jsx
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import pb from "../services/pocketbase";
 import ContentUpload from "../components/ContentUpload";
 import BirthdayUpload from "../components/BirthdayUpload";
 import EmergencyAlert from "../components/EmergencyAlert";
 import DisplayMonitor from "../components/DisplayMonitor";
-import PlaylistManager from "../components/PlaylistManager"; // ✅ Imported our new component
-import "./Dashboard.css";
+import PlaylistManager from "../components/PlaylistManager";
+import "./Dashboard.css"; // (Assuming your CSS file moved to tl
 
 export default function Dashboard({ user }) {
+  const [activeTab, setActiveTab] = useState("home");
+  
+  // 🎯 NEW: Sub-tab state for the Home screen
+  const [homeAction, setHomeAction] = useState("content"); 
+  
   const timerRef = useRef(null);
 
-  // 🔐 Auto-logout after 10 minutes of inactivity
   useEffect(() => {
     const resetTimer = () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
         pb.authStore.clear();
         window.location.reload();
-      }, 10 * 60 * 1000); // ✅ Fixed typo: 1000 ms makes it exactly 10 minutes
+      }, 10 * 60 * 1000); 
     };
 
     const events = ["mousemove", "keydown", "click", "scroll"];
     events.forEach((evt) => window.addEventListener(evt, resetTimer));
-
     resetTimer(); 
 
     return () => {
@@ -37,42 +40,92 @@ export default function Dashboard({ user }) {
     window.location.reload();
   };
 
+  // 🎯 NEW: Unified Action Center for the Home Tab
+  const renderHomeActions = () => (
+    <div className="action-center">
+      {/* Mini-Navigation for Forms */}
+      <div className="action-tabs">
+        <button 
+          className={`action-btn ${homeAction === 'content' ? 'active-action' : ''}`}
+          onClick={() => setHomeAction('content')}
+        >
+          📁 Upload Media
+        </button>
+        <button 
+          className={`action-btn ${homeAction === 'birthday' ? 'active-action' : ''}`}
+          onClick={() => setHomeAction('birthday')}
+        >
+          🎂 Add Birthday
+        </button>
+        <button 
+          className={`action-btn ${homeAction === 'alert' ? 'active-action' : ''}`}
+          onClick={() => setHomeAction('alert')}
+        >
+          🚨 Trigger Alert
+        </button>
+      </div>
+
+      {/* Dynamic Form Container */}
+      <div className="action-form-container">
+        {homeAction === 'content' && <ContentUpload />}
+        {homeAction === 'birthday' && <BirthdayUpload />}
+        {homeAction === 'alert' && <EmergencyAlert />}
+      </div>
+    </div>
+  );
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "playlist":
+        return <PlaylistManager />;
+      case "monitor":
+        return <DisplayMonitor />;
+      case "home":
+      default:
+        return renderHomeActions(); // Uses our new compact layout
+    }
+  };
+
   return (
-    <div className="dashboard-wrapper">
-      {/* ===== Top Header ===== */}
-      <header className="dashboard-header">
-        <h1 className="dashboard-title">VRL Smart Digital Signage</h1>
-        <div className="admin-info">
-          <span className="admin-email">👤 {user?.email}</span>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
+    <div className="admin-layout">
+      {/* ===== Left Sidebar ===== */}
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h2 className="sidebar-title">VRL Signage</h2>
+        </div>
+        
+        <nav className="sidebar-nav">
+          <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
+            🏠 Home (Uploads)
           </button>
-        </div>
-      </header>
+          <button className={`nav-btn ${activeTab === 'playlist' ? 'active' : ''}`} onClick={() => setActiveTab('playlist')}>
+            📋 Live Playlist
+          </button>
+          <button className={`nav-btn ${activeTab === 'monitor' ? 'active' : ''}`} onClick={() => setActiveTab('monitor')}>
+            📺 Display Monitor
+          </button>
+        </nav>
 
-      {/* ===== Main Grid (The Upload Tools) ===== */}
-      <div className="dashboard-grid">
-        <div className="card">
-          <ContentUpload />
+        <div className="sidebar-footer">
+          <div className="admin-email">👤 {user?.email}</div>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
-        <div className="card">
-          <BirthdayUpload />
-        </div>
-        <div className="card emergency-card">
-          <EmergencyAlert />
-        </div>
-      </div>
+      </aside>
 
-      {/* ===== Full Width Managers (Software & Hardware) ===== */}
-      <div className="monitor-section" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-        {/* The Hardware Manager */}
-        <DisplayMonitor />
+      {/* ===== Right Main Content Area ===== */}
+      <main className="main-content">
+        <header className="content-header">
+          <h1>
+            {activeTab === 'home' && "Content & Alert Management"}
+            {activeTab === 'playlist' && "Live Playlist Manager"}
+            {activeTab === 'monitor' && "Display Monitor"}
+          </h1>
+        </header>
         
-        {/* The Software Manager */}
-        <PlaylistManager />
-        
-      </div>
+        <div className="content-area">
+          {renderContent()}
+        </div>
+      </main>
     </div>
   );
 }

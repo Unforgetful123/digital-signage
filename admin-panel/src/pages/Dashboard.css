@@ -1,73 +1,256 @@
-.dashboard-wrapper {
+/* admin-panel/src/components/Dashboard.css */
+
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f1f5f9; /* Soft gray background for the main area */
+}
+
+/* ===== Sidebar Styles ===== */
+.sidebar {
+  width: 260px;
+  background-color: #1e293b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.sidebar-header {
   padding: 24px;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background: #f5f7fa;
-  min-height: 100vh;
+  border-bottom: 1px solid #334155;
 }
 
-/* ===== Header ===== */
-.dashboard-header {
+.sidebar-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #38bdf8;
+}
+
+.sidebar-nav {
   display: flex;
-  justify-content: center;          /* centers the title */
-  align-items: center;
-  position: relative;               /* allows positioning admin info */
-  background: #fff;
-  border-radius: 10px;
-  padding: 14px 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
+  flex-direction: column;
+  padding: 20px 12px;
+  flex: 1;
+  gap: 8px;
 }
 
-.dashboard-title {
-  color: #1d4ed8;
-  font-size: 1.6rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.admin-info {
-  position: absolute;
-  right: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.admin-email {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #374151;
-}
-
-.logout-btn {
-  background: #1d4ed8;
-  color: #fff;
+.nav-btn {
+  background: transparent;
+  color: #cbd5e1;
   border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: 600;
   transition: all 0.2s ease;
 }
 
-.logout-btn:hover {
-  background: #2563eb;
+.nav-btn:hover {
+  background-color: #334155;
+  color: white;
 }
 
-/* ===== Dashboard Grid ===== */
+.nav-btn.active {
+  background-color: #38bdf8;
+  color: #0f172a;
+  font-weight: bold;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-email {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  word-break: break-all;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+/* ===== Main Content Styles ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Allows scrolling only on the right side */
+}
+
+.content-header {
+  background-color: white;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.content-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.content-area {
+  padding: 40px;
+}
+
+/* Keep your existing dashboard-grid for the Home tab */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 20px;
 }
 
-.card {
-  background: #fff;
+/* Make sure forms/cards have white backgrounds in the new layout */
+.card, .form-card {
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  padding: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.emergency-card {
-  border: 2px solid #d93025;
+/* ===== Action Center (Home Tab) ===== */
+.action-center {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 900px; /* Keeps the forms from stretching too wide */
+  margin: 0 auto;
+}
+
+.action-tabs {
+  display: flex;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.action-btn.active-action {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  background-color: white;
+}
+
+.action-form-container {
+  padding: 30px;
+  min-height: 400px; /* Prevents layout jump when switching tabs */
+}
+
+/* Remove the individual card styling since they are now inside the main container */
+.action-form-container .form-card {
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ============================================================
+   UNIFIED COMPACT FORM SYSTEM
+============================================================ */
+.compact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-primary, .btn-secondary, .btn-danger {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  color: white;
+}
+
+.btn-primary { background-color: #2563eb; }
+.btn-secondary { background-color: #475569; }
+.btn-danger { background-color: #dc3545; }
+
+.btn-primary:hover, .btn-secondary:hover, .btn-danger:hover {
+  opacity: 0.9;
+}
+.btn-primary:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
 }

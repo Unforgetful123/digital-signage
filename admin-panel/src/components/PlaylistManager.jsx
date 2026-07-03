@@ -71,7 +71,6 @@ export default function PlaylistManager() {
 
   return (
     <div className="form-card" style={{ width: "100%", margin: "0 auto" }}>
-      <h2>📋 Live Playlist Manager</h2>
       <p style={{ marginBottom: '1rem', color: '#888', fontSize: '0.9rem' }}>
         Removing an item here will instantly skip it on all running TVs.
       </p>

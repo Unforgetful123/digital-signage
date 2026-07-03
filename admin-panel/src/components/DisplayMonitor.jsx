@@ -202,7 +202,6 @@ export default function DisplayMonitor() {
 
   return (
     <div className="display-monitor">
-      <h2>📺 Display Status Monitor</h2>
       <div className="subtitle">Live view of all display windows (OPDs, medicals, halls, canteens, etc.).</div>
 
       <div style={{ marginBottom: "1rem" }}>

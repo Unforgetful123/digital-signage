@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import pb from "./services/pocketbase";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   const [user, setUser] = useState(pb.authStore.model);
@@ -16,7 +17,12 @@ function App() {
     return <Login onLogin={setUser} />;
   }
 
-  return <Dashboard user={user} />;
+  return (
+  <>
+    <Toaster position="top-center" />
+    <Dashboard user={user} />
+  </>
+)
 }
 
 export default App;
