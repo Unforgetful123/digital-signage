@@ -116,7 +116,7 @@ export default function PlaylistManager() {
                       fontSize: '0.85rem'
                     }}
                   >
-                    Remove from Loop
+                    Remove Content
                   </button>
                 </td>
               </tr>
