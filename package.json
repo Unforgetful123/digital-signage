@@ -11,7 +11,8 @@
     "electron:build": "npm run build:all && electron-builder"
   },
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "electron-updater": "^6.8.9"
   },
   "devDependencies": {
     "electron": "32.0.1",
@@ -22,10 +23,22 @@
     "productName": "Ad Player Pro",
     "asar": true,
     "extraResources": [
-      { "from": "pocketbase.exe", "to": "pocketbase.exe" },
-      { "from": "admin-panel/dist", "to": "admin-panel/dist" },
-      { "from": "display-window/dist", "to": "display-window/dist" },
-      { "from": "pb_data", "to": "pb_data" }
+      {
+        "from": "pocketbase.exe",
+        "to": "pocketbase.exe"
+      },
+      {
+        "from": "admin-panel/dist",
+        "to": "admin-panel/dist"
+      },
+      {
+        "from": "display-window/dist",
+        "to": "display-window/dist"
+      },
+      {
+        "from": "pb_data",
+        "to": "pb_data"
+      }
     ],
     "win": {
       "target": "nsis",
@@ -35,6 +48,5 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
-
   }
 }

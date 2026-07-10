@@ -132,12 +132,12 @@ export default function BirthdayUpload() {
           <button type="submit" disabled={loading} className="btn-primary">
             {loading ? "Saving..." : "🎂 Add Birthday"}
           </button>
-          <button type="button" disabled={loading} onClick={() => fileInputRef.current.click()} className="btn-secondary">
+          <button type="button" disabled={loading} onClick={() => fileInputRef.current.click()} className="btn-secondary" style={{ marginLeft: '10px', color: '#ffffff', backgroundColor: '#16a34a', border: '1px solid #16a34a' }}>
             📄 Upload CSV / Excel
           </button>
         </div>
         <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, textAlign: 'right' }}>
-          <strong>Excel Format:</strong> Name, Designation, DOB
+          <strong>Excel Format Should Contain Headers:</strong> Name, Designation, DOB
         </p>
       </div>
 

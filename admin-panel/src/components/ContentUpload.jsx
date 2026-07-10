@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import pb from '../services/pocketbase';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
@@ -13,6 +13,34 @@ export default function ContentUpload() {
   const [endTime, setEndTime] = useState('');
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
+
+  // 🎯 NEW: State to hold dynamic locations
+  const [availableLocations, setAvailableLocations] = useState([]);
+
+  // 🎯 NEW: Fetch unique locations from registered displays
+  useEffect(() => {
+    async function fetchLocations() {
+      try {
+        const displays = await pb.collection("displays").getFullList({
+          fields: 'location',
+          requestKey: null
+        });
+
+        // Use a Set to automatically remove duplicates 
+        const uniqueLocations = new Set();
+        displays.forEach(d => {
+          const loc = (d.location || '').trim();
+          if (loc) uniqueLocations.add(loc);
+        });
+
+        // Convert the Set back to an array and sort it alphabetically
+        setAvailableLocations(Array.from(uniqueLocations).sort());
+      } catch (err) {
+        console.error("Failed to fetch display locations:", err);
+      }
+    }
+    fetchLocations();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,12 +166,17 @@ export default function ContentUpload() {
             <option value="ppt">PDF Document</option>
           </select>
         </div>
+        
+        {/* 🎯 UPDATED: Dynamic Target Location Dropdown */}
         <div className="form-group">
           <label>Target Location</label>
           <select className="form-control" value={location} onChange={e => setLocation(e.target.value)} disabled={loading}>
             <option value="Global">Global (All Screens)</option>
-            <option value="lobby">Lobby</option>
-            <option value="cafeteria">Cafeteria</option>
+            {availableLocations.map((loc, index) => (
+              <option key={index} value={loc}>
+                {loc.charAt(0).toUpperCase() + loc.slice(1)}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -168,18 +201,17 @@ export default function ContentUpload() {
         )}
       </div>
 
-      {/* 🎯 UPDATED: Form actions with helper text */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
         <div className="form-actions" style={{ margin: 0 }}>
           <button type="submit" disabled={loading} className="btn-primary">
             {loading ? 'Processing...' : '📁 Upload & Schedule'}
           </button>
-          <button type="button" disabled={loading} onClick={() => fileInputRef.current.click()} className="btn-secondary">
+          <button type="button" disabled={loading} onClick={() => fileInputRef.current.click()} className="btn-secondary" style={{ marginLeft: '10px', color: '#ffffff', backgroundColor: '#16a34a', border: '1px solid #16a34a' }}>
             📄 Bulk YouTube Links
           </button>
         </div>
         <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, textAlign: 'right' }}>
-          <strong>Excel Format:</strong> Title, URL, Location (optional), Start Time (optional), End Time (optional)
+          <strong>Excel Format Should Contain Headers:</strong> Title, URL, Location (optional), Start Time (optional), End Time (optional)
         </p>
       </div>
 

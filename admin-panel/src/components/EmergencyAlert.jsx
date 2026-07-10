@@ -165,7 +165,7 @@ export default function EmergencyAlert() {
           {isScheduled ? "🗓️ Schedule Alert" : "🚨 Fire Alert NOW"}
         </button>
         {!isScheduled && (
-          <button onClick={clear} className="btn-secondary">
+          <button onClick={clear} className="btn-secondary" style={{ marginLeft: '10px', color: '#ffffff', backgroundColor: '#16a34a', border: '1px solid #16a34a'  }}>
             ❌ Clear Live Alerts
           </button>
         )}

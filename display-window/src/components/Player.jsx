@@ -186,9 +186,11 @@ export default function Player() {
                 ({ action, record }) => {
 
                     if (action === "delete") {
-                        setEmergency(null);
-                        return;
-                    }
+                      console.log("🛑 Display deleted from Admin Panel. Resetting...");
+                      setDisplayConfig(null); // Wipes the memory (localStorage)
+                      window.location.reload(); // Refreshes the page to show the Setup Screen
+                      return;
+                  }
 
                     // 2. Create a "signature" of the current important data
                     const currentSignature = `${record.current_type}|${record.current_command}|${record.current_title}`;
@@ -317,24 +319,44 @@ useEffect(() => {
     if (!config?.location) return;
     const location = config.location;
 
-    const loadContent = async (currentLocation) => {
+  const loadContent = async (currentLocation) => {
         try {
-            // 1. Fetch Content (Using '~' for safe, case-insensitive matching)
+            // 1. Fetch Content
             const records = await pb.collection('content').getList(1, 100, {
-                filter: `location ~ "${currentLocation}" || location ~ "Global"`,
+                // 🚨 TEMPORARILY REMOVED THE FILTER TO FORCE IT TO FETCH EVERYTHING
+                filter: "", 
                 sort: '-created', 
                 requestKey: null
             });
 
-            // 🚨 THE DIAGNOSTIC LOGS 🚨
-            console.log("1. RAW DATA FROM DATABASE:", records.items);
-            
-            const activeItems = records.items.filter(isActive);
-            
-            console.log("2. DATA AFTER DATE FILTER:", activeItems);
-            // -------------------------
-          
-            setContent(activeItems);
+            console.log("1. RAW DATA FROM DATABASE:", records);
+
+            const dataArray = Array.isArray(records) ? records : (records.items || []);
+
+            const activeContent = dataArray.filter(item => {
+                const now = new Date();
+                
+                // Clean up the strings just in case they have weird spaces
+                const startStr = (item.start_time || "").trim();
+                const endStr = (item.end_time || "").trim();
+
+                // Check the dates
+                const hasStarted = !startStr || new Date(startStr) <= now;
+                const hasNotEnded = !endStr || new Date(endStr) >= now;
+
+                // 🚨 X-RAY DEBUGGER: This prints exactly why an item is kept or rejected
+                console.log(`[DEBUG] Checking item: "${item.title || item.id}"`);
+                console.log(`   👉 hasStarted? ${hasStarted} (Start time: ${startStr || "None"})`);
+                console.log(`   👉 hasNotEnded? ${hasNotEnded} (End time: ${endStr || "None"})`);
+                
+                if (!hasStarted) console.warn(`   ❌ REJECTED: Has not started yet!`);
+                if (!hasNotEnded) console.warn(`   ❌ REJECTED: Content has expired!`);
+
+                return hasStarted && hasNotEnded;
+            });
+
+            console.log("2. DATA AFTER DATE FILTER:", activeContent);
+            setContent(activeContent);
 
             // 2. Fetch Birthdays (Bulletproof Date Check!)
             const today = new Date();

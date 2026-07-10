@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, Tray, Menu, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn, exec } = require('child_process');
+const { autoUpdater } = require('electron-updater');
 
 // ==========================================
 // ENVIRONMENT & HARDWARE ACCELERATION
@@ -131,14 +132,8 @@ function showRoleSelector() {
     });
 }
 
-ipcMain.on('set-role', (event, role) => {
-    try {
-        fs.writeFileSync(configPath, JSON.stringify({ role: role }));
-        mainWindow.close();
-        initApp();
-    } catch (err) {
-        dialog.showErrorBox("Configuration Error", "Failed to save device role configuration.");
-    }
+ipcMain.on('restart_app', () => {
+    autoUpdater.quitAndInstall();
 });
 
 // ==========================================
@@ -147,12 +142,12 @@ ipcMain.on('set-role', (event, role) => {
 function startAdminServer() {
     console.log("[Admin] Initializing Admin Server...");
 
-    // Open Firewall for network access
+    // 1. Open Firewall for network access
     exec('netsh advfirewall firewall add rule name="Ad Player Pro Database" dir=in action=allow protocol=TCP localport=8090', (error) => {
-        if (error) console.warn("[Network] Firewall rule execution failed/skipped. Please ensure port 8090 is open.");
+        if (error) console.warn("[Network] Firewall rule execution failed/skipped.");
     });
 
-    // Launch Embedded PocketBase
+    // 2. Launch Embedded PocketBase
     const pbExe = path.join(resourcesPath, 'pocketbase.exe');
     const publicPath = path.join(resourcesPath, 'display-window/dist'); 
     
@@ -166,7 +161,7 @@ function startAdminServer() {
     pbProcess.stdout.on('data', (data) => console.log(`[PB] ${data.toString().trim()}`));
     pbProcess.stderr.on('data', (data) => console.error(`[PB Error] ${data.toString().trim()}`));
 
-    // Launch Dashboard UI
+    // 3. Launch Dashboard UI
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 850,
@@ -182,8 +177,20 @@ function startAdminServer() {
 
     mainWindow.loadFile(path.join(resourcesPath, 'admin-panel/dist/index.html'));
 
+    /* ============================================================
+       🚨 WINDOW EVENTS & AUTO-UPDATE
+    ============================================================ */
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
+        // Check for updates silently in the background once UI is ready
+        autoUpdater.checkForUpdatesAndNotify();
+    });
+
+    autoUpdater.on('update-available', () => mainWindow.webContents.send('update_available'));
+    autoUpdater.on('update-downloaded', () => mainWindow.webContents.send('update_downloaded'));
+
+    mainWindow.on('focus', () => {
+        if (mainWindow.webContents) mainWindow.webContents.focus();
     });
 
     // Hide to Tray functionality
