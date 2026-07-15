@@ -57,7 +57,7 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "include": "admin-panel/build/installer.nsh"
+      "include": "build/installer.nsh"
     }
   }
 }
