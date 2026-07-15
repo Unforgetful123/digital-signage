@@ -5,10 +5,12 @@
   "author": "John Mantraj",
   "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "build:admin": "cd admin-panel && npm run build",
     "build:player": "cd display-window && npm run build",
     "build:all": "npm run build:admin && npm run build:player",
-    "electron:build": "npm run build:all && electron-builder"
+    "electron:build": "npm run build:all && electron-builder",
+    "publish": "npm run build:all && electron-builder --publish always"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -38,6 +40,14 @@
       {
         "from": "pb_data",
         "to": "pb_data"
+      }
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Unforgetful123",
+        "repo": "digital-signage",
+        "releaseType": "release"
       }
     ],
     "win": {
