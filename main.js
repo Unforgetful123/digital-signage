@@ -132,8 +132,24 @@ function showRoleSelector() {
     });
 }
 
-ipcMain.on('restart_app', () => {
-    autoUpdater.quitAndInstall();
+ipcMain.on('set-role', (event, role) => {
+    console.log(`[Setup] User selected role: ${role}`);
+    
+    // 1. Save the choice permanently so this screen doesn't show again
+    const config = { role: role };
+    fs.writeFileSync(configPath, JSON.stringify(config));
+
+    // 2. Hide/Close the setup window
+    if (mainWindow) {
+        mainWindow.hide();
+    }
+
+    // 3. Launch the correct part of the app
+    if (role === 'admin') {
+        startAdminServer();
+    } else if (role === 'display') {
+        startDisplayKiosk();
+    }
 });
 
 // ==========================================
