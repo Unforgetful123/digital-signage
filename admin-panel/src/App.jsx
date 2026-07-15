@@ -72,6 +72,46 @@ export default function App() {
     return <Login onLogin={setUser} />;
   }
 
+  useEffect(() => {
+    // Check if we are running inside Electron (bypasses browser errors)
+    if (window.require) {
+      const { ipcRenderer } = window.require('electron');
+
+      // 1. Listen for the "Update Found" signal
+      ipcRenderer.on('update_available', () => {
+        toast('A new update is available. Downloading in the background...', {
+          icon: '☁️',
+          duration: 4000,
+        });
+      });
+
+      // 2. Listen for the "Download Complete" signal
+      ipcRenderer.on('update_downloaded', () => {
+        toast.success(
+          (t) => (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <strong>Update Ready!</strong>
+              <p style={{ margin: 0, fontSize: '0.9rem' }}>Restart the app to apply the latest features.</p>
+              <button 
+                onClick={() => ipcRenderer.send('restart_app')}
+                style={{ padding: '8px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+              >
+                Restart Now
+              </button>
+            </div>
+          ),
+          { duration: Infinity } // Keeps the toast open until they click it
+        );
+      });
+
+      // Cleanup listeners
+      return () => {
+        ipcRenderer.removeAllListeners('update_available');
+        ipcRenderer.removeAllListeners('update_downloaded');
+      };
+    }
+  }, []);
+
   return (
     <>
       {/* ✅ The Toaster must sit at the top level so notifications work everywhere */}

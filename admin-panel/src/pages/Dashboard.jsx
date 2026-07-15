@@ -91,7 +91,7 @@ export default function Dashboard({ user }) {
       {/* ===== Left Sidebar ===== */}
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2 className="sidebar-title">VRL Signage</h2>
+          <h2 className="sidebar-title">VRL Digital Signage</h2>
         </div>
         
         <nav className="sidebar-nav">

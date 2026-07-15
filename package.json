@@ -1,6 +1,6 @@
 {
   "name": "ad-player-pro",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Digital Signage Player with PocketBase Integration",
   "author": "John Mantraj",
   "main": "main.js",
@@ -56,7 +56,8 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "include": "admin-panel/build/installer.nsh"
     }
   }
 }
