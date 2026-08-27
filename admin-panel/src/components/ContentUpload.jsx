@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import pb from '../services/pocketbase';
+import { logEvent } from '../services/eventLog';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 
@@ -63,6 +64,11 @@ export default function ContentUpload() {
       }
 
       await pb.collection('content').create(formData);
+      await logEvent({
+        action: 'content_upload',
+        target: location,
+        details: `${type}: ${title}`,
+      });
       toast.success('Media uploaded successfully!');
       
       setTitle(''); setFile(null); setYoutubeUrl(''); setStartTime(''); setEndTime('');
@@ -140,6 +146,13 @@ export default function ContentUpload() {
       }
 
       toast.success(`Bulk Upload Complete! Added: ${addedCount} | Skipped: ${skippedCount}`, { id: toastId, duration: 5000 });
+      if (addedCount > 0) {
+        await logEvent({
+          action: 'content_bulk',
+          target: 'YouTube bulk',
+          details: `Added ${addedCount}, skipped ${skippedCount}`,
+        });
+      }
     } catch (err) {
       console.error("Bulk upload error:", err);
       toast.error(`Upload Error: ${err.message}`, { id: toastId }); 

@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Tray, Menu, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 const { spawn, exec } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 
@@ -67,6 +68,40 @@ function setupDatabase() {
         console.error("[Setup] Database initialization failed:", err);
         dialog.showErrorBox("Database Error", "Failed to initialize the local database. Please check permissions.");
     }
+}
+
+function waitForPocketBase(timeoutMs = 20000) {
+    return new Promise((resolve) => {
+        const started = Date.now();
+
+        const attempt = () => {
+            const req = http.get('http://127.0.0.1:8090/api/health', (res) => {
+                res.resume();
+                if (res.statusCode === 200) {
+                    resolve(true);
+                    return;
+                }
+                scheduleRetry();
+            });
+
+            req.on('error', scheduleRetry);
+            req.setTimeout(1500, () => {
+                req.destroy();
+                scheduleRetry();
+            });
+        };
+
+        const scheduleRetry = () => {
+            if (Date.now() - started >= timeoutMs) {
+                console.warn('[PB] Health check timed out — loading UI anyway.');
+                resolve(false);
+                return;
+            }
+            setTimeout(attempt, 350);
+        };
+
+        attempt();
+    });
 }
 
 function initApp() {
@@ -139,9 +174,11 @@ ipcMain.on('set-role', (event, role) => {
     const config = { role: role };
     fs.writeFileSync(configPath, JSON.stringify(config));
 
-    // 2. Hide/Close the setup window
+    // 2. Close the setup window fully (avoid orphaned BrowserWindow)
     if (mainWindow) {
-        mainWindow.hide();
+        const setupWindow = mainWindow;
+        mainWindow = null;
+        setupWindow.destroy();
     }
 
     // 3. Launch the correct part of the app
@@ -152,10 +189,16 @@ ipcMain.on('set-role', (event, role) => {
     }
 });
 
+ipcMain.on('restart_app', () => {
+    console.log('[Updater] Restart requested after download.');
+    isQuitting = true;
+    autoUpdater.quitAndInstall();
+});
+
 // ==========================================
 // 2. ADMIN SERVER LOGIC
 // ==========================================
-function startAdminServer() {
+async function startAdminServer() {
     console.log("[Admin] Initializing Admin Server...");
 
     // 1. Open Firewall for network access
@@ -165,17 +208,27 @@ function startAdminServer() {
 
     // 2. Launch Embedded PocketBase
     const pbExe = path.join(resourcesPath, 'pocketbase.exe');
-    const publicPath = path.join(resourcesPath, 'display-window/dist'); 
-    
-    pbProcess = spawn(pbExe, [
+    const publicPath = path.join(resourcesPath, 'display-window/dist');
+    const migrationsPath = path.join(resourcesPath, 'pb_migrations');
+    const pbArgs = [
         'serve',
         `--http=0.0.0.0:8090`,
         `--dir=${pbDataPath}`,
-        `--publicDir=${publicPath}` 
-    ]);
+        `--publicDir=${publicPath}`
+    ];
+
+    if (fs.existsSync(migrationsPath)) {
+        pbArgs.push(`--migrationsDir=${migrationsPath}`);
+    }
+    
+    pbProcess = spawn(pbExe, pbArgs);
 
     pbProcess.stdout.on('data', (data) => console.log(`[PB] ${data.toString().trim()}`));
     pbProcess.stderr.on('data', (data) => console.error(`[PB Error] ${data.toString().trim()}`));
+
+    // Wait until PocketBase accepts API calls before opening the UI
+    const ready = await waitForPocketBase();
+    console.log(`[Admin] PocketBase ready: ${ready}`);
 
     // 3. Launch Dashboard UI
     mainWindow = new BrowserWindow({
@@ -202,8 +255,16 @@ function startAdminServer() {
         autoUpdater.checkForUpdatesAndNotify();
     });
 
-    autoUpdater.on('update-available', () => mainWindow.webContents.send('update_available'));
-    autoUpdater.on('update-downloaded', () => mainWindow.webContents.send('update_downloaded'));
+    autoUpdater.on('update-available', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('update_available');
+        }
+    });
+    autoUpdater.on('update-downloaded', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('update_downloaded');
+        }
+    });
 
     mainWindow.on('focus', () => {
         if (mainWindow.webContents) mainWindow.webContents.focus();

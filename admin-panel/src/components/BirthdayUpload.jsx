@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import pb from '../services/pocketbase'; 
+import { logEvent } from '../services/eventLog';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 
@@ -22,6 +23,11 @@ export default function BirthdayUpload() {
       if (photoFile) formData.append('photo', photoFile); 
 
       await pb.collection('birthday').create(formData);
+      await logEvent({
+        action: 'birthday_add',
+        target: name,
+        details: `${name}${designation ? ` (${designation})` : ''}`,
+      });
       toast.success('Birthday added successfully!');
       setName(''); setDesignation(''); setDob(''); setPhotoFile(null);
     } catch (err) {
@@ -93,6 +99,13 @@ export default function BirthdayUpload() {
       }
 
       toast.success(`Bulk Upload Complete! Added: ${addedCount} | Skipped: ${skippedCount}`, { id: toastId, duration: 5000 });
+      if (addedCount > 0) {
+        await logEvent({
+          action: 'birthday_bulk',
+          target: 'Birthday bulk',
+          details: `Added ${addedCount}, skipped ${skippedCount}`,
+        });
+      }
     } catch (err) {
       console.error("Bulk upload error:", err);
       toast.error(`Upload Error: ${err.message}`, { id: toastId }); 

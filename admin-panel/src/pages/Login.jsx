@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import pb from "../services/pocketbase";
+import { logEvent } from "../services/eventLog";
 import "./Login.css";
 
 export default function Login({ onLogin }) {
@@ -17,10 +18,22 @@ export default function Login({ onLogin }) {
     try {
       const authData = await pb.collection("admins").authWithPassword(email, password);
 
-      await pb.collection("login_logs").create({
-        user: authData.record.id,
-        email: authData.record.email,
-        time: new Date().toISOString(),
+      // Best-effort legacy login log — never block successful auth
+      try {
+        await pb.collection("login_logs").create({
+          user: authData.record.id,
+          email: authData.record.email,
+          time: new Date().toISOString(),
+        });
+      } catch (logErr) {
+        console.warn("login_logs write skipped:", logErr?.message || logErr);
+      }
+
+      await logEvent({
+        action: "login",
+        target: "admin_panel",
+        details: `${authData.record.email} signed in`,
+        source: "admin_panel",
       });
 
       onLogin(authData.record);

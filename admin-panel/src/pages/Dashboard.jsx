@@ -6,7 +6,8 @@ import BirthdayUpload from "../components/BirthdayUpload";
 import EmergencyAlert from "../components/EmergencyAlert";
 import DisplayMonitor from "../components/DisplayMonitor";
 import PlaylistManager from "../components/PlaylistManager";
-import "./Dashboard.css"; // (Assuming your CSS file moved to tl
+import EventLog from "../components/EventLog";
+import "./Dashboard.css";
 
 export default function Dashboard({ user }) {
   const [activeTab, setActiveTab] = useState("home");
@@ -80,9 +81,11 @@ export default function Dashboard({ user }) {
         return <PlaylistManager />;
       case "monitor":
         return <DisplayMonitor />;
+      case "events":
+        return <EventLog />;
       case "home":
       default:
-        return renderHomeActions(); // Uses our new compact layout
+        return renderHomeActions();
     }
   };
 
@@ -104,6 +107,9 @@ export default function Dashboard({ user }) {
           <button className={`nav-btn ${activeTab === 'monitor' ? 'active' : ''}`} onClick={() => setActiveTab('monitor')}>
             📺 Display Monitor
           </button>
+          <button className={`nav-btn ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
+            📝 Event Log
+          </button>
         </nav>
 
         <div className="sidebar-footer">
@@ -119,6 +125,7 @@ export default function Dashboard({ user }) {
             {activeTab === 'home' && "Content & Alert Management"}
             {activeTab === 'playlist' && "Live Playlist Manager"}
             {activeTab === 'monitor' && "Display Monitor"}
+            {activeTab === 'events' && "Event Log"}
           </h1>
         </header>
         

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import pb from "../services/pocketbase";
+import { logEvent } from "../services/eventLog";
 import "./DisplayMonitor.css";
 
 const ONLINE_THRESHOLD_MS = 60 * 1000;
@@ -96,6 +97,12 @@ export default function DisplayMonitor() {
         current_type: "command",
         current_title: "REFRESH",
       });
+      await logEvent({
+        action: "display_refresh",
+        target: display.name || display.code,
+        details: `Refresh sent to ${display.location || "unknown location"}`,
+        source: "display_monitor",
+      });
       alert(`Refresh command sent to ${display.name || display.code}`);
     } catch (err) {
       console.error(err);
@@ -111,6 +118,12 @@ export default function DisplayMonitor() {
       await pb.collection("displays").update(display.id, {
         current_type: "command",
         current_title: "RESTART",
+      });
+      await logEvent({
+        action: "display_restart",
+        target: display.name || display.code,
+        details: `Restart sent to ${display.location || "unknown location"}`,
+        source: "display_monitor",
       });
       alert(`Restart command sent to ${display.name || display.code}`);
     } catch (err) {
@@ -138,6 +151,12 @@ export default function DisplayMonitor() {
         },
         { requestKey: null }
       );
+      await logEvent({
+        action: "display_alert",
+        target: display.name || display.code,
+        details: `${t.trim().toLowerCase().toUpperCase()}: ${msg.trim()} @ ${display.location || "unknown"}`,
+        source: "display_monitor",
+      });
       alert("Alert sent to " + (display.name || display.code));
     } catch (err) {
       console.error(err);
@@ -153,8 +172,15 @@ export default function DisplayMonitor() {
 
     try {
       setIsBusy(true);
+      const previous = display.location || "unknown";
       await pb.collection("displays").update(display.id, {
         location: newLoc.trim(),
+      });
+      await logEvent({
+        action: "display_move",
+        target: display.name || display.code,
+        details: `${previous} → ${newLoc.trim()}`,
+        source: "display_monitor",
       });
       alert("Location updated.");
     } catch (err) {
@@ -171,6 +197,12 @@ export default function DisplayMonitor() {
     try {
       setIsBusy(true);
       await pb.collection("displays").delete(display.id);
+      await logEvent({
+        action: "display_remove",
+        target: display.name || display.code,
+        details: `Removed from ${display.location || "unknown location"}`,
+        source: "display_monitor",
+      });
       alert("Display removed.");
     } catch (err) {
       console.error(err);
@@ -188,10 +220,16 @@ export default function DisplayMonitor() {
       {
         current_type: "idle",
         current_title: null,
-        current_command: null, // ✅ important
+        current_command: null,
       },
       { requestKey: null }
     );
+    await logEvent({
+      action: "display_clear_alert",
+      target: display.name || display.code,
+      details: `Cleared alert on ${display.location || "unknown location"}`,
+      source: "display_monitor",
+    });
   } catch (err) {
     console.error(err);
     alert("Failed to clear alert.");

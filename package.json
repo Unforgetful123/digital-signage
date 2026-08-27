@@ -40,6 +40,10 @@
       {
         "from": "pb_data",
         "to": "pb_data"
+      },
+      {
+        "from": "pb_migrations",
+        "to": "pb_migrations"
       }
     ],
     "publish": [

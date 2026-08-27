@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import pb from '../services/pocketbase'; 
+import { logEvent } from '../services/eventLog';
 import toast from 'react-hot-toast';
 
 const ALL_AREA = { id: 'all', name: '📢 All Areas' };
@@ -43,13 +44,20 @@ export default function EmergencyAlert() {
       if (isScheduled) {
         if (!startTime || !endTime) return toast.error("Please select both start and end times.");
 
+        const area = targetArea === 'all' ? 'Global' : targetArea;
         await pb.collection('content').create({
           type: 'scheduled_alert',
           title: message.trim(),
-          location: targetArea === 'all' ? 'Global' : targetArea,
+          location: area,
           start_time: new Date(startTime).toISOString(),
           end_time: new Date(endTime).toISOString(),
           youtube_url: type 
+        });
+
+        await logEvent({
+          action: 'alert_schedule',
+          target: area,
+          details: `${type.toUpperCase()}: ${message.trim()} (${startTime} → ${endTime})`,
         });
 
         toast.success(`🗓️ ${type.toUpperCase()} alert scheduled!`);
@@ -76,6 +84,16 @@ export default function EmergencyAlert() {
         )
       );
 
+      const targetLabel = targetArea === 'all'
+        ? `All displays (${targets.length})`
+        : `${targetArea} (${targets.length} displays)`;
+
+      await logEvent({
+        action: 'alert_trigger',
+        target: targetLabel,
+        details: `${type.toUpperCase()}: ${message.trim()}`,
+      });
+
       toast.success(`🚨 ${type.toUpperCase()} alert triggered live!`);
       setMessage("");
     } catch (err) {
@@ -101,6 +119,16 @@ export default function EmergencyAlert() {
           )
         )
       );
+
+      const targetLabel = targetArea === 'all'
+        ? `All displays (${targets.length})`
+        : `${targetArea} (${targets.length} displays)`;
+
+      await logEvent({
+        action: 'alert_clear',
+        target: targetLabel,
+        details: 'Cleared live emergency alerts',
+      });
 
       toast.success("❌ Live emergency cleared");
     } catch (err) {

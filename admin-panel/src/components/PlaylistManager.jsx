@@ -1,6 +1,7 @@
 // admin-panel/src/components/PlaylistManager.jsx
 import React, { useState, useEffect } from 'react';
 import pb from '../services/pocketbase';
+import { logEvent } from '../services/eventLog';
 
 export default function PlaylistManager() {
   const [playlist, setPlaylist] = useState([]);
@@ -61,8 +62,12 @@ export default function PlaylistManager() {
     if (!window.confirm(`Are you sure you want to remove "${itemTitle}" from the screens?`)) return;
     
     try {
-      // Deletes from the correct collection dynamically!
       await pb.collection(collection).delete(id);
+      await logEvent({
+        action: collection === 'birthday' ? 'birthday_delete' : 'content_delete',
+        target: itemTitle,
+        details: `Removed from ${collection}`,
+      });
     } catch (err) {
       console.error(`Failed to delete from ${collection}:`, err);
       alert("Failed to delete. Please try again.");
