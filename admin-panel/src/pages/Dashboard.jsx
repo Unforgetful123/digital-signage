@@ -132,7 +132,7 @@ export default function Dashboard({ user }) {
             {activeTab === 'playlist' && "Live Playlist Manager"}
             {activeTab === 'monitor' && "Display Monitor"}
             {activeTab === 'events' && "Event Log"}
-            {activeTab === 'about' && <About />}
+            {activeTab === 'about' && "About & Updates"}
           </h1>
         </header>
         
