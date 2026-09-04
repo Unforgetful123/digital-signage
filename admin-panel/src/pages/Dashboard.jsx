@@ -102,19 +102,19 @@ export default function Dashboard({ user }) {
         
         <nav className="sidebar-nav">
           <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
-            🏠 Home
+            Home
           </button>
           <button className={`nav-btn ${activeTab === 'playlist' ? 'active' : ''}`} onClick={() => setActiveTab('playlist')}>
-            📋 Live Playlist
+            Live Playlist
           </button>
           <button className={`nav-btn ${activeTab === 'monitor' ? 'active' : ''}`} onClick={() => setActiveTab('monitor')}>
-            📺 Display Monitor
+            Display Monitor
           </button>
           <button className={`nav-btn ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
-            📝 Event Log
+            Event Log
           </button>
           <button className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
-            ℹ️ About & Updates
+            ℹAbout & Updates
           </button>
         </nav>
 
