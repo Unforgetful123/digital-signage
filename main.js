@@ -251,19 +251,37 @@ async function startAdminServer() {
     ============================================================ */
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
-        // Check for updates silently in the background once UI is ready
         autoUpdater.checkForUpdatesAndNotify();
     });
 
+    // Handle App Version Request
+    ipcMain.handle('get_app_version', () => {
+        return app.getVersion();
+    });
+
+    // Handle Manual Update Check Request
+    ipcMain.on('manual_check_update', () => {
+        autoUpdater.checkForUpdates();
+    });
+
+    // Send Status Events to Frontend
+    autoUpdater.on('checking-for-update', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('checking_for_update');
+    });
     autoUpdater.on('update-available', () => {
-        if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.webContents.send('update_available');
-        }
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('update_available');
+    });
+    autoUpdater.on('update-not-available', () => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('update_not_available');
+    });
+    autoUpdater.on('download-progress', (progressObj) => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('download_progress', progressObj.percent);
     });
     autoUpdater.on('update-downloaded', () => {
-        if (mainWindow && !mainWindow.isDestroyed()) {
-            mainWindow.webContents.send('update_downloaded');
-        }
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('update_downloaded');
+    });
+    autoUpdater.on('error', (err) => {
+        if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('update_error', err.message);
     });
 
     mainWindow.on('focus', () => {
