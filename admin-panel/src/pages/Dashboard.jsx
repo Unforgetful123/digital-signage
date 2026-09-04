@@ -7,6 +7,7 @@ import EmergencyAlert from "../components/EmergencyAlert";
 import DisplayMonitor from "../components/DisplayMonitor";
 import PlaylistManager from "../components/PlaylistManager";
 import EventLog from "../components/EventLog";
+import About from "../components/About";
 import "./Dashboard.css";
 
 export default function Dashboard({ user }) {
@@ -83,6 +84,8 @@ export default function Dashboard({ user }) {
         return <DisplayMonitor />;
       case "events":
         return <EventLog />;
+      case "about":
+        return <About />;
       case "home":
       default:
         return renderHomeActions();
@@ -99,7 +102,7 @@ export default function Dashboard({ user }) {
         
         <nav className="sidebar-nav">
           <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
-            🏠 Home (Uploads)
+            🏠 Home
           </button>
           <button className={`nav-btn ${activeTab === 'playlist' ? 'active' : ''}`} onClick={() => setActiveTab('playlist')}>
             📋 Live Playlist
@@ -109,6 +112,9 @@ export default function Dashboard({ user }) {
           </button>
           <button className={`nav-btn ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
             📝 Event Log
+          </button>
+          <button className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
+            ℹ️ About & Updates
           </button>
         </nav>
 
@@ -126,6 +132,7 @@ export default function Dashboard({ user }) {
             {activeTab === 'playlist' && "Live Playlist Manager"}
             {activeTab === 'monitor' && "Display Monitor"}
             {activeTab === 'events' && "Event Log"}
+            {activeTab === 'about' && <About />}
           </h1>
         </header>
         
