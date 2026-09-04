@@ -192,7 +192,7 @@ ipcMain.on('set-role', (event, role) => {
 ipcMain.on('restart_app', () => {
     console.log('[Updater] Restart requested after download.');
     isQuitting = true;
-    autoUpdater.quitAndInstall();
+    autoUpdater.quitAndInstall(false, true);
 });
 
 // ==========================================
