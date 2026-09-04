@@ -16,6 +16,23 @@ export default function BirthdayUpload() {
     e.preventDefault();
     setLoading(true);
     try {
+      const cleanName = name.trim();
+      if (!cleanName || !/^[a-zA-Z\s\.\-]+$/.test(cleanName)) {
+          return toast.error("Invalid name. Please use only letters and spaces.");
+      }
+
+      // BUG 006: Designation can have letters, numbers, spaces, and basic punctuation
+      const cleanDesignation = designation.trim();
+      if (!/^[a-zA-Z0-9\s\.\-\,]+$/.test(cleanDesignation)) {
+          return toast.error("Designation contains invalid special characters.");
+      }
+
+      // BUG 007: Prevent time travelers (Future DOB)
+      const dobDate = new Date(dob);
+      const today = new Date();
+      if (dobDate > today) {
+          return toast.error("Date of Birth cannot be in the future!");
+      }
       const formData = new FormData();
       formData.append('name', name);
       formData.append('designation', designation);

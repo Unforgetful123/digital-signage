@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import pb from "./services/pocketbase";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import AlertScheduler from "./components/AlertScheduler";
 import { Toaster, toast } from 'react-hot-toast';
 
 export default function App() {
@@ -78,6 +79,7 @@ export default function App() {
     <>
       <Toaster position="top-center" />
       <Dashboard user={user} />
+      <AlertScheduler />
     </>
   );
 }

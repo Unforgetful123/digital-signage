@@ -47,7 +47,22 @@ export default function ContentUpload() {
     e.preventDefault();
     setLoading(true);
 
+    
+
     try {
+      const cleanTitle = title.trim();
+      if (!cleanTitle || !/[a-zA-Z0-9]/.test(cleanTitle)) {
+          toast.error("Title must contain at least one letter or number.");
+          setLoading(false);
+          return;
+      }
+
+      // BUG 002: Enforce a strict length limit
+      if (cleanTitle.length > 100) {
+          toast.error("Title is too long (maximum 100 characters).");
+          setLoading(false);
+          return;
+      }
       const formData = new FormData();
       formData.append('title', title);
       formData.append('type', type);

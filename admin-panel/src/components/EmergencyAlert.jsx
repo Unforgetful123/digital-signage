@@ -45,13 +45,15 @@ export default function EmergencyAlert() {
         if (!startTime || !endTime) return toast.error("Please select both start and end times.");
 
         const area = targetArea === 'all' ? 'Global' : targetArea;
-        await pb.collection('content').create({
-          type: 'scheduled_alert',
-          title: message.trim(),
+        
+        // 🎯 FIX: Save to the 'alerts' collection using your schema fields
+        await pb.collection('alerts').create({
+          active: true,
+          type: type, 
+          message: message.trim(),
           location: area,
           start_time: new Date(startTime).toISOString(),
-          end_time: new Date(endTime).toISOString(),
-          youtube_url: type 
+          end_time: new Date(endTime).toISOString()
         });
 
         await logEvent({
