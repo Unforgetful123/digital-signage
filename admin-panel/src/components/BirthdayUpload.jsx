@@ -9,6 +9,7 @@ export default function BirthdayUpload() {
   const [designation, setDesignation] = useState('');
   const [dob, setDob] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
+  const [duration, setDuration] = useState(10); // Default to 10 seconds
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -37,6 +38,7 @@ export default function BirthdayUpload() {
       formData.append('name', name);
       formData.append('designation', designation);
       formData.append('dob', new Date(dob).toISOString());
+      formData.append('duration', Number(duration));
       if (photoFile) formData.append('photo', photoFile); 
 
       await pb.collection('birthday').create(formData);
@@ -154,6 +156,19 @@ export default function BirthdayUpload() {
           <label>Upload Photo (Optional)</label>
           <input className="form-control" type="file" accept="image/*" onChange={e => setPhotoFile(e.target.files[0])} disabled={loading} />
         </div>
+      </div>
+      {/* 🎯 NEW: Display Duration Field */}
+      <div className="form-group">
+        <label>Display Duration (Seconds)</label>
+        <input 
+          className="form-control" 
+          type="number" 
+          min="1" 
+          value={duration} 
+          onChange={e => setDuration(e.target.value)} 
+          required 
+          disabled={loading} 
+        />
       </div>
 
       {/* 🎯 UPDATED: Form actions with helper text */}

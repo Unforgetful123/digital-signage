@@ -46,7 +46,7 @@ async function checkInternetConnection() {
 /* ============================================================
    📄 PDF Slideshow Component
 ============================================================ */
-function PdfSlideshow({ url, duration = 15000, onFinish }) {
+function PdfSlideshow({ url, duration, onFinish }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -254,39 +254,7 @@ export default function Player() {
     };
 }, [config?.id]);
 
-/* ============================================================
-     🔊 NEW: Siren Audio Logic (Reacts to State, not Socket)
-  ============================================================ */
-useEffect(() => {
-  const siren = new Audio("audio/siren.wav");
-  siren.loop = true;
-  siren.muted = true;       // ✅ muted autoplay allowed
-  siren.volume = 0;
-  sirenRef.current = siren;
 
-  siren.play().catch(() => {}); // ignore
-
-  return () => {
-    siren.pause();
-    sirenRef.current = null;
-  };
-}, []);
-
-useEffect(() => {
-  const siren = sirenRef.current;
-  if (!siren) return;
-
-  if (emergency) {
-    siren.currentTime = 0;
-    siren.muted = false;
-    siren.volume = 1;
-
-    siren.play().catch(err => console.warn("Audio blocked:", err));
-  } else {
-    siren.pause();
-    siren.currentTime = 0;
-  }
-}, [emergency]);
 
 
   // 🌐 Real Internet detection (ping)
@@ -585,7 +553,9 @@ useEffect(() => {
     if (emergency || !carouselItems.length) return;
     let timer;
     if (item?.type === "image" || item?.type === "birthday") {
-      timer = setTimeout(advance, 10000);
+      // 🎯 NEW: Read duration from database (fallback to 10 if missing), multiply by 1000 for milliseconds
+      const displayDuration = (item.duration || 10) * 1000;
+      timer = setTimeout(advance, displayDuration);
     }
     return () => clearTimeout(timer);
   }, [item, emergency, carouselItems.length]);
@@ -610,6 +580,8 @@ useEffect(() => {
           <h1>{emergency.type?.toUpperCase()} ALERT!</h1>
           <p>{emergency.message}</p>
         </div>
+        {/* 🎯 NEW: Bulletproof audio element that forces playback on mount */}
+        <audio src="/audio/siren.wav" autoPlay loop />
       </div>
     );
   }
@@ -665,7 +637,7 @@ useEffect(() => {
           )}
 
           {item.media_url?.toLowerCase().endsWith(".pdf") && (
-            <PdfSlideshow url={item.media_url} onFinish={advance} />
+            <PdfSlideshow url={item.media_url} duration={(item.duration || 10) * 1000} onFinish={advance} />
           )}
 
           {item.type === "youtube" && (

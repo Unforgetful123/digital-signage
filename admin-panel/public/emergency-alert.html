@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Emergency Alert · GSC3570</title>
+  <style>
+    :root {
+      --bg: #101820;
+      --panel: #f4f6f8;
+      --ink: #12202e;
+      --muted: #5b6b7c;
+      --line: #d5dde6;
+      --danger: #c62828;
+      --ok: #2e7d32;
+      --surface: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    /* Exact-ish GSC3570 canvas: 1024×600 */
+    .shell {
+      width: 100vw;
+      height: 100dvh;
+      max-width: 1024px;
+      max-height: 600px;
+      margin: 0 auto;
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-height: 620px) and (min-width: 1040px) {
+      body {
+        display: grid;
+        place-items: center;
+        background: #0a1016;
+      }
+      .shell {
+        width: 1024px;
+        height: 600px;
+        border-radius: 10px;
+        box-shadow: 0 20px 50px rgba(0,0,0,.45);
+      }
+    }
+
+    .topbar {
+      height: 56px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: var(--bg);
+      color: #fff;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #2a3644;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .status.live { background: var(--danger); }
+
+    .status .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #8fa0b3;
+    }
+
+    .status.live .dot {
+      background: #ffd54f;
+      box-shadow: 0 0 0 4px rgba(255, 213, 79, 0.25);
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 10px;
+      background: #243040;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .screens { flex: 1; position: relative; min-height: 0; }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      padding: 16px 18px 14px;
+      gap: 12px;
+    }
+
+    .screen.active { display: flex; }
+
+    .prompt {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .type-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .type-btn {
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--ink);
+      min-height: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .type-btn .icon { font-size: 36px; line-height: 1; }
+
+    .type-btn:active,
+    .type-btn.selected {
+      border-color: var(--type-color, var(--danger));
+      background: color-mix(in srgb, var(--type-color, var(--danger)) 12%, white);
+      color: var(--type-color, var(--danger));
+      box-shadow: inset 0 0 0 2px var(--type-color, var(--danger));
+    }
+
+    .home-foot {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .area-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .area-pill span {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .area-pill select {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      min-height: 44px;
+      outline: none;
+    }
+
+    /* Compose / confirm */
+    .compose-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      width: 52px;
+      height: 52px;
+      border: 0;
+      border-radius: 14px;
+      background: #e8eef4;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .compose-title {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .compose-sub {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    textarea, select, input[type="text"], input[type="color"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 16px;
+      padding: 12px 14px;
+      font-family: inherit;
+    }
+
+    textarea { min-height: 72px; resize: none; }
+
+    .repeat-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .repeat-btn {
+      min-height: 48px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: var(--surface);
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .repeat-btn.active {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #fdecea;
+    }
+
+    .compose-actions {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+    }
+
+    .btn {
+      min-height: 64px;
+      border: 0;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .btn-send { background: var(--danger); }
+    .btn-clear { background: var(--ok); }
+    .btn-ghost {
+      background: #e8eef4;
+      color: var(--ink);
+    }
+    .btn-dark { background: #243040; }
+    .btn:disabled { opacity: 0.5; }
+
+    /* Live takeover — only what matters */
+    .live-screen {
+      background: #1a0c0c;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: 13px;
+    }
+
+    .live-badge .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffd54f;
+      animation: pulse 1.2s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .live-type {
+      margin: 0;
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .live-msg {
+      margin: 0;
+      max-width: 720px;
+      font-size: 18px;
+      line-height: 1.35;
+      opacity: 0.9;
+    }
+
+    .live-meta {
+      font-size: 15px;
+      font-weight: 700;
+      opacity: 0.7;
+    }
+
+    .live-actions {
+      width: min(420px, 100%);
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .live-actions .btn { min-height: 72px; font-size: 22px; }
+
+    /* Settings sheet */
+    .sheet {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: rgba(10, 16, 22, 0.55);
+    }
+
+    .sheet.open { display: block; }
+
+    .sheet-panel {
+      position: absolute;
+      inset: 0;
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-head {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: var(--bg);
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sheet-head h2 { margin: 0; font-size: 18px; }
+
+    .sheet-body {
+      flex: 1;
+      overflow: auto;
+      padding: 14px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f4f6f8;
+      font-size: 14px;
+    }
+
+    .list-item .meta {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+      max-width: 420px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .btn-sm {
+      min-height: 40px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .btn-sm.ok { background: var(--ok); }
+    .btn-sm.danger { background: var(--danger); }
+    .btn-sm.dark { background: #243040; }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 8px 0;
+    }
+
+    .toggle input { width: 20px; height: 20px; }
+
+    .fab {
+      display: none;
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: 76px;
+      height: 76px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--danger);
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(198, 40, 40, 0.45);
+      z-index: 50;
+    }
+
+    .fab.show { display: grid; place-items: center; }
+
+    .pa-toast {
+      display: none;
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      z-index: 25;
+      background: #12202e;
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      max-width: calc(100% - 28px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pa-toast.show { display: block; }
+
+    @media (max-width: 700px) {
+      .type-grid { grid-template-columns: repeat(2, 1fr); }
+      .repeat-row { grid-template-columns: repeat(3, 1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell" id="panel">
+    <header class="topbar" id="topbar">
+      <div class="brand">Emergency</div>
+      <div class="status" id="statusChip">
+        <span class="dot"></span>
+        <span id="statusText">Ready</span>
+      </div>
+      <button class="icon-btn" id="settingsBtn" type="button" aria-label="Settings">⚙</button>
+    </header>
+
+    <div class="screens">
+      <!-- HOME: pick emergency type only -->
+      <section class="screen active" id="homeScreen" aria-label="Choose emergency">
+        <p class="prompt">Select emergency</p>
+        <div class="type-grid" id="typeGrid"></div>
+        <div class="home-foot">
+          <label class="area-pill">
+            <span>Area</span>
+            <select id="area" aria-label="Target area"></select>
+          </label>
+          <button class="btn btn-clear" id="homeClearBtn" type="button" style="display:none; min-height:52px; min-width:120px; font-size:15px;">
+            Clear
+          </button>
+        </div>
+      </section>
+
+      <!-- COMPOSE: message + repeat + send -->
+      <section class="screen" id="composeScreen" aria-label="Confirm alert">
+        <div class="compose-head">
+          <button class="back-btn" id="backBtn" type="button" aria-label="Back">←</button>
+          <div>
+            <h2 class="compose-title" id="composeTitle">Fire</h2>
+            <p class="compose-sub" id="composeSub">All Areas · ext 7000</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" maxlength="240"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Repeat</label>
+          <div class="repeat-row" id="repeatGrid">
+            <button type="button" class="repeat-btn" data-repeat="10">10×</button>
+            <button type="button" class="repeat-btn" data-repeat="20">20×</button>
+            <button type="button" class="repeat-btn active" data-repeat="30">30×</button>
+            <button type="button" class="repeat-btn" data-repeat="40">40×</button>
+            <button type="button" class="repeat-btn" data-repeat="infinity">∞</button>
+          </div>
+        </div>
+
+        <div class="compose-actions">
+          <button class="btn btn-ghost" id="cancelComposeBtn" type="button">Cancel</button>
+          <button class="btn btn-send" id="sendBtn" type="button">Send alert</button>
+        </div>
+      </section>
+
+      <!-- LIVE: focused clear UI -->
+      <section class="screen live-screen" id="liveScreen" aria-label="Live alert">
+        <div class="live-badge"><span class="pulse"></span> LIVE ALERT</div>
+        <h2 class="live-type" id="liveType">FIRE</h2>
+        <p class="live-msg" id="liveMsg"></p>
+        <div class="live-meta" id="liveMeta"></div>
+        <div class="live-actions">
+          <button class="btn btn-clear" id="clearBtn" type="button">Clear alert</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Settings / create -->
+    <div class="sheet" id="settingsSheet">
+      <div class="sheet-panel">
+        <div class="sheet-head">
+          <h2>Settings</h2>
+          <button class="icon-btn" id="closeSettingsBtn" type="button" aria-label="Close">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div class="card">
+            <h3>Playback</h3>
+            <label class="toggle">
+              <input type="checkbox" id="announcePA" checked />
+              Announce on PA
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="useSpeech" checked />
+              Speak on this screen
+            </label>
+          </div>
+
+          <div class="card">
+            <h3>Alert types</h3>
+            <div class="list" id="typeList"></div>
+            <div class="form-grid">
+              <div>
+                <label class="prompt" for="newTypeLabel" style="margin-bottom:6px;display:block;">Name</label>
+                <input id="newTypeLabel" type="text" placeholder="Gas Leak" />
+              </div>
+              <div>
+                <label class="prompt" for="newTypeIcon" style="margin-bottom:6px;display:block;">Icon</label>
+                <input id="newTypeIcon" type="text" placeholder="⚠️" maxlength="4" />
+              </div>
+              <div>
+                <label class="prompt" for="newTypeColor" style="margin-bottom:6px;display:block;">Color</label>
+                <input id="newTypeColor" type="color" value="#c62828" />
+              </div>
+              <div class="full">
+                <label class="prompt" for="newTypeMessage" style="margin-bottom:6px;display:block;">Message</label>
+                <textarea id="newTypeMessage" placeholder="Default announcement text"></textarea>
+              </div>
+            </div>
+            <div style="margin-top:10px;">
+              <button type="button" class="btn-sm ok" id="addTypeBtn">Add alert type</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Areas &amp; page extensions</h3>
+            <div class="list" id="areaList"></div>
+            <div class="form-grid">
+              <div>
+                <label class="prompt" for="newAreaName" style="margin-bottom:6px;display:block;">Area</label>
+                <input id="newAreaName" type="text" placeholder="Cafeteria" />
+              </div>
+              <div>
+                <label class="prompt" for="newAreaExt" style="margin-bottom:6px;display:block;">PA ext</label>
+                <input id="newAreaExt" type="text" placeholder="7005" />
+              </div>
+            </div>
+            <div style="margin-top:10px;">
+              <button type="button" class="btn-sm ok" id="addAreaBtn">Add area</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Event log</h3>
+            <div class="list" id="log" style="max-height:120px;overflow:auto;font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#5b6b7c;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pa-toast" id="paToast"></div>
+  </div>
+
+  <button class="fab" id="sosFab" type="button" aria-label="Open emergency">SOS</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.js"></script>
+  <script>
+    const pb = new PocketBase("http://127.0.0.1:8090");
+    const PA_PROXY_URL = "";
+    const REPEAT_GAP_MS = 2500;
+
+    const DEFAULT_TYPES = [
+      { id: "fire", label: "Fire", icon: "🔥", color: "#c62828",
+        preset: "Fire emergency. Evacuate immediately. Do not use elevators." },
+      { id: "flood", label: "Flood", icon: "🌊", color: "#0277bd",
+        preset: "Flood warning. Move to higher ground and follow staff directions." },
+      { id: "quake", label: "Quake", icon: "🌍", color: "#ef6c00",
+        preset: "Earthquake. Drop, cover, and hold on. Remain calm." },
+      { id: "medical", label: "Medical", icon: "🚑", color: "#ad1457",
+        preset: "Medical emergency. Clear the area and await first responders." },
+      { id: "intruder", label: "Intruder", icon: "🚨", color: "#6d4c41",
+        preset: "Security alert. Lockdown in effect. Stay where you are." },
+      { id: "other", label: "Other", icon: "⚠️", color: "#455a64",
+        preset: "Attention. Please follow staff instructions immediately." },
+    ];
+
+    const DEFAULT_AREAS = [
+      { id: "all", name: "All Areas", pageExt: "7000" },
+      { id: "lobby", name: "Lobby", pageExt: "7001" },
+      { id: "warehouse", name: "Warehouse", pageExt: "7002" },
+      { id: "office", name: "Office", pageExt: "7003" },
+    ];
+
+    const KEYS = {
+      live: "gsc3570_emergency_live",
+      log: "gsc3570_emergency_log",
+      types: "gsc3570_alert_types",
+      areas: "gsc3570_alert_areas",
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const els = {
+      panel: $("panel"),
+      topbar: $("topbar"),
+      homeScreen: $("homeScreen"),
+      composeScreen: $("composeScreen"),
+      liveScreen: $("liveScreen"),
+      typeGrid: $("typeGrid"),
+      area: $("area"),
+      message: $("message"),
+      composeTitle: $("composeTitle"),
+      composeSub: $("composeSub"),
+      sendBtn: $("sendBtn"),
+      clearBtn: $("clearBtn"),
+      homeClearBtn: $("homeClearBtn"),
+      backBtn: $("backBtn"),
+      cancelComposeBtn: $("cancelComposeBtn"),
+      statusChip: $("statusChip"),
+      statusText: $("statusText"),
+      liveType: $("liveType"),
+      liveMsg: $("liveMsg"),
+      liveMeta: $("liveMeta"),
+      settingsBtn: $("settingsBtn"),
+      settingsSheet: $("settingsSheet"),
+      closeSettingsBtn: $("closeSettingsBtn"),
+      announcePA: $("announcePA"),
+      useSpeech: $("useSpeech"),
+      typeList: $("typeList"),
+      areaList: $("areaList"),
+      addTypeBtn: $("addTypeBtn"),
+      addAreaBtn: $("addAreaBtn"),
+      newTypeLabel: $("newTypeLabel"),
+      newTypeIcon: $("newTypeIcon"),
+      newTypeColor: $("newTypeColor"),
+      newTypeMessage: $("newTypeMessage"),
+      newAreaName: $("newAreaName"),
+      newAreaExt: $("newAreaExt"),
+      log: $("log"),
+      repeatGrid: $("repeatGrid"),
+      sosFab: $("sosFab"),
+      paToast: $("paToast"),
+    };
+
+    let alertTypes = loadJson(KEYS.types, DEFAULT_TYPES);
+    let areas = loadJson(KEYS.areas, DEFAULT_AREAS);
+    let selectedType = null;
+    let repeatMode = "30";
+    let busy = false;
+    let liveAlert = null;
+    let repeatTimer = null;
+    let repeatToken = 0;
+
+    function loadJson(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return structuredClone(fallback);
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) && parsed.length ? parsed : structuredClone(fallback);
+      } catch {
+        return structuredClone(fallback);
+      }
+    }
+
+    function saveTypes() { localStorage.setItem(KEYS.types, JSON.stringify(alertTypes)); }
+    function saveAreas() { localStorage.setItem(KEYS.areas, JSON.stringify(areas)); }
+
+    function slugify(text) {
+      return String(text).toLowerCase().trim()
+        .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 40) || ("item_" + Date.now());
+    }
+
+    function uniqueId(base, existing) {
+      let id = base, n = 2;
+      while (existing.some((x) => x.id === id)) id = `${base}_${n++}`;
+      return id;
+    }
+
+    function nowStamp() {
+      return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    }
+
+    function escapeHtml(str) {
+      return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
+
+    function getArea() {
+      return areas.find((a) => a.id === els.area.value) || areas[0];
+    }
+
+    function showScreen(name) {
+      els.homeScreen.classList.toggle("active", name === "home");
+      els.composeScreen.classList.toggle("active", name === "compose");
+      els.liveScreen.classList.toggle("active", name === "live");
+      els.topbar.style.display = name === "live" ? "none" : "flex";
+    }
+
+    function log(line) {
+      const entries = JSON.parse(localStorage.getItem(KEYS.log) || "[]");
+      entries.unshift(`[${nowStamp()}] ${line}`);
+      localStorage.setItem(KEYS.log, JSON.stringify(entries.slice(0, 40)));
+      renderLog();
+    }
+
+    function renderLog() {
+      const entries = JSON.parse(localStorage.getItem(KEYS.log) || "[]");
+      els.log.innerHTML = entries.length
+        ? entries.map((e) => `<div>${escapeHtml(e)}</div>`).join("")
+        : '<div class="meta">No events yet.</div>';
+    }
+
+    function renderTypes() {
+      const list = alertTypes.slice(0, 6);
+      els.typeGrid.innerHTML = list.map((t) => `
+        <button type="button" class="type-btn" data-id="${t.id}" style="--type-color:${t.color}">
+          <span class="icon">${escapeHtml(t.icon || "⚠️")}</span>
+          <span>${escapeHtml(t.label)}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderAreas() {
+      const current = els.area.value;
+      els.area.innerHTML = areas.map(
+        (a) => `<option value="${a.id}">${escapeHtml(a.name)}</option>`
+      ).join("");
+      if (areas.some((a) => a.id === current)) els.area.value = current;
+    }
+
+    function renderManageLists() {
+      els.typeList.innerHTML = alertTypes.map((t) => `
+        <div class="list-item">
+          <div>
+            <strong>${escapeHtml(t.icon)} ${escapeHtml(t.label)}</strong>
+            <span class="meta">${escapeHtml(t.preset)}</span>
+          </div>
+          <button type="button" class="btn-sm danger" data-del-type="${t.id}">Delete</button>
+        </div>
+      `).join("");
+
+      els.areaList.innerHTML = areas.map((a) => `
+        <div class="list-item">
+          <div>
+            <strong>${escapeHtml(a.name)}</strong>
+            <span class="meta">PA ext ${escapeHtml(a.pageExt)}</span>
+          </div>
+          <button type="button" class="btn-sm danger" data-del-area="${a.id}">Delete</button>
+        </div>
+      `).join("");
+    }
+
+    function setRepeat(mode) {
+      repeatMode = mode;
+      els.repeatGrid.querySelectorAll(".repeat-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.repeat === mode);
+      });
+    }
+
+    function repeatLabel() {
+      return repeatMode === "infinity" ? "∞" : `${repeatMode}×`;
+    }
+
+    function openCompose(typeId) {
+      selectedType = alertTypes.find((t) => t.id === typeId) || alertTypes[0];
+      if (!selectedType) return;
+      const area = getArea();
+      els.composeTitle.textContent = selectedType.label;
+      els.composeTitle.style.color = selectedType.color;
+      els.composeSub.textContent = `${area.name} · PA ${area.pageExt}`;
+      els.message.value = selectedType.preset;
+      els.sendBtn.style.background = selectedType.color;
+      showScreen("compose");
+    }
+
+    function setStatus(text, live) {
+      els.statusText.textContent = text;
+      els.statusChip.classList.toggle("live", !!live);
+    }
+
+    function setLiveUI(alert) {
+      liveAlert = alert;
+      if (alert) {
+        localStorage.setItem(KEYS.live, JSON.stringify({
+          ...alert,
+          repeatMax: alert.repeatMax === Infinity ? "infinity" : alert.repeatMax,
+        }));
+        const progress = alert.repeatMax === Infinity
+          ? `${alert.played || 1} / ∞`
+          : `${alert.played || 1} / ${alert.repeatMax}`;
+        els.liveType.textContent = (alert.typeLabel || alert.type).toUpperCase();
+        els.liveMsg.textContent = alert.message;
+        els.liveMeta.textContent = `${alert.areaName} · ${progress}`;
+        setStatus(progress, true);
+        els.homeClearBtn.style.display = "inline-flex";
+        showScreen("live");
+      } else {
+        localStorage.removeItem(KEYS.live);
+        setStatus("Ready", false);
+        els.homeClearBtn.style.display = "none";
+        hideToast();
+        stopRepeatLoop();
+        showScreen("home");
+      }
+    }
+
+    function showToast(text) {
+      els.paToast.textContent = text;
+      els.paToast.classList.add("show");
+    }
+
+    function hideToast() {
+      els.paToast.classList.remove("show");
+    }
+
+    function stopRepeatLoop() {
+      repeatToken += 1;
+      if (repeatTimer) {
+        clearTimeout(repeatTimer);
+        repeatTimer = null;
+      }
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+
+    function speakOnce(text) {
+      return new Promise((resolve) => {
+        if (!els.useSpeech.checked || !window.speechSynthesis) return resolve();
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.95;
+        u.onend = () => resolve();
+        u.onerror = () => resolve();
+        window.speechSynthesis.speak(u);
+      });
+    }
+
+    async function announceOnPA(payload) {
+      if (!PA_PROXY_URL) return { ok: true, demo: true };
+      const res = await fetch(PA_PROXY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`PA proxy HTTP ${res.status}`);
+      return { ok: true, demo: false };
+    }
+
+    async function playOneCycle(alert, cycle, token) {
+      if (token !== repeatToken) return false;
+      const spoken = `Attention. ${alert.typeLabel} alert for ${alert.areaName}. ${alert.message}`;
+      const countLabel = alert.repeatMax === Infinity ? `${cycle}/∞` : `${cycle}/${alert.repeatMax}`;
+
+      if (alert.pa) {
+        await announceOnPA({
+          action: "emergency_page",
+          device: "GSC3570",
+          alertType: alert.type,
+          message: alert.message,
+          area: alert.area,
+          areaName: alert.areaName,
+          pageExtension: alert.pageExt,
+          priority: "emergency",
+          alarmOut: true,
+          cycle,
+          repeatMax: alert.repeatMax === Infinity ? "infinity" : alert.repeatMax,
+        });
+        showToast(`PA ${countLabel} · ${alert.areaName}`);
+      }
+
+      await speakOnce(spoken);
+      if (token !== repeatToken) return false;
+
+      alert.played = cycle;
+      setLiveUI({ ...alert });
+      log(`PLAY #${countLabel} ${alert.type.toUpperCase()} → ${alert.areaName}`);
+      return true;
+    }
+
+    async function startRepeatLoop(alert) {
+      stopRepeatLoop();
+      const token = ++repeatToken;
+      const max = alert.repeatMax;
+
+      for (let cycle = 1; max === Infinity || cycle <= max; cycle++) {
+        if (token !== repeatToken) return;
+        const ok = await playOneCycle(alert, cycle, token);
+        if (!ok || token !== repeatToken) return;
+
+        if (max !== Infinity && cycle >= max) {
+          log(`COMPLETED ${max}× repeats`);
+          setStatus(`Done ${max}×`, true);
+          els.liveMeta.textContent = `${alert.areaName} · finished ${max}× · tap Clear`;
+          return;
+        }
+
+        await new Promise((resolve) => {
+          repeatTimer = setTimeout(resolve, REPEAT_GAP_MS);
+        });
+      }
+    }
+
+    async function sendAlert() {
+      if (busy || !selectedType) return;
+      const message = els.message.value.trim();
+      if (!message) return alert("Enter a message");
+
+      busy = true;
+      els.sendBtn.disabled = true;
+
+      const area = getArea();
+      const repeatMax = repeatMode === "infinity" ? Infinity : Number(repeatMode);
+
+      try {
+        stopRepeatLoop();
+        const alertObj = {
+          type: selectedType.id,
+          typeLabel: selectedType.label,
+          message,
+          area: area.id,
+          areaName: area.name,
+          pageExt: area.pageExt,
+          pa: els.announcePA.checked,
+          at: new Date().toISOString(),
+          repeatMax,
+          played: 0,
+        };
+        setLiveUI(alertObj);
+        log(`STARTED ${selectedType.label.toUpperCase()} → ${area.name} | ${repeatLabel()}`);
+        startRepeatLoop(alertObj);
+        // 🎯 NEW: Broadcast the alert to all TVs via PocketBase
+        // Note: You will need to loop through your displays or update them all
+        const displays = await pb.collection("displays").getFullList();
+        for (const display of displays) {
+            await pb.collection("displays").update(display.id, {
+                current_type: "alert",
+                current_command: selectedType.id,
+                current_title: message
+            });
+        }
+      } catch (err) {
+        log(`FAILED → ${err.message || err}`);
+        alert("Failed to send alert.");
+      } finally {
+        busy = false;
+        els.sendBtn.disabled = false;
+      }
+    }
+
+    async function clearAlert() {
+      if (busy) return;
+      busy = true;
+      try {
+        stopRepeatLoop();
+        if (PA_PROXY_URL) {
+          await fetch(PA_PROXY_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "clear_page", device: "GSC3570", alarmOut: false }),
+          });
+        }
+        setLiveUI(null);
+        log("CLEARED live emergency");
+        // 🎯 NEW: Broadcast the alert to all TVs via PocketBase
+        // Note: You will need to loop through your displays or update them all
+        const displays = await pb.collection("displays").getFullList();
+        for (const display of displays) {
+            await pb.collection("displays").update(display.id, {
+                current_type: "idle",
+                current_command: selectedType.id,
+                current_title: message
+            });
+        }
+      } catch (err) {
+        log(`CLEAR FAILED → ${err.message || err}`);
+        alert("Clear failed.");
+      } finally {
+        busy = false;
+      }
+    }
+
+    function addAlertType() {
+      const label = els.newTypeLabel.value.trim();
+      const icon = els.newTypeIcon.value.trim() || "⚠️";
+      const color = els.newTypeColor.value || "#c62828";
+      const preset = els.newTypeMessage.value.trim();
+      if (!label) return alert("Enter a name");
+      if (!preset) return alert("Enter a message");
+      const id = uniqueId(slugify(label), alertTypes);
+      alertTypes.push({ id, label, icon, color, preset });
+      saveTypes();
+      els.newTypeLabel.value = "";
+      els.newTypeIcon.value = "";
+      els.newTypeMessage.value = "";
+      renderManageLists();
+      renderTypes();
+      log(`CREATED type "${label}"`);
+    }
+
+    function addArea() {
+      const name = els.newAreaName.value.trim();
+      const pageExt = els.newAreaExt.value.trim();
+      if (!name) return alert("Enter an area name");
+      if (!pageExt) return alert("Enter a PA extension");
+      const id = uniqueId(slugify(name), areas);
+      areas.push({ id, name, pageExt });
+      saveAreas();
+      els.newAreaName.value = "";
+      els.newAreaExt.value = "";
+      renderManageLists();
+      renderAreas();
+      log(`CREATED area "${name}" (${pageExt})`);
+    }
+
+    function deleteType(id) {
+      if (alertTypes.length <= 1) return alert("Keep at least one type");
+      if (!confirm("Delete this alert type?")) return;
+      alertTypes = alertTypes.filter((t) => t.id !== id);
+      saveTypes();
+      renderTypes();
+      renderManageLists();
+    }
+
+    function deleteArea(id) {
+      if (areas.length <= 1) return alert("Keep at least one area");
+      if (!confirm("Delete this area?")) return;
+      areas = areas.filter((a) => a.id !== id);
+      saveAreas();
+      renderAreas();
+      renderManageLists();
+    }
+
+    // Events
+    els.typeGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".type-btn");
+      if (!btn) return;
+      openCompose(btn.dataset.id);
+    });
+
+    els.repeatGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".repeat-btn");
+      if (!btn) return;
+      setRepeat(btn.dataset.repeat);
+    });
+
+    els.area.addEventListener("change", () => {
+      if (selectedType && els.composeScreen.classList.contains("active")) {
+        const area = getArea();
+        els.composeSub.textContent = `${area.name} · PA ${area.pageExt}`;
+      }
+    });
+
+    els.backBtn.addEventListener("click", () => showScreen("home"));
+    els.cancelComposeBtn.addEventListener("click", () => showScreen("home"));
+    els.sendBtn.addEventListener("click", sendAlert);
+    els.clearBtn.addEventListener("click", clearAlert);
+    els.homeClearBtn.addEventListener("click", clearAlert);
+
+    els.settingsBtn.addEventListener("click", () => {
+      renderManageLists();
+      renderLog();
+      els.settingsSheet.classList.add("open");
+    });
+    els.closeSettingsBtn.addEventListener("click", () => els.settingsSheet.classList.remove("open"));
+
+    els.addTypeBtn.addEventListener("click", addAlertType);
+    els.addAreaBtn.addEventListener("click", addArea);
+
+    els.typeList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-del-type]");
+      if (btn) deleteType(btn.dataset.delType);
+    });
+    els.areaList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-del-area]");
+      if (btn) deleteArea(btn.dataset.delArea);
+    });
+
+    // Boot
+    renderAreas();
+    renderTypes();
+    setRepeat("30");
+    renderLog();
+    showScreen("home");
+
+    const saved = localStorage.getItem(KEYS.live);
+    if (saved) {
+      try {
+        const alertObj = JSON.parse(saved);
+        if (alertObj.repeatMax === "infinity") alertObj.repeatMax = Infinity;
+        liveAlert = alertObj;
+        els.liveType.textContent = (alertObj.typeLabel || alertObj.type).toUpperCase();
+        els.liveMsg.textContent = alertObj.message;
+        els.liveMeta.textContent = `${alertObj.areaName} · paused — Clear or send again`;
+        setStatus("Paused", true);
+        els.homeClearBtn.style.display = "inline-flex";
+        showScreen("live");
+      } catch { /* ignore */ }
+    }
+  </script>
+</body>
+</html>

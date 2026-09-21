@@ -1,133 +1,113 @@
-// admin-panel/src/components/PlaylistManager.jsx
 import React, { useState, useEffect } from 'react';
 import pb from '../services/pocketbase';
-import { logEvent } from '../services/eventLog';
+import toast from 'react-hot-toast';
 
 export default function PlaylistManager() {
-  const [playlist, setPlaylist] = useState([]);
+  const [contentList, setContentList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 📡 Fetch Current Playlist & Subscribe to Real-Time Changes
-  useEffect(() => {
-    const fetchPlaylist = async () => {
-      try {
-        // 1. Fetch from BOTH collections
-        const contentRecords = await pb.collection('content').getFullList({ sort: '-created' });
-        const birthdayRecords = await pb.collection('birthday').getFullList({ sort: '-created' });
-
-        // 2. Normalize standard content so it fits the table
-        const normalizedContent = contentRecords.map(item => ({
-          id: item.id,
-          collection: 'content', // Tells the delete button where to look
-          title: item.title,
-          type: item.type === 'youtube' ? 'YouTube' : item.type,
-          location: item.location || 'Global',
-          created: item.created
-        }));
-
-        // 3. Normalize birthdays so they fit the exact same table format
-        const normalizedBirthdays = birthdayRecords.map(item => ({
-          id: item.id,
-          collection: 'birthday', // Tells the delete button where to look
-          title: `🎂 ${item.name} (${item.designation})`,
-          type: 'Birthday',
-          location: 'Global', // Birthdays are usually global
-          created: item.created
-        }));
-
-        // 4. Combine them and sort by newest first
-        const combinedPlaylist = [...normalizedContent, ...normalizedBirthdays].sort((a, b) => {
-          return new Date(b.created) - new Date(a.created);
-        });
-
-        setPlaylist(combinedPlaylist);
-      } catch (err) {
-        console.error("Failed to fetch unified playlist", err);
-      }
-    };
-
-    fetchPlaylist();
-
-    // 5. Listen for live updates on BOTH collections
-    pb.collection('content').subscribe('*', () => fetchPlaylist());
-    pb.collection('birthday').subscribe('*', () => fetchPlaylist());
-
-    return () => {
-      pb.collection('content').unsubscribe('*');
-      pb.collection('birthday').unsubscribe('*');
-    };
-  }, []);
-
-  // 🗑️ Unified Delete Function
-  const handleDeleteContent = async (id, collection, itemTitle) => {
-    if (!window.confirm(`Are you sure you want to remove "${itemTitle}" from the screens?`)) return;
-    
+  // Fetch all content on load
+  const fetchContent = async () => {
     try {
-      await pb.collection(collection).delete(id);
-      await logEvent({
-        action: collection === 'birthday' ? 'birthday_delete' : 'content_delete',
-        target: itemTitle,
-        details: `Removed from ${collection}`,
+      setLoading(true);
+      const records = await pb.collection('content').getFullList({
+        sort: '-created', // Newest first
+        requestKey: null
       });
+      setContentList(records);
     } catch (err) {
-      console.error(`Failed to delete from ${collection}:`, err);
-      alert("Failed to delete. Please try again.");
+      console.error(err);
+      toast.error('Failed to load playlist.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchContent();
+  }, []);
+
+  // Delete handler
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this media?')) return;
+    try {
+      await pb.collection('content').delete(id);
+      toast.success('Deleted successfully');
+      fetchContent(); // Refresh the list
+    } catch (err) {
+      toast.error('Failed to delete.');
+    }
+  };
+
+  // 🎯 NEW: Helper function to format the ISO dates into a readable format
+  const formatDuration = (start, end) => {
+    if (!start && !end) return <span style={{ color: '#16a34a', fontWeight: '500' }}>Always Live</span>;
+    
+    const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const startTime = start ? new Date(start).toLocaleString(undefined, options) : 'Now';
+    const endTime = end ? new Date(end).toLocaleString(undefined, options) : 'Forever';
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', fontSize: '0.85rem' }}>
+        <span style={{ color: '#0284c7' }}>🟢 {startTime}</span>
+        <span style={{ color: '#dc2626' }}>🔴 {endTime}</span>
+      </div>
+    );
+  };
+
   return (
-    <div className="form-card" style={{ width: "100%", margin: "0 auto" }}>
-      <p style={{ marginBottom: '1rem', color: '#888', fontSize: '0.9rem' }}>
-        Removing an item here will instantly skip it on all running TVs.
-      </p>
-      
-      {playlist.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#666' }}>No content is currently scheduled.</p>
+    <div style={{ background: '#ffffff', borderRadius: '8px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#1e293b' }}>Current Playlist</h2>
+        <button onClick={fetchContent} style={{ color: '#f6f7f8',padding: '8px 12px', background: '#316aa4', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer' }}>
+           Refresh
+        </button>
+      </div>
+
+      {loading ? (
+        <p>Loading playlist...</p>
+      ) : contentList.length === 0 ? (
+        <p style={{ color: '#64748b' }}>No media uploaded yet.</p>
       ) : (
-        <table className="display-table" style={{ width: '100%', textAlign: 'left' }}>
-          <thead>
-            <tr>
-              <th>Title / Name</th>
-              <th>Type</th>
-              <th>Location</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {playlist.map((item) => (
-              <tr key={item.id}>
-                <td style={{ fontWeight: 'bold' }}>{item.title}</td>
-                <td style={{ textTransform: 'capitalize' }}>
-                  {/* Give birthdays a subtle color badge to stand out */}
-                  {item.type === 'Birthday' ? (
-                    <span style={{ backgroundColor: '#fce7f3', color: '#db2777', padding: '2px 8px', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 'bold' }}>
-                      Birthday
-                    </span>
-                  ) : (
-                    item.type
-                  )}
-                </td>
-                <td>{item.location}</td>
-                <td>
-                  <button 
-                    // Pass the specific collection name into the delete function
-                    onClick={() => handleDeleteContent(item.id, item.collection, item.title)}
-                    style={{ 
-                      backgroundColor: '#dc3545', 
-                      color: 'white', 
-                      border: 'none', 
-                      padding: '6px 12px', 
-                      borderRadius: '4px', 
-                      cursor: 'pointer',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    Remove Content
-                  </button>
-                </td>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b' }}>
+                <th style={{ padding: '12px', width: '25%' }}>Title</th>
+                <th style={{ padding: '12px', width: '15%' }}>Type</th>
+                <th style={{ padding: '12px', width: '15%' }}>Target Location</th>
+                {/* 🎯 NEW: Duration Column Header */}
+                <th style={{ padding: '12px', width: '30%' }}>Live Duration</th>
+                <th style={{ padding: '12px', width: '15%' }}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {contentList.map((item) => (
+                <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '12px', fontWeight: '500', color: '#0f172a' }}>{item.title}</td>
+                  <td style={{ padding: '12px', textTransform: 'capitalize' }}>
+                    {item.type === 'youtube' ? 'YouTube' : item.type === 'ppt' ? 'PDF' : `${item.type}`}
+                  </td>
+                  <td style={{ padding: '12px' }}>{item.location || 'Global'}</td>
+                  
+                  {/* 🎯 NEW: Duration Column Data */}
+                  <td style={{ padding: '12px' }}>
+                    {formatDuration(item.start_time, item.end_time)}
+                  </td>
+
+                  <td style={{ padding: '12px' }}>
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      style={{ padding: '6px 12px', background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem' }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

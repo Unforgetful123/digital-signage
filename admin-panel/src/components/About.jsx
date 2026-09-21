@@ -99,7 +99,7 @@ export default function About() {
               disabled={status === 'checking' || status === 'downloading'}
               style={{ padding: '12px 24px', background: '#0f172a', color: 'white', border: 'none', borderRadius: '8px', cursor: (status === 'checking' || status === 'downloading') ? 'not-allowed' : 'pointer', fontWeight: '600', opacity: (status === 'checking' || status === 'downloading') ? 0.7 : 1 }}
             >
-              🔄 Check for Updates
+             Check for Updates
             </button>
           ) : (
             <button 

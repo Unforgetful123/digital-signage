@@ -12,6 +12,7 @@ export default function ContentUpload() {
   const [location, setLocation] = useState('Global');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [duration, setDuration] = useState(10); // Default to 10 seconds
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -69,6 +70,10 @@ export default function ContentUpload() {
       formData.append('location', location);
       if (startTime) formData.append('start_time', new Date(startTime).toISOString());
       if (endTime) formData.append('end_time', new Date(endTime).toISOString());
+
+      if (type === 'image' || type === 'ppt') {
+        formData.append('duration', Number(duration));
+      }
 
       if (type === 'youtube') {
         formData.append('youtube_url', youtubeUrl);
@@ -209,16 +214,39 @@ export default function ContentUpload() {
         </div>
       </div>
 
-      <div className="form-row">
-        <div className="form-group">
-          <label>Start Time (Optional)</label>
-          <input className="form-control" type="datetime-local" value={startTime} onChange={e => setStartTime(e.target.value)} disabled={loading} />
+      <div style={{ marginBottom: '15px' }}>
+        <div className="form-row" style={{ marginBottom: '4px' }}>
+          <div className="form-group">
+            <label>Start Time (Optional)</label>
+            <input className="form-control" type="datetime-local" value={startTime} onChange={e => setStartTime(e.target.value)} disabled={loading} />
+          </div>
+          <div className="form-group">
+            <label>End Time (Optional)</label>
+            <input className="form-control" type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} disabled={loading} />
+          </div>
         </div>
-        <div className="form-group">
-          <label>End Time (Optional)</label>
-          <input className="form-control" type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} disabled={loading} />
-        </div>
+        
+        {/* Helper text moved OUTSIDE the row, perfectly aligned and styled grey */}
+        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '4px 0 0 4px', textAlign: 'left', fontStyle: 'italic' }}>
+          * If left blank, the content will be displayed until removed
+        </p>
       </div>
+
+      {/* 🎯 NEW: Dynamic Duration Field for Images and PDFs */}
+      {(type === 'image' || type === 'ppt') && (
+        <div className="form-group">
+          <label>Display Duration (Seconds{type === 'ppt' ? 'per page' : ''})</label>
+          <input 
+            className="form-control" 
+            type="number" 
+            min="1" 
+            value={duration} 
+            onChange={e => setDuration(e.target.value)} 
+            required 
+            disabled={loading} 
+          />
+        </div>
+      )}
 
       <div className="form-group">
         <label>{type === 'youtube' ? 'YouTube URL' : 'Upload File'}</label>
@@ -235,7 +263,7 @@ export default function ContentUpload() {
             {loading ? 'Processing...' : '📁 Upload & Schedule'}
           </button>
           <button type="button" disabled={loading} onClick={() => fileInputRef.current.click()} className="btn-secondary" style={{ marginLeft: '10px', color: '#ffffff', backgroundColor: '#16a34a', border: '1px solid #16a34a' }}>
-            📄 Bulk YouTube Links
+             Bulk YouTube Links
           </button>
         </div>
         <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, textAlign: 'right' }}>

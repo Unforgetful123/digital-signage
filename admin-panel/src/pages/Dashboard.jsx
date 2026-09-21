@@ -51,7 +51,7 @@ export default function Dashboard({ user }) {
           className={`action-btn ${homeAction === 'content' ? 'active-action' : ''}`}
           onClick={() => setHomeAction('content')}
         >
-          📁 Upload Media
+           Upload Media
         </button>
         <button 
           className={`action-btn ${homeAction === 'birthday' ? 'active-action' : ''}`}
@@ -114,7 +114,7 @@ export default function Dashboard({ user }) {
             Event Log
           </button>
           <button className={`nav-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
-            ℹAbout & Updates
+            About & Updates
           </button>
         </nav>
 
