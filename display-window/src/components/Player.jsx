@@ -43,36 +43,40 @@ async function checkInternetConnection() {
     return false;
   }
 }
+
 /* ============================================================
-   📄 PDF Slideshow Component
+   📄 PDF Slideshow Component (Fixed Cleanup)
 ============================================================ */
-function PdfSlideshow({ url, duration, onFinish }) {
+function PdfSlideshow({ url, duration = 15000, onFinish }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     let pdfDoc = null;
     let pageNum = 1;
     let timer = null;
-    let renderTask = null; // ✅ track active render
+    let renderTask = null; 
+    let isMounted = true; // 🎯 NEW: Track if component is still on screen
 
     const renderPage = async (num) => {
-      if (!pdfDoc) return;
-      // cancel previous render if running
+      if (!pdfDoc || !isMounted) return;
       if (renderTask) {
         renderTask.cancel();
         renderTask = null;
       }
 
-      const page = await pdfDoc.getPage(num);
-      const viewport = page.getViewport({ scale: 1.4 });
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-
-      // render page and track it
-      renderTask = page.render({ canvasContext: ctx, viewport });
       try {
+        const page = await pdfDoc.getPage(num);
+        const viewport = page.getViewport({ scale: 1.4 });
+        
+        const canvas = canvasRef.current;
+        // 🎯 NEW: Safety check to prevent the 'getContext of null' crash
+        if (!canvas || !isMounted) return; 
+
+        const ctx = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        renderTask = page.render({ canvasContext: ctx, viewport });
         await renderTask.promise;
       } catch (err) {
         if (err?.name === "RenderingCancelledException") return;
@@ -85,10 +89,11 @@ function PdfSlideshow({ url, duration, onFinish }) {
     const loadAndRun = async () => {
       try {
         pdfDoc = await pdfjsLib.getDocument({ url }).promise;
+        if (!isMounted) return;
         await renderPage(pageNum);
 
         timer = setInterval(async () => {
-          if (!pdfDoc) return;
+          if (!pdfDoc || !isMounted) return;
           pageNum++;
           if (pageNum > pdfDoc.numPages) {
             clearInterval(timer);
@@ -106,12 +111,13 @@ function PdfSlideshow({ url, duration, onFinish }) {
     loadAndRun();
 
     return () => {
-      // cleanup
+      // 🎯 NEW: Tell the async functions to stop running
+      isMounted = false; 
       if (renderTask) renderTask.cancel();
       clearInterval(timer);
       pdfDoc = null;
     };
-  }, [url]);
+  }, [url, duration, onFinish]);
 
   return (
     <canvas
@@ -180,6 +186,21 @@ export default function Player() {
 
     async function subscribeToDisplay() {
         let lastSignature = "";
+
+        // 🎯 NEW: Fetch the initial state IMMEDIATELY on boot/refresh
+        try {
+            const initialRecord = await pb.collection("displays").getOne(config.id, { requestKey: null });
+            if (initialRecord.current_type === "alert") {
+                setEmergency({
+                    type: (initialRecord.current_command || "alert").toLowerCase(),
+                    message: initialRecord.current_title || "",
+                    lang: record.current_lang || "none"
+                });
+            }
+        } catch (err) {
+            console.error("Failed to fetch initial display state:", err);
+        }
+
         try {
             unsub = pb.collection("displays").subscribe(
                 config.id,
@@ -230,7 +251,8 @@ export default function Player() {
                       console.log("🚨 ALERT RECEIVED:", current_command);
                       setEmergency({
                         type: (current_command || "alert").toLowerCase(),
-                        message: current_title || ""
+                        message: current_title || "",
+                        lang: record.current_lang || "none"
                       });
                       return;
                     }
@@ -566,6 +588,71 @@ useEffect(() => {
     return m ? m[1] : null;
   };
 
+  /* ============================================================
+     🔊 TV VOICE TRANSLATOR & SIREN DUCKING
+  ============================================================ */
+  useEffect(() => {
+      if (!emergency) {
+          window.speechSynthesis.cancel();
+          return;
+      }
+
+      let voiceLoopActive = true;
+
+      async function playVoiceLoop() {
+          let textToSpeak = emergency.message;
+
+          // 1. Translate the text once if a regional language is selected
+          if (emergency.lang && emergency.lang !== "none" && emergency.lang !== "en-IN") {
+              const map = { 'hi-IN': 'hi', 'mr-IN': 'mr', 'gu-IN': 'gu' };
+              const targetLang = map[emergency.lang];
+              try {
+                  const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(emergency.message)}`);
+                  const data = await res.json();
+                  textToSpeak = data[0].map(x => x[0]).join(''); // Stitch sentences together
+              } catch (e) {
+                  console.error("Translation failed on TV:", e);
+              }
+          }
+
+          // 2. Start the Voice Loop
+          while (voiceLoopActive) {
+              if (emergency.lang && emergency.lang !== "none") {
+                  const sirenEl = document.getElementById("tv-siren");
+                  
+                  // 🔉 Duck siren volume down to 20%
+                  if (sirenEl) sirenEl.volume = 0.2; 
+                  
+                  await new Promise(resolve => {
+                      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                      utterance.lang = emergency.lang;
+                      utterance.rate = 0.85; // Speak slightly slower for emergencies
+                      utterance.onend = resolve; // Wait until it is fully finished speaking!
+                      utterance.onerror = resolve;
+                      window.speechSynthesis.speak(utterance);
+                  });
+                  
+                  // 🔊 Restore siren volume to 100%
+                  if (sirenEl) sirenEl.volume = 1.0; 
+                  
+                  if (!voiceLoopActive) break;
+                  await new Promise(r => setTimeout(r, 4000)); // Wait 4 seconds before repeating
+              } else {
+                  // If "none" is selected, just wait and let the siren play normally
+                  await new Promise(r => setTimeout(r, 1000));
+              }
+          }
+      }
+
+      playVoiceLoop();
+
+      // Cleanup when emergency ends
+      return () => {
+          voiceLoopActive = false;
+          window.speechSynthesis.cancel();
+      };
+  }, [emergency]);
+
   if (!config) {
     return <SetupScreen onComplete={(cfg) => { 
       setDisplayConfig(cfg); 
@@ -581,7 +668,7 @@ useEffect(() => {
           <p>{emergency.message}</p>
         </div>
         {/* 🎯 NEW: Bulletproof audio element that forces playback on mount */}
-        <audio src="/audio/siren.wav" autoPlay loop />
+        <audio id="tv-siren" src="/audio/siren.wav" autoPlay loop />
       </div>
     );
   }
@@ -593,6 +680,7 @@ useEffect(() => {
       </div>
     );
   }
+
 
   return (
     <>

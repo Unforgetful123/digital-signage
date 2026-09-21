@@ -3,1217 +3,499 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Emergency Alert · GSC3570</title>
+  <title>Emergency Alert Controller</title>
   <style>
     :root {
-      --bg: #101820;
-      --panel: #f4f6f8;
-      --ink: #12202e;
-      --muted: #5b6b7c;
-      --line: #d5dde6;
-      --danger: #c62828;
-      --ok: #2e7d32;
-      --surface: #ffffff;
+      --bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --surface: #f8fafc;
+      --primary: #3b82f6;
     }
 
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      height: 100%;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      overflow: hidden;
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    
+    body, html { 
+      margin: 0; padding: 0; background: transparent; /* Blends with React iframe */
+      color: var(--text); height: 100%; overflow: hidden; 
     }
 
-    /* Exact-ish GSC3570 canvas: 1024×600 */
     .shell {
-      width: 100vw;
-      height: 100dvh;
-      max-width: 1024px;
-      max-height: 600px;
-      margin: 0 auto;
-      background: var(--panel);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
+      width: 100%; height: 100%; display: flex; flex-direction: column;
+      position: relative; overflow-y: auto; padding: 20px;
     }
 
-    @media (min-height: 620px) and (min-width: 1040px) {
-      body {
-        display: grid;
-        place-items: center;
-        background: #0a1016;
-      }
-      .shell {
-        width: 1024px;
-        height: 600px;
-        border-radius: 10px;
-        box-shadow: 0 20px 50px rgba(0,0,0,.45);
-      }
+    /* Floating Settings Button */
+    .settings-fab {
+      position: absolute; top: 20px; right: 20px; z-index: 10;
+      width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .settings-fab:hover { background: #e2e8f0; }
+
+    /* Screens & Flow */
+    .screen { display: none; flex-direction: column; gap: 24px; max-width: 900px; margin: 0 auto; width: 100%; padding-top: 10px; }
+    .screen.active { display: flex; animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .step-header { margin-bottom: 8px; }
+    .step-title { margin: 0; font-size: 24px; font-weight: 800; color: var(--text); }
+    .step-subtitle { margin: 4px 0 0 0; font-size: 15px; color: var(--text-muted); }
+
+    .sleek-back {
+      align-self: flex-start; background: none; border: none; padding: 8px 12px 8px 0;
+      font-size: 16px; font-weight: 700; color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .sleek-back:hover { color: var(--text); }
+
+    /* Card Grids */
+    .card-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
     }
 
-    .topbar {
-      height: 56px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: var(--bg);
-      color: #fff;
+    .card-btn {
+      background: var(--surface); border: 2px solid var(--border); border-radius: 16px;
+      padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; cursor: pointer; transition: all 0.2s ease; text-align: center;
     }
+    .card-btn .icon { font-size: 40px; }
+    .card-btn .label { font-size: 18px; font-weight: 800; color: var(--text); }
+    .card-btn .sub-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    
+    .card-btn:hover { border-color: var(--hover-color, var(--primary)); transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
 
-    .brand {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 0.02em;
+    /* Forms */
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+    textarea, select, input {
+      width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 16px;
+      font-size: 16px; font-family: inherit; font-weight: 600; color: var(--text);
+      background: #ffffff; outline: none; transition: border-color 0.2s;
     }
+    textarea:focus, select:focus, input:focus { border-color: var(--primary); }
+    textarea { min-height: 120px; resize: none; }
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 36px;
-      padding: 0 14px;
-      border-radius: 999px;
-      background: #2a3644;
-      font-size: 13px;
-      font-weight: 700;
-    }
+    .tts-row { display: flex; gap: 12px; }
+    .tts-row select { flex: 1; }
 
-    .status.live { background: var(--danger); }
-
-    .status .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #8fa0b3;
-    }
-
-    .status.live .dot {
-      background: #ffd54f;
-      box-shadow: 0 0 0 4px rgba(255, 213, 79, 0.25);
-    }
-
-    .icon-btn {
-      width: 44px;
-      height: 44px;
-      border: 0;
-      border-radius: 10px;
-      background: #243040;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .screens { flex: 1; position: relative; min-height: 0; }
-
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: none;
-      flex-direction: column;
-      padding: 16px 18px 14px;
-      gap: 12px;
-    }
-
-    .screen.active { display: flex; }
-
-    .prompt {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .type-grid {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: 1fr;
-      gap: 12px;
-      min-height: 0;
-    }
-
-    .type-btn {
-      border: 2px solid var(--line);
-      border-radius: 16px;
-      background: var(--surface);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 18px;
-      color: var(--ink);
-      min-height: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .type-btn .icon { font-size: 36px; line-height: 1; }
-
-    .type-btn:active,
-    .type-btn.selected {
-      border-color: var(--type-color, var(--danger));
-      background: color-mix(in srgb, var(--type-color, var(--danger)) 12%, white);
-      color: var(--type-color, var(--danger));
-      box-shadow: inset 0 0 0 2px var(--type-color, var(--danger));
-    }
-
-    .home-foot {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .area-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 52px;
-      padding: 0 14px;
-      border-radius: 14px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-    }
-
-    .area-pill span {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .area-pill select {
-      flex: 1;
-      border: 0;
-      background: transparent;
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--ink);
-      min-height: 44px;
-      outline: none;
-    }
-
-    /* Compose / confirm */
-    .compose-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .back-btn {
-      width: 52px;
-      height: 52px;
-      border: 0;
-      border-radius: 14px;
-      background: #e8eef4;
-      font-size: 22px;
-      font-weight: 800;
-      cursor: pointer;
-      color: var(--ink);
-    }
-
-    .compose-title {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 800;
-    }
-
-    .compose-sub {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    textarea, select, input[type="text"], input[type="color"] {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--surface);
-      color: var(--ink);
-      font-size: 16px;
-      padding: 12px 14px;
-      font-family: inherit;
-    }
-
-    textarea { min-height: 72px; resize: none; }
-
-    .repeat-row {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-
-    .repeat-btn {
-      min-height: 48px;
-      border-radius: 12px;
-      border: 2px solid var(--line);
-      background: var(--surface);
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--ink);
-    }
-
-    .repeat-btn.active {
-      border-color: var(--danger);
-      color: var(--danger);
-      background: #fdecea;
-    }
-
-    .compose-actions {
-      margin-top: auto;
-      display: grid;
-      grid-template-columns: 1fr 1.4fr;
-      gap: 10px;
-    }
-
+    /* Action Buttons */
+    .actions { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-top: 16px; }
     .btn {
-      min-height: 64px;
-      border: 0;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: 800;
-      color: #fff;
-      cursor: pointer;
+      padding: 18px; border: none; border-radius: 12px; font-size: 18px; font-weight: 800;
+      cursor: pointer; text-transform: uppercase; transition: transform 0.1s, opacity 0.2s;
     }
+    .btn:active { transform: scale(0.98); }
+    .btn-send { background: var(--danger); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
+    .btn-send:hover { background: var(--danger-hover); }
+    .btn-cancel { background: var(--surface); border: 2px solid var(--border); color: var(--text); }
+    .btn-test { background: var(--border); color: var(--text); padding: 0 20px; font-size: 15px; border-radius: 12px; }
 
-    .btn-send { background: var(--danger); }
-    .btn-clear { background: var(--ok); }
-    .btn-ghost {
-      background: #e8eef4;
-      color: var(--ink);
+    /* Live Screen */
+    .live-screen { align-items: center; justify-content: center; text-align: center; height: 100%; }
+    .pulse-ring {
+      width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--danger);
+      display: flex; align-items: center; justify-content: center; font-size: 40px;
+      animation: pulse 2s infinite; margin: 0 auto 24px;
     }
-    .btn-dark { background: #243040; }
-    .btn:disabled { opacity: 0.5; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 30px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    .live-type { font-size: 48px; font-weight: 900; margin: 0 0 12px; text-transform: uppercase; color: var(--danger); }
+    .live-msg { font-size: 24px; font-weight: 600; max-width: 700px; margin: 0 auto; line-height: 1.4; }
+    .live-meta { margin-top: 16px; font-weight: 700; color: var(--text-muted); font-size: 18px; }
 
-    /* Live takeover — only what matters */
-    .live-screen {
-      background: #1a0c0c;
-      color: #fff;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 18px;
-      padding: 24px;
-    }
-
-    .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.1);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      font-size: 13px;
-    }
-
-    .live-badge .pulse {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #ffd54f;
-      animation: pulse 1.2s ease-out infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(1.8); opacity: 0; }
-    }
-
-    .live-type {
-      margin: 0;
-      font-size: 42px;
-      font-weight: 900;
-      line-height: 1.1;
-    }
-
-    .live-msg {
-      margin: 0;
-      max-width: 720px;
-      font-size: 18px;
-      line-height: 1.35;
-      opacity: 0.9;
-    }
-
-    .live-meta {
-      font-size: 15px;
-      font-weight: 700;
-      opacity: 0.7;
-    }
-
-    .live-actions {
-      width: min(420px, 100%);
-      display: grid;
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    .live-actions .btn { min-height: 72px; font-size: 22px; }
-
-    /* Settings sheet */
-    .sheet {
-      display: none;
-      position: absolute;
-      inset: 0;
-      z-index: 20;
-      background: rgba(10, 16, 22, 0.55);
-    }
-
+    /* Settings Sheet */
+    .sheet { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 50; padding: 20px; }
     .sheet.open { display: block; }
-
-    .sheet-panel {
-      position: absolute;
-      inset: 0;
-      background: var(--panel);
-      display: flex;
-      flex-direction: column;
+    .sheet-content { 
+      background: white; max-width: 600px; margin: 0 auto; border-radius: 16px; height: 100%;
+      display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
     }
+    .sheet-head { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .sheet-head h2 { margin: 0; }
+    .sheet-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--surface); border-radius: 8px; margin-bottom: 8px; font-weight: bold;}
+    .btn-sm { padding: 8px 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-sm.danger { background: #fee2e2; color: var(--danger); }
+    .btn-sm.ok { background: #10b981; color: white; padding: 12px 24px; }
 
-    .sheet-head {
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: var(--bg);
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .sheet-head h2 { margin: 0; font-size: 18px; }
-
-    .sheet-body {
-      flex: 1;
-      overflow: auto;
-      padding: 14px 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
-    }
-
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-    }
-
-    .list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-
-    .list-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #f4f6f8;
-      font-size: 14px;
-    }
-
-    .list-item .meta {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-      max-width: 420px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .form-grid .full { grid-column: 1 / -1; }
-
-    .btn-sm {
-      min-height: 40px;
-      padding: 0 12px;
-      border: 0;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 13px;
-      cursor: pointer;
-      color: #fff;
-    }
-
-    .btn-sm.ok { background: var(--ok); }
-    .btn-sm.danger { background: var(--danger); }
-    .btn-sm.dark { background: #243040; }
-
-    .toggle {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      font-size: 15px;
-      padding: 8px 0;
-    }
-
-    .toggle input { width: 20px; height: 20px; }
-
-    .fab {
-      display: none;
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      width: 76px;
-      height: 76px;
-      border: 0;
-      border-radius: 50%;
-      background: var(--danger);
-      color: #fff;
-      font-weight: 900;
-      font-size: 18px;
-      letter-spacing: 1px;
-      cursor: pointer;
-      box-shadow: 0 10px 28px rgba(198, 40, 40, 0.45);
-      z-index: 50;
-    }
-
-    .fab.show { display: grid; place-items: center; }
-
-    .pa-toast {
-      display: none;
-      position: absolute;
-      left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
-      z-index: 25;
-      background: #12202e;
-      color: #fff;
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      max-width: calc(100% - 28px);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .pa-toast.show { display: block; }
-
-    @media (max-width: 700px) {
-      .type-grid { grid-template-columns: repeat(2, 1fr); }
-      .repeat-row { grid-template-columns: repeat(3, 1fr); }
-      .form-grid { grid-template-columns: 1fr; }
-    }
+    /* Overlay */
+    .resume-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+    .resume-overlay.hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="shell" id="panel">
-    <header class="topbar" id="topbar">
-      <div class="brand">Emergency</div>
-      <div class="status" id="statusChip">
-        <span class="dot"></span>
-        <span id="statusText">Ready</span>
+  <audio id="sirenAudio" src="/audio/siren.wav" loop></audio>
+
+  <div class="shell">
+    <button class="settings-fab" id="settingsBtn" title="Alert Settings">⚙️</button>
+
+    <!-- STEP 1: Select Alert Type -->
+    <section class="screen active" id="step1">
+      <div class="step-header">
+        <h2 class="step-title">1. Select Emergency Type</h2>
+        <p class="step-subtitle">What type of alert are you broadcasting?</p>
       </div>
-      <button class="icon-btn" id="settingsBtn" type="button" aria-label="Settings">⚙</button>
-    </header>
+      <div class="card-grid" id="typeGrid"></div>
+    </section>
 
-    <div class="screens">
-      <!-- HOME: pick emergency type only -->
-      <section class="screen active" id="homeScreen" aria-label="Choose emergency">
-        <p class="prompt">Select emergency</p>
-        <div class="type-grid" id="typeGrid"></div>
-        <div class="home-foot">
-          <label class="area-pill">
-            <span>Area</span>
-            <select id="area" aria-label="Target area"></select>
-          </label>
-          <button class="btn btn-clear" id="homeClearBtn" type="button" style="display:none; min-height:52px; min-width:120px; font-size:15px;">
-            Clear
-          </button>
+    <!-- STEP 2: Select Target Area -->
+    <section class="screen" id="step2">
+      <button class="sleek-back" id="backTo1">← Back to Alerts</button>
+      <div class="step-header">
+        <h2 class="step-title">2. Select Target Location</h2>
+        <p class="step-subtitle" id="step2Subtitle">Where should the <strong id="step2AlertName">Alert</strong> be displayed?</p>
+      </div>
+      <div class="card-grid" id="areaGrid">
+        <!-- Fetched dynamically -->
+      </div>
+    </section>
+
+    <!-- STEP 3: Compose & Send -->
+    <section class="screen" id="step3">
+      <button class="sleek-back" id="backTo2">← Back to Locations</button>
+      <div class="step-header">
+        <h2 class="step-title">3. Broadcast Details</h2>
+        <p class="step-subtitle">Review the message and voice settings.</p>
+      </div>
+      
+      <div class="field">
+        <label>Message (English)</label>
+        <textarea id="message" maxlength="240"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Tablet Voice & Auto-Translation</label>
+        <div class="tts-row">
+          <select id="ttsLang">
+            <option value="none">🔇 Siren Only (No Voice)</option>
+            <option value="en-IN">🗣️ English</option>
+            <option value="hi-IN">🗣️ Hindi (Auto-Translate)</option>
+            <option value="mr-IN">🗣️ Marathi (Auto-Translate)</option>
+            <option value="gu-IN">🗣️ Gujarati (Auto-Translate)</option>
+          </select>
+          <button type="button" class="btn btn-test" id="testVoiceBtn">Test Audio</button>
         </div>
-      </section>
+      </div>
 
-      <!-- COMPOSE: message + repeat + send -->
-      <section class="screen" id="composeScreen" aria-label="Confirm alert">
-        <div class="compose-head">
-          <button class="back-btn" id="backBtn" type="button" aria-label="Back">←</button>
-          <div>
-            <h2 class="compose-title" id="composeTitle">Fire</h2>
-            <p class="compose-sub" id="composeSub">All Areas · ext 7000</p>
-          </div>
-        </div>
+      <div class="actions">
+        <button class="btn btn-cancel" id="cancelComposeBtn">Cancel</button>
+        <button class="btn btn-send" id="sendBtn">Broadcast Alert Now</button>
+      </div>
+    </section>
 
-        <div class="field">
-          <label for="message">Message</label>
-          <textarea id="message" maxlength="240"></textarea>
-        </div>
+    <!-- LIVE SCREEN -->
+    <section class="screen live-screen" id="liveScreen">
+      <div class="pulse-ring">⚠️</div>
+      <h2 class="live-type" id="liveType">FIRE</h2>
+      <p class="live-msg" id="liveMsg">Evacuate immediately.</p>
+      <div class="live-meta" id="liveMeta">Target: All Displays</div>
+      
+      <button class="btn btn-send" id="clearBtn" style="margin-top: 40px; padding: 24px 48px; background: #10b981; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+        Clear & Deactivate Alert
+      </button>
+    </section>
 
-        <div class="field">
-          <label>Repeat</label>
-          <div class="repeat-row" id="repeatGrid">
-            <button type="button" class="repeat-btn" data-repeat="10">10×</button>
-            <button type="button" class="repeat-btn" data-repeat="20">20×</button>
-            <button type="button" class="repeat-btn active" data-repeat="30">30×</button>
-            <button type="button" class="repeat-btn" data-repeat="40">40×</button>
-            <button type="button" class="repeat-btn" data-repeat="infinity">∞</button>
-          </div>
-        </div>
-
-        <div class="compose-actions">
-          <button class="btn btn-ghost" id="cancelComposeBtn" type="button">Cancel</button>
-          <button class="btn btn-send" id="sendBtn" type="button">Send alert</button>
-        </div>
-      </section>
-
-      <!-- LIVE: focused clear UI -->
-      <section class="screen live-screen" id="liveScreen" aria-label="Live alert">
-        <div class="live-badge"><span class="pulse"></span> LIVE ALERT</div>
-        <h2 class="live-type" id="liveType">FIRE</h2>
-        <p class="live-msg" id="liveMsg"></p>
-        <div class="live-meta" id="liveMeta"></div>
-        <div class="live-actions">
-          <button class="btn btn-clear" id="clearBtn" type="button">Clear alert</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- Settings / create -->
+    <!-- Settings Sheet -->
     <div class="sheet" id="settingsSheet">
-      <div class="sheet-panel">
+      <div class="sheet-content">
         <div class="sheet-head">
-          <h2>Settings</h2>
-          <button class="icon-btn" id="closeSettingsBtn" type="button" aria-label="Close">✕</button>
+          <h2>Manage Alert Types</h2>
+          <button class="settings-fab" id="closeSettingsBtn" style="position: static;">✕</button>
         </div>
         <div class="sheet-body">
-          <div class="card">
-            <h3>Playback</h3>
-            <label class="toggle">
-              <input type="checkbox" id="announcePA" checked />
-              Announce on PA
-            </label>
-            <label class="toggle">
-              <input type="checkbox" id="useSpeech" checked />
-              Speak on this screen
-            </label>
-          </div>
-
-          <div class="card">
-            <h3>Alert types</h3>
-            <div class="list" id="typeList"></div>
-            <div class="form-grid">
-              <div>
-                <label class="prompt" for="newTypeLabel" style="margin-bottom:6px;display:block;">Name</label>
-                <input id="newTypeLabel" type="text" placeholder="Gas Leak" />
-              </div>
-              <div>
-                <label class="prompt" for="newTypeIcon" style="margin-bottom:6px;display:block;">Icon</label>
-                <input id="newTypeIcon" type="text" placeholder="⚠️" maxlength="4" />
-              </div>
-              <div>
-                <label class="prompt" for="newTypeColor" style="margin-bottom:6px;display:block;">Color</label>
-                <input id="newTypeColor" type="color" value="#c62828" />
-              </div>
-              <div class="full">
-                <label class="prompt" for="newTypeMessage" style="margin-bottom:6px;display:block;">Message</label>
-                <textarea id="newTypeMessage" placeholder="Default announcement text"></textarea>
-              </div>
+          <div id="typeList" style="margin-bottom: 16px;"></div>
+          
+          <div style="background: var(--surface); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+            <h3 style="margin-top: 0;">Add New Alert</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div class="field"><label>Name</label><input id="newTypeLabel" type="text" placeholder="Gas Leak"></div>
+              <div class="field"><label>Icon (Emoji)</label><input id="newTypeIcon" type="text" placeholder="⚠️" maxlength="4"></div>
             </div>
-            <div style="margin-top:10px;">
-              <button type="button" class="btn-sm ok" id="addTypeBtn">Add alert type</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Areas &amp; page extensions</h3>
-            <div class="list" id="areaList"></div>
-            <div class="form-grid">
-              <div>
-                <label class="prompt" for="newAreaName" style="margin-bottom:6px;display:block;">Area</label>
-                <input id="newAreaName" type="text" placeholder="Cafeteria" />
-              </div>
-              <div>
-                <label class="prompt" for="newAreaExt" style="margin-bottom:6px;display:block;">PA ext</label>
-                <input id="newAreaExt" type="text" placeholder="7005" />
-              </div>
-            </div>
-            <div style="margin-top:10px;">
-              <button type="button" class="btn-sm ok" id="addAreaBtn">Add area</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Event log</h3>
-            <div class="list" id="log" style="max-height:120px;overflow:auto;font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#5b6b7c;"></div>
+            <div class="field" style="margin-bottom: 12px;"><label>Color</label><input id="newTypeColor" type="color" value="#c62828" style="padding: 4px; height: 48px;"></div>
+            <div class="field" style="margin-bottom: 16px;"><label>Default Message</label><textarea id="newTypeMessage" style="min-height: 80px;"></textarea></div>
+            <button class="btn-sm ok" id="addTypeBtn">Save Alert Type</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="pa-toast" id="paToast"></div>
+    <!-- Audio Resume Overlay (Browser Autoplay Policy Fix) -->
+    <div id="resumeOverlay" class="resume-overlay hidden">
+      <h2 style="margin-bottom: 8px;">Active Emergency Running</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">The dashboard was refreshed.</p>
+      <button class="btn btn-send" id="resumeAudioBtn" style="padding: 20px 40px;">Tap to Resume Audio & Siren</button>
+    </div>
   </div>
-
-  <button class="fab" id="sosFab" type="button" aria-label="Open emergency">SOS</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.js"></script>
   <script>
     const pb = new PocketBase("http://127.0.0.1:8090");
-    const PA_PROXY_URL = "";
-    const REPEAT_GAP_MS = 2500;
 
     const DEFAULT_TYPES = [
-      { id: "fire", label: "Fire", icon: "🔥", color: "#c62828",
-        preset: "Fire emergency. Evacuate immediately. Do not use elevators." },
-      { id: "flood", label: "Flood", icon: "🌊", color: "#0277bd",
-        preset: "Flood warning. Move to higher ground and follow staff directions." },
-      { id: "quake", label: "Quake", icon: "🌍", color: "#ef6c00",
-        preset: "Earthquake. Drop, cover, and hold on. Remain calm." },
-      { id: "medical", label: "Medical", icon: "🚑", color: "#ad1457",
-        preset: "Medical emergency. Clear the area and await first responders." },
-      { id: "intruder", label: "Intruder", icon: "🚨", color: "#6d4c41",
-        preset: "Security alert. Lockdown in effect. Stay where you are." },
-      { id: "other", label: "Other", icon: "⚠️", color: "#455a64",
-        preset: "Attention. Please follow staff instructions immediately." },
+      { id: "fire", label: "Fire", icon: "🔥", color: "#ef4444", preset: "Fire emergency. Evacuate immediately. Do not use elevators." },
+      { id: "flood", label: "Flood", icon: "🌊", color: "#3b82f6", preset: "Flood warning. Move to higher ground immediately." },
+      { id: "quake", label: "Earthquake", icon: "🌍", color: "#f59e0b", preset: "Earthquake. Drop, cover, and hold on." },
+      { id: "medical", label: "Medical", icon: "🚑", color: "#d946ef", preset: "Medical emergency. Please clear the area." },
+      { id: "lockdown", label: "Lockdown", icon: "🚨", color: "#8b5cf6", preset: "Security alert. Immediate lockdown in effect." },
+      { id: "info", label: "Notice", icon: "⚠️", color: "#64748b", preset: "Attention. Please follow staff instructions immediately." },
     ];
-
-    const DEFAULT_AREAS = [
-      { id: "all", name: "All Areas", pageExt: "7000" },
-      { id: "lobby", name: "Lobby", pageExt: "7001" },
-      { id: "warehouse", name: "Warehouse", pageExt: "7002" },
-      { id: "office", name: "Office", pageExt: "7003" },
-    ];
-
-    const KEYS = {
-      live: "gsc3570_emergency_live",
-      log: "gsc3570_emergency_log",
-      types: "gsc3570_alert_types",
-      areas: "gsc3570_alert_areas",
-    };
 
     const $ = (id) => document.getElementById(id);
-
     const els = {
-      panel: $("panel"),
-      topbar: $("topbar"),
-      homeScreen: $("homeScreen"),
-      composeScreen: $("composeScreen"),
-      liveScreen: $("liveScreen"),
-      typeGrid: $("typeGrid"),
-      area: $("area"),
-      message: $("message"),
-      composeTitle: $("composeTitle"),
-      composeSub: $("composeSub"),
-      sendBtn: $("sendBtn"),
-      clearBtn: $("clearBtn"),
-      homeClearBtn: $("homeClearBtn"),
-      backBtn: $("backBtn"),
-      cancelComposeBtn: $("cancelComposeBtn"),
-      statusChip: $("statusChip"),
-      statusText: $("statusText"),
-      liveType: $("liveType"),
-      liveMsg: $("liveMsg"),
-      liveMeta: $("liveMeta"),
-      settingsBtn: $("settingsBtn"),
-      settingsSheet: $("settingsSheet"),
-      closeSettingsBtn: $("closeSettingsBtn"),
-      announcePA: $("announcePA"),
-      useSpeech: $("useSpeech"),
-      typeList: $("typeList"),
-      areaList: $("areaList"),
-      addTypeBtn: $("addTypeBtn"),
-      addAreaBtn: $("addAreaBtn"),
-      newTypeLabel: $("newTypeLabel"),
-      newTypeIcon: $("newTypeIcon"),
-      newTypeColor: $("newTypeColor"),
-      newTypeMessage: $("newTypeMessage"),
-      newAreaName: $("newAreaName"),
-      newAreaExt: $("newAreaExt"),
-      log: $("log"),
-      repeatGrid: $("repeatGrid"),
-      sosFab: $("sosFab"),
-      paToast: $("paToast"),
+      step1: $("step1"), step2: $("step2"), step3: $("step3"), live: $("liveScreen"),
+      typeGrid: $("typeGrid"), areaGrid: $("areaGrid"), msg: $("message"), 
+      backTo1: $("backTo1"), backTo2: $("backTo2"), cancelBtn: $("cancelComposeBtn"), sendBtn: $("sendBtn"), clearBtn: $("clearBtn"),
+      step2AlertName: $("step2AlertName"),
+      liveType: $("liveType"), liveMsg: $("liveMsg"), liveMeta: $("liveMeta"),
+      ttsLang: $("ttsLang"), testVoiceBtn: $("testVoiceBtn"), sirenAudio: $("sirenAudio"),
+      settingsBtn: $("settingsBtn"), settingsSheet: $("settingsSheet"), closeSettingsBtn: $("closeSettingsBtn"),
+      typeList: $("typeList"), addTypeBtn: $("addTypeBtn"), 
+      newTypeLabel: $("newTypeLabel"), newTypeIcon: $("newTypeIcon"), newTypeColor: $("newTypeColor"), newTypeMessage: $("newTypeMessage"),
+      resumeOverlay: $("resumeOverlay"), resumeAudioBtn: $("resumeAudioBtn")
     };
 
-    let alertTypes = loadJson(KEYS.types, DEFAULT_TYPES);
-    let areas = loadJson(KEYS.areas, DEFAULT_AREAS);
+    let alertTypes = JSON.parse(localStorage.getItem("gsc_types") || "null") || DEFAULT_TYPES;
     let selectedType = null;
-    let repeatMode = "30";
-    let busy = false;
-    let liveAlert = null;
-    let repeatTimer = null;
-    let repeatToken = 0;
+    let selectedTarget = null; // { id: 'all' | 'record_id', name: 'string' }
+    let voiceLoopActive = false;
 
-    function loadJson(key, fallback) {
+    function saveTypes() { localStorage.setItem("gsc_types", JSON.stringify(alertTypes)); }
+    function escapeHtml(str) { return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"); }
+
+    function switchScreen(screen) {
+      els.step1.classList.remove("active"); els.step2.classList.remove("active"); 
+      els.step3.classList.remove("active"); els.live.classList.remove("active");
+      els[screen].classList.add("active");
+      els.settingsBtn.style.display = screen === 'live' ? 'none' : 'flex';
+    }
+
+    /* STEP 1: Render Alerts */
+    function renderTypes() {
+      els.typeGrid.innerHTML = alertTypes.map(t => `
+        <div class="card-btn" data-id="${t.id}" style="--hover-color: ${t.color}">
+          <div class="icon">${escapeHtml(t.icon || "⚠️")}</div>
+          <div class="label" style="color: ${t.color}">${escapeHtml(t.label)}</div>
+        </div>
+      `).join("");
+    }
+
+    /* STEP 2: Render Targets */
+    async function fetchDisplays() {
       try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return structuredClone(fallback);
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) && parsed.length ? parsed : structuredClone(fallback);
-      } catch {
-        return structuredClone(fallback);
+        const displays = await pb.collection('displays').getFullList({ requestKey: null });
+        let html = `
+          <div class="card-btn area-card" data-id="all" data-name="All Displays Globally" style="--hover-color: var(--text)">
+            <div class="icon">🌎</div>
+            <div class="label">All Displays</div>
+            <div class="sub-label">Global Broadcast</div>
+          </div>
+        `;
+        displays.forEach(d => {
+          html += `
+            <div class="card-btn area-card" data-id="${d.id}" data-name="${escapeHtml(d.name)}" style="--hover-color: var(--primary)">
+              <div class="icon">📺</div>
+              <div class="label">${escapeHtml(d.name)}</div>
+              <div class="sub-label">${escapeHtml(d.location)}</div>
+            </div>
+          `;
+        });
+        els.areaGrid.innerHTML = html;
+      } catch (err) { 
+        els.areaGrid.innerHTML = `<div class="card-btn area-card" data-id="all" data-name="All Displays">Error loading displays. Click to target ALL.</div>`; 
       }
     }
 
-    function saveTypes() { localStorage.setItem(KEYS.types, JSON.stringify(alertTypes)); }
-    function saveAreas() { localStorage.setItem(KEYS.areas, JSON.stringify(areas)); }
+    /* WIZARD NAVIGATION EVENTS */
+    els.typeGrid.addEventListener("click", (e) => {
+      const card = e.target.closest(".card-btn");
+      if (!card) return;
+      selectedType = alertTypes.find(t => t.id === card.dataset.id);
+      els.step2AlertName.textContent = selectedType.label;
+      els.step2AlertName.style.color = selectedType.color;
+      switchScreen('step2');
+    });
 
-    function slugify(text) {
-      return String(text).toLowerCase().trim()
-        .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 40) || ("item_" + Date.now());
+    els.areaGrid.addEventListener("click", (e) => {
+      const card = e.target.closest(".area-card");
+      if (!card) return;
+      selectedTarget = { id: card.dataset.id, name: card.dataset.name };
+      els.msg.value = selectedType.preset; // Set default message based on step 1 choice
+      switchScreen('step3');
+    });
+
+    els.backTo1.addEventListener("click", () => switchScreen('step1'));
+    els.backTo2.addEventListener("click", () => switchScreen('step2'));
+    els.cancelBtn.addEventListener("click", () => {
+      selectedType = null; selectedTarget = null;
+      switchScreen('step1');
+    });
+
+    /* 🌍 TRANSLATION API & TTS (Restored Logic) */
+    async function getTranslation(text, langCode) {
+      if (langCode === 'en-IN') return text;
+      const map = { 'hi-IN': 'hi', 'mr-IN': 'mr', 'gu-IN': 'gu' };
+      const targetLang = map[langCode];
+      if (!targetLang) return text;
+      try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        return data[0].map(x => x[0]).join(''); 
+      } catch (e) { return text; }
     }
 
-    function uniqueId(base, existing) {
-      let id = base, n = 2;
-      while (existing.some((x) => x.id === id)) id = `${base}_${n++}`;
-      return id;
-    }
-
-    function nowStamp() {
-      return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-    }
-
-    function escapeHtml(str) {
-      return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    }
-
-    function getArea() {
-      return areas.find((a) => a.id === els.area.value) || areas[0];
-    }
-
-    function showScreen(name) {
-      els.homeScreen.classList.toggle("active", name === "home");
-      els.composeScreen.classList.toggle("active", name === "compose");
-      els.liveScreen.classList.toggle("active", name === "live");
-      els.topbar.style.display = name === "live" ? "none" : "flex";
-    }
-
-    function log(line) {
-      const entries = JSON.parse(localStorage.getItem(KEYS.log) || "[]");
-      entries.unshift(`[${nowStamp()}] ${line}`);
-      localStorage.setItem(KEYS.log, JSON.stringify(entries.slice(0, 40)));
-      renderLog();
-    }
-
-    function renderLog() {
-      const entries = JSON.parse(localStorage.getItem(KEYS.log) || "[]");
-      els.log.innerHTML = entries.length
-        ? entries.map((e) => `<div>${escapeHtml(e)}</div>`).join("")
-        : '<div class="meta">No events yet.</div>';
-    }
-
-    function renderTypes() {
-      const list = alertTypes.slice(0, 6);
-      els.typeGrid.innerHTML = list.map((t) => `
-        <button type="button" class="type-btn" data-id="${t.id}" style="--type-color:${t.color}">
-          <span class="icon">${escapeHtml(t.icon || "⚠️")}</span>
-          <span>${escapeHtml(t.label)}</span>
-        </button>
-      `).join("");
-    }
-
-    function renderAreas() {
-      const current = els.area.value;
-      els.area.innerHTML = areas.map(
-        (a) => `<option value="${a.id}">${escapeHtml(a.name)}</option>`
-      ).join("");
-      if (areas.some((a) => a.id === current)) els.area.value = current;
-    }
-
-    function renderManageLists() {
-      els.typeList.innerHTML = alertTypes.map((t) => `
-        <div class="list-item">
-          <div>
-            <strong>${escapeHtml(t.icon)} ${escapeHtml(t.label)}</strong>
-            <span class="meta">${escapeHtml(t.preset)}</span>
-          </div>
-          <button type="button" class="btn-sm danger" data-del-type="${t.id}">Delete</button>
-        </div>
-      `).join("");
-
-      els.areaList.innerHTML = areas.map((a) => `
-        <div class="list-item">
-          <div>
-            <strong>${escapeHtml(a.name)}</strong>
-            <span class="meta">PA ext ${escapeHtml(a.pageExt)}</span>
-          </div>
-          <button type="button" class="btn-sm danger" data-del-area="${a.id}">Delete</button>
-        </div>
-      `).join("");
-    }
-
-    function setRepeat(mode) {
-      repeatMode = mode;
-      els.repeatGrid.querySelectorAll(".repeat-btn").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.repeat === mode);
+    async function speakTranslatedText(text, langCode) {
+      if (langCode === "none" || !window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const translatedText = await getTranslation(text, langCode);
+      return new Promise(resolve => {
+        const utterance = new SpeechSynthesisUtterance(translatedText);
+        utterance.lang = langCode; utterance.rate = 0.85;
+        utterance.onend = () => resolve();
+        utterance.onerror = () => resolve(); 
+        window.speechSynthesis.speak(utterance);
       });
     }
 
-    function repeatLabel() {
-      return repeatMode === "infinity" ? "∞" : `${repeatMode}×`;
-    }
+    async function runAlertAudio(msg, lang) {
+      voiceLoopActive = true;
+      els.sirenAudio.volume = 1.0;
+      els.sirenAudio.play().catch(e => console.warn("Siren blocked by browser:", e));
 
-    function openCompose(typeId) {
-      selectedType = alertTypes.find((t) => t.id === typeId) || alertTypes[0];
-      if (!selectedType) return;
-      const area = getArea();
-      els.composeTitle.textContent = selectedType.label;
-      els.composeTitle.style.color = selectedType.color;
-      els.composeSub.textContent = `${area.name} · PA ${area.pageExt}`;
-      els.message.value = selectedType.preset;
-      els.sendBtn.style.background = selectedType.color;
-      showScreen("compose");
-    }
-
-    function setStatus(text, live) {
-      els.statusText.textContent = text;
-      els.statusChip.classList.toggle("live", !!live);
-    }
-
-    function setLiveUI(alert) {
-      liveAlert = alert;
-      if (alert) {
-        localStorage.setItem(KEYS.live, JSON.stringify({
-          ...alert,
-          repeatMax: alert.repeatMax === Infinity ? "infinity" : alert.repeatMax,
-        }));
-        const progress = alert.repeatMax === Infinity
-          ? `${alert.played || 1} / ∞`
-          : `${alert.played || 1} / ${alert.repeatMax}`;
-        els.liveType.textContent = (alert.typeLabel || alert.type).toUpperCase();
-        els.liveMsg.textContent = alert.message;
-        els.liveMeta.textContent = `${alert.areaName} · ${progress}`;
-        setStatus(progress, true);
-        els.homeClearBtn.style.display = "inline-flex";
-        showScreen("live");
-      } else {
-        localStorage.removeItem(KEYS.live);
-        setStatus("Ready", false);
-        els.homeClearBtn.style.display = "none";
-        hideToast();
-        stopRepeatLoop();
-        showScreen("home");
+      while (voiceLoopActive) {
+        if (lang !== "none") {
+          els.sirenAudio.volume = 0.3; // Duck volume
+          await speakTranslatedText(msg, lang);
+          els.sirenAudio.volume = 1.0; // Restore
+          if (!voiceLoopActive) break;
+          await new Promise(r => setTimeout(r, 4000));
+        } else {
+          await new Promise(r => setTimeout(r, 1000));
+        }
       }
     }
 
-    function showToast(text) {
-      els.paToast.textContent = text;
-      els.paToast.classList.add("show");
-    }
-
-    function hideToast() {
-      els.paToast.classList.remove("show");
-    }
-
-    function stopRepeatLoop() {
-      repeatToken += 1;
-      if (repeatTimer) {
-        clearTimeout(repeatTimer);
-        repeatTimer = null;
-      }
+    function stopAlertAudio() {
+      voiceLoopActive = false;
+      els.sirenAudio.pause(); els.sirenAudio.currentTime = 0;
       if (window.speechSynthesis) window.speechSynthesis.cancel();
     }
 
-    function speakOnce(text) {
-      return new Promise((resolve) => {
-        if (!els.useSpeech.checked || !window.speechSynthesis) return resolve();
-        const u = new SpeechSynthesisUtterance(text);
-        u.rate = 0.95;
-        u.onend = () => resolve();
-        u.onerror = () => resolve();
-        window.speechSynthesis.speak(u);
-      });
-    }
+    els.testVoiceBtn.addEventListener("click", async () => {
+      const msg = els.msg.value.trim(); const lang = els.ttsLang.value;
+      if (!msg || lang === "none") return alert("Enter message & select a language.");
+      els.testVoiceBtn.textContent = "Translating...";
+      await speakTranslatedText(msg, lang);
+      els.testVoiceBtn.textContent = "Test Audio";
+    });
 
-    async function announceOnPA(payload) {
-      if (!PA_PROXY_URL) return { ok: true, demo: true };
-      const res = await fetch(PA_PROXY_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`PA proxy HTTP ${res.status}`);
-      return { ok: true, demo: false };
-    }
+    /* BROADCAST LOGIC */
+    els.sendBtn.addEventListener("click", async () => {
+      const msg = els.msg.value.trim(); const lang = els.ttsLang.value;
+      if (!msg) return alert("Message is required.");
 
-    async function playOneCycle(alert, cycle, token) {
-      if (token !== repeatToken) return false;
-      const spoken = `Attention. ${alert.typeLabel} alert for ${alert.areaName}. ${alert.message}`;
-      const countLabel = alert.repeatMax === Infinity ? `${cycle}/∞` : `${cycle}/${alert.repeatMax}`;
-
-      if (alert.pa) {
-        await announceOnPA({
-          action: "emergency_page",
-          device: "GSC3570",
-          alertType: alert.type,
-          message: alert.message,
-          area: alert.area,
-          areaName: alert.areaName,
-          pageExtension: alert.pageExt,
-          priority: "emergency",
-          alarmOut: true,
-          cycle,
-          repeatMax: alert.repeatMax === Infinity ? "infinity" : alert.repeatMax,
-        });
-        showToast(`PA ${countLabel} · ${alert.areaName}`);
-      }
-
-      await speakOnce(spoken);
-      if (token !== repeatToken) return false;
-
-      alert.played = cycle;
-      setLiveUI({ ...alert });
-      log(`PLAY #${countLabel} ${alert.type.toUpperCase()} → ${alert.areaName}`);
-      return true;
-    }
-
-    async function startRepeatLoop(alert) {
-      stopRepeatLoop();
-      const token = ++repeatToken;
-      const max = alert.repeatMax;
-
-      for (let cycle = 1; max === Infinity || cycle <= max; cycle++) {
-        if (token !== repeatToken) return;
-        const ok = await playOneCycle(alert, cycle, token);
-        if (!ok || token !== repeatToken) return;
-
-        if (max !== Infinity && cycle >= max) {
-          log(`COMPLETED ${max}× repeats`);
-          setStatus(`Done ${max}×`, true);
-          els.liveMeta.textContent = `${alert.areaName} · finished ${max}× · tap Clear`;
-          return;
-        }
-
-        await new Promise((resolve) => {
-          repeatTimer = setTimeout(resolve, REPEAT_GAP_MS);
-        });
-      }
-    }
-
-    async function sendAlert() {
-      if (busy || !selectedType) return;
-      const message = els.message.value.trim();
-      if (!message) return alert("Enter a message");
-
-      busy = true;
-      els.sendBtn.disabled = true;
-
-      const area = getArea();
-      const repeatMax = repeatMode === "infinity" ? Infinity : Number(repeatMode);
+      els.sendBtn.disabled = true; els.sendBtn.textContent = "Broadcasting...";
 
       try {
-        stopRepeatLoop();
-        const alertObj = {
-          type: selectedType.id,
-          typeLabel: selectedType.label,
-          message,
-          area: area.id,
-          areaName: area.name,
-          pageExt: area.pageExt,
-          pa: els.announcePA.checked,
-          at: new Date().toISOString(),
-          repeatMax,
-          played: 0,
-        };
-        setLiveUI(alertObj);
-        log(`STARTED ${selectedType.label.toUpperCase()} → ${area.name} | ${repeatLabel()}`);
-        startRepeatLoop(alertObj);
-        // 🎯 NEW: Broadcast the alert to all TVs via PocketBase
-        // Note: You will need to loop through your displays or update them all
-        const displays = await pb.collection("displays").getFullList();
-        for (const display of displays) {
-            await pb.collection("displays").update(display.id, {
-                current_type: "alert",
-                current_command: selectedType.id,
-                current_title: message
-            });
+        const updateData = { current_type: "alert", current_command: selectedType.id, current_title: msg, current_lang: lang };
+        if (selectedTarget.id === "all") {
+          const all = await pb.collection("displays").getFullList({ requestKey: null });
+          await Promise.all(all.map(d => pb.collection("displays").update(d.id, updateData)));
+        } else {
+          await pb.collection("displays").update(selectedTarget.id, updateData);
         }
-      } catch (err) {
-        log(`FAILED → ${err.message || err}`);
-        alert("Failed to send alert.");
-      } finally {
-        busy = false;
-        els.sendBtn.disabled = false;
-      }
-    }
 
-    async function clearAlert() {
-      if (busy) return;
-      busy = true;
+        // Save local state for refresh recovery
+        localStorage.setItem("active_alert", JSON.stringify({ typeLabel: selectedType.label, message: msg, areaName: selectedTarget.name, lang }));
+        
+        // Setup Live UI
+        els.liveType.textContent = selectedType.label.toUpperCase();
+        els.liveType.style.color = selectedType.color;
+        els.liveMsg.textContent = msg;
+        els.liveMeta.textContent = `Target: ${selectedTarget.name}`;
+        
+        switchScreen("live");
+      } catch (err) { 
+        alert("Failed to push alert to TVs."); 
+      } finally { 
+        els.sendBtn.disabled = false; els.sendBtn.textContent = "Broadcast Alert Now"; 
+      }
+    });
+
+    els.clearBtn.addEventListener("click", async () => {
+      els.clearBtn.textContent = "Clearing...";
       try {
-        stopRepeatLoop();
-        if (PA_PROXY_URL) {
-          await fetch(PA_PROXY_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "clear_page", device: "GSC3570", alarmOut: false }),
-          });
-        }
-        setLiveUI(null);
-        log("CLEARED live emergency");
-        // 🎯 NEW: Broadcast the alert to all TVs via PocketBase
-        // Note: You will need to loop through your displays or update them all
-        const displays = await pb.collection("displays").getFullList();
-        for (const display of displays) {
-            await pb.collection("displays").update(display.id, {
-                current_type: "idle",
-                current_command: selectedType.id,
-                current_title: message
-            });
-        }
-      } catch (err) {
-        log(`CLEAR FAILED → ${err.message || err}`);
-        alert("Clear failed.");
-      } finally {
-        busy = false;
-      }
-    }
+        const updateData = { current_type: "idle", current_command: null, current_title: null, current_lang: "" };
+        const all = await pb.collection("displays").getFullList({ requestKey: null });
+        await Promise.all(all.map(d => pb.collection("displays").update(d.id, updateData)));
 
-    function addAlertType() {
-      const label = els.newTypeLabel.value.trim();
-      const icon = els.newTypeIcon.value.trim() || "⚠️";
-      const color = els.newTypeColor.value || "#c62828";
-      const preset = els.newTypeMessage.value.trim();
-      if (!label) return alert("Enter a name");
-      if (!preset) return alert("Enter a message");
-      const id = uniqueId(slugify(label), alertTypes);
-      alertTypes.push({ id, label, icon, color, preset });
-      saveTypes();
-      els.newTypeLabel.value = "";
-      els.newTypeIcon.value = "";
-      els.newTypeMessage.value = "";
-      renderManageLists();
-      renderTypes();
-      log(`CREATED type "${label}"`);
-    }
-
-    function addArea() {
-      const name = els.newAreaName.value.trim();
-      const pageExt = els.newAreaExt.value.trim();
-      if (!name) return alert("Enter an area name");
-      if (!pageExt) return alert("Enter a PA extension");
-      const id = uniqueId(slugify(name), areas);
-      areas.push({ id, name, pageExt });
-      saveAreas();
-      els.newAreaName.value = "";
-      els.newAreaExt.value = "";
-      renderManageLists();
-      renderAreas();
-      log(`CREATED area "${name}" (${pageExt})`);
-    }
-
-    function deleteType(id) {
-      if (alertTypes.length <= 1) return alert("Keep at least one type");
-      if (!confirm("Delete this alert type?")) return;
-      alertTypes = alertTypes.filter((t) => t.id !== id);
-      saveTypes();
-      renderTypes();
-      renderManageLists();
-    }
-
-    function deleteArea(id) {
-      if (areas.length <= 1) return alert("Keep at least one area");
-      if (!confirm("Delete this area?")) return;
-      areas = areas.filter((a) => a.id !== id);
-      saveAreas();
-      renderAreas();
-      renderManageLists();
-    }
-
-    // Events
-    els.typeGrid.addEventListener("click", (e) => {
-      const btn = e.target.closest(".type-btn");
-      if (!btn) return;
-      openCompose(btn.dataset.id);
-    });
-
-    els.repeatGrid.addEventListener("click", (e) => {
-      const btn = e.target.closest(".repeat-btn");
-      if (!btn) return;
-      setRepeat(btn.dataset.repeat);
-    });
-
-    els.area.addEventListener("change", () => {
-      if (selectedType && els.composeScreen.classList.contains("active")) {
-        const area = getArea();
-        els.composeSub.textContent = `${area.name} · PA ${area.pageExt}`;
+        localStorage.removeItem("active_alert");
+        stopAlertAudio();
+        selectedType = null; selectedTarget = null;
+        switchScreen("step1");
+      } catch (err) { 
+        alert("Failed to clear displays."); 
+      } finally { 
+        els.clearBtn.textContent = "Clear & Deactivate Alert"; 
       }
     });
 
-    els.backBtn.addEventListener("click", () => showScreen("home"));
-    els.cancelComposeBtn.addEventListener("click", () => showScreen("home"));
-    els.sendBtn.addEventListener("click", sendAlert);
-    els.clearBtn.addEventListener("click", clearAlert);
-    els.homeClearBtn.addEventListener("click", clearAlert);
+    /* SETTINGS LOGIC */
+    function renderManageLists() {
+      els.typeList.innerHTML = alertTypes.map((t) => `
+        <div class="list-item">
+          <div><span style="font-size: 20px; margin-right: 8px;">${escapeHtml(t.icon)}</span> ${escapeHtml(t.label)}</div>
+          <button class="btn-sm danger" data-del-type="${t.id}">Delete</button>
+        </div>
+      `).join("");
+    }
 
-    els.settingsBtn.addEventListener("click", () => {
-      renderManageLists();
-      renderLog();
-      els.settingsSheet.classList.add("open");
-    });
+    els.settingsBtn.addEventListener("click", () => { renderManageLists(); els.settingsSheet.classList.add("open"); });
     els.closeSettingsBtn.addEventListener("click", () => els.settingsSheet.classList.remove("open"));
 
-    els.addTypeBtn.addEventListener("click", addAlertType);
-    els.addAreaBtn.addEventListener("click", addArea);
+    els.addTypeBtn.addEventListener("click", () => {
+      const label = els.newTypeLabel.value.trim(); const icon = els.newTypeIcon.value.trim() || "⚠️";
+      const color = els.newTypeColor.value || "#c62828"; const preset = els.newTypeMessage.value.trim();
+      if (!label || !preset) return alert("Enter name and message");
+      alertTypes.push({ id: "type_" + Date.now(), label, icon, color, preset });
+      saveTypes();
+      els.newTypeLabel.value = ""; els.newTypeIcon.value = ""; els.newTypeMessage.value = "";
+      renderManageLists(); renderTypes();
+    });
 
     els.typeList.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-del-type]");
-      if (btn) deleteType(btn.dataset.delType);
-    });
-    els.areaList.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-del-area]");
-      if (btn) deleteArea(btn.dataset.delArea);
+      if (btn && alertTypes.length > 1 && confirm("Delete this alert?")) {
+        alertTypes = alertTypes.filter((t) => t.id !== btn.dataset.delType);
+        saveTypes(); renderTypes(); renderManageLists();
+      }
     });
 
-    // Boot
-    renderAreas();
+    /* BOOT & RESUME LOGIC */
+    els.resumeAudioBtn.addEventListener("click", () => {
+      els.resumeOverlay.classList.add("hidden");
+      const saved = JSON.parse(localStorage.getItem("active_alert"));
+      runAlertAudio(saved.message, saved.lang);
+    });
+
+    fetchDisplays();
     renderTypes();
-    setRepeat("30");
-    renderLog();
-    showScreen("home");
-
-    const saved = localStorage.getItem(KEYS.live);
-    if (saved) {
-      try {
-        const alertObj = JSON.parse(saved);
-        if (alertObj.repeatMax === "infinity") alertObj.repeatMax = Infinity;
-        liveAlert = alertObj;
-        els.liveType.textContent = (alertObj.typeLabel || alertObj.type).toUpperCase();
-        els.liveMsg.textContent = alertObj.message;
-        els.liveMeta.textContent = `${alertObj.areaName} · paused — Clear or send again`;
-        setStatus("Paused", true);
-        els.homeClearBtn.style.display = "inline-flex";
-        showScreen("live");
-      } catch { /* ignore */ }
+    
+    // Check if an alert was active before refresh
+    const savedAlert = localStorage.getItem("active_alert");
+    if (savedAlert) {
+      const parsed = JSON.parse(savedAlert);
+      els.liveType.textContent = parsed.typeLabel.toUpperCase();
+      els.liveMsg.textContent = parsed.message;
+      els.liveMeta.textContent = `Target: ${parsed.areaName}`;
+      switchScreen("live");
+      els.resumeOverlay.classList.remove("hidden"); // Force browser interaction
+    } else {
+      switchScreen("step1");
     }
   </script>
 </body>
