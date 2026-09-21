@@ -7,67 +7,78 @@
   <style>
     :root {
       --bg: #ffffff;
-      --text: #0f172a;
+      --text: #172533; /* VRL Navy */
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --danger: #ef4444;
+      --danger: #ef4444; 
       --danger-hover: #dc2626;
       --surface: #f8fafc;
-      --primary: #3b82f6;
+      --primary: #00a887; /* VRL Teal */
+      --primary-dark: #172533; 
     }
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
     
     body, html { 
-      margin: 0; padding: 0; background: transparent; /* Blends with React iframe */
+      margin: 0; padding: 0; background: #f1f5f9; /* Blends perfectly with React dashboard */
       color: var(--text); height: 100%; overflow: hidden; 
     }
 
     .shell {
       width: 100%; height: 100%; display: flex; flex-direction: column;
-      position: relative; overflow-y: auto; padding: 20px;
+      position: relative; overflow: hidden; 
     }
-
-    /* Floating Settings Button */
-    .settings-fab {
-      position: absolute; top: 20px; right: 20px; z-index: 10;
-      width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border);
-      background: var(--surface); cursor: pointer; font-size: 20px;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
-    }
-    .settings-fab:hover { background: #e2e8f0; }
 
     /* Screens & Flow */
-    .screen { display: none; flex-direction: column; gap: 24px; max-width: 900px; margin: 0 auto; width: 100%; padding-top: 10px; }
-    .screen.active { display: flex; animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .screen { display: none; flex-direction: column; gap: 24px; max-width: 900px; margin: 0 auto; width: 100%; }
+    .screen.active { display: flex; animation: fadeIn 0.2s ease-out; }
+    
+    /* 🎯 FIXED: Removed transform to prevent layout dancing */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .step-header { margin-bottom: 8px; }
-    .step-title { margin: 0; font-size: 24px; font-weight: 800; color: var(--text); }
+    .step-header { margin: 0; }
+    .step-title { margin: 0; font-size: 24px; font-weight: 800; color: var(--text); line-height: 1.2; }
     .step-subtitle { margin: 4px 0 0 0; font-size: 15px; color: var(--text-muted); }
 
+    /* 🎯 FIXED: Absolute positioning for Back Button */
     .sleek-back {
-      align-self: flex-start; background: none; border: none; padding: 8px 12px 8px 0;
-      font-size: 16px; font-weight: 700; color: var(--text-muted); cursor: pointer;
-      display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+      position: fixed;
+      left: 24px; /* Perfectly aligned under the React "Back to Menu" button */
+      top: 40px; 
+      background: #cbd5e1;
+      color: #1e293b; 
+      border: none; 
+      padding: 10px 16px; 
+      border-radius: 8px;
+      font-size: 14px; 
+      font-weight: 800; 
+      cursor: pointer;
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      transition: all 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      z-index: 100; /* Keeps it on top */
     }
-    .sleek-back:hover { color: var(--text); }
+    .sleek-back:hover { 
+      background: #94a3b8; 
+      color: #0f172a; 
+      transform: translateY(-1px);
+    }
 
     /* Card Grids */
-    .card-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
-    }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
 
     .card-btn {
       background: var(--surface); border: 2px solid var(--border); border-radius: 16px;
       padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 12px; cursor: pointer; transition: all 0.2s ease; text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
     }
     .card-btn .icon { font-size: 40px; }
     .card-btn .label { font-size: 18px; font-weight: 800; color: var(--text); }
     .card-btn .sub-label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-    
     .card-btn:hover { border-color: var(--hover-color, var(--primary)); transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
 
     /* Forms */
@@ -80,16 +91,12 @@
     }
     textarea:focus, select:focus, input:focus { border-color: var(--primary); }
     textarea { min-height: 120px; resize: none; }
-
     .tts-row { display: flex; gap: 12px; }
     .tts-row select { flex: 1; }
 
     /* Action Buttons */
     .actions { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-top: 16px; }
-    .btn {
-      padding: 18px; border: none; border-radius: 12px; font-size: 18px; font-weight: 800;
-      cursor: pointer; text-transform: uppercase; transition: transform 0.1s, opacity 0.2s;
-    }
+    .btn { padding: 18px; border: none; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: transform 0.1s, opacity 0.2s; }
     .btn:active { transform: scale(0.98); }
     .btn-send { background: var(--danger); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
     .btn-send:hover { background: var(--danger-hover); }
@@ -98,11 +105,7 @@
 
     /* Live Screen */
     .live-screen { align-items: center; justify-content: center; text-align: center; height: 100%; }
-    .pulse-ring {
-      width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--danger);
-      display: flex; align-items: center; justify-content: center; font-size: 40px;
-      animation: pulse 2s infinite; margin: 0 auto 24px;
-    }
+    .pulse-ring { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--danger); display: flex; align-items: center; justify-content: center; font-size: 40px; animation: pulse 2s infinite; margin: 0 auto 24px; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 30px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     .live-type { font-size: 48px; font-weight: 900; margin: 0 0 12px; text-transform: uppercase; color: var(--danger); }
     .live-msg { font-size: 24px; font-weight: 600; max-width: 700px; margin: 0 auto; line-height: 1.4; }
@@ -111,10 +114,7 @@
     /* Settings Sheet */
     .sheet { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 50; padding: 20px; }
     .sheet.open { display: block; }
-    .sheet-content { 
-      background: white; max-width: 600px; margin: 0 auto; border-radius: 16px; height: 100%;
-      display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-    }
+    .sheet-content { background: white; max-width: 600px; margin: 0 auto; border-radius: 16px; height: 100%; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     .sheet-head { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
     .sheet-head h2 { margin: 0; }
     .sheet-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 24px; }
@@ -122,8 +122,6 @@
     .btn-sm { padding: 8px 16px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     .btn-sm.danger { background: #fee2e2; color: var(--danger); }
     .btn-sm.ok { background: #10b981; color: white; padding: 12px 24px; }
-
-    /* Overlay */
     .resume-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
     .resume-overlay.hidden { display: none; }
   </style>
@@ -132,80 +130,92 @@
   <audio id="sirenAudio" src="/audio/siren.wav" loop></audio>
 
   <div class="shell">
-    <button class="settings-fab" id="settingsBtn" title="Alert Settings">⚙️</button>
+    
+    <!-- ⚙️ HIDDEN SETTINGS BUTTON (Kept for JS reference to prevent crashes) -->
+    <button id="settingsBtn" style="display: none;"></button>
 
-    <!-- STEP 1: Select Alert Type -->
-    <section class="screen active" id="step1">
-      <div class="step-header">
-        <h2 class="step-title">1. Select Emergency Type</h2>
-        <p class="step-subtitle">What type of alert are you broadcasting?</p>
-      </div>
-      <div class="card-grid" id="typeGrid"></div>
-    </section>
-
-    <!-- STEP 2: Select Target Area -->
-    <section class="screen" id="step2">
-      <button class="sleek-back" id="backTo1">← Back to Alerts</button>
-      <div class="step-header">
-        <h2 class="step-title">2. Select Target Location</h2>
-        <p class="step-subtitle" id="step2Subtitle">Where should the <strong id="step2AlertName">Alert</strong> be displayed?</p>
-      </div>
-      <div class="card-grid" id="areaGrid">
-        <!-- Fetched dynamically -->
-      </div>
-    </section>
-
-    <!-- STEP 3: Compose & Send -->
-    <section class="screen" id="step3">
-      <button class="sleek-back" id="backTo2">← Back to Locations</button>
-      <div class="step-header">
-        <h2 class="step-title">3. Broadcast Details</h2>
-        <p class="step-subtitle">Review the message and voice settings.</p>
-      </div>
+    <!-- 🎯 MAIN SCROLLABLE WIZARD CONTAINER -->
+    <div style="padding: 40px 20px 20px 20px; overflow-y: auto; flex: 1;">
       
-      <div class="field">
-        <label>Message (English)</label>
-        <textarea id="message" maxlength="240"></textarea>
-      </div>
-
-      <div class="field">
-        <label>Tablet Voice & Auto-Translation</label>
-        <div class="tts-row">
-          <select id="ttsLang">
-            <option value="none">🔇 Siren Only (No Voice)</option>
-            <option value="en-IN">🗣️ English</option>
-            <option value="hi-IN">🗣️ Hindi (Auto-Translate)</option>
-            <option value="mr-IN">🗣️ Marathi (Auto-Translate)</option>
-            <option value="gu-IN">🗣️ Gujarati (Auto-Translate)</option>
-          </select>
-          <button type="button" class="btn btn-test" id="testVoiceBtn">Test Audio</button>
+      <!-- STEP 1: Select Alert Type -->
+      <section class="screen active" id="step1">
+        <div class="step-header">
+          <h2 class="step-title">1. Select Emergency Type</h2>
+          <p class="step-subtitle">What type of alert are you broadcasting?</p>
         </div>
-      </div>
+        <div class="card-grid" id="typeGrid"></div>
+      </section>
 
-      <div class="actions">
-        <button class="btn btn-cancel" id="cancelComposeBtn">Cancel</button>
-        <button class="btn btn-send" id="sendBtn">Broadcast Alert Now</button>
-      </div>
-    </section>
+      <!-- STEP 2: Select Target Area -->
+      <section class="screen" id="step2">
+        <button class="sleek-back" id="backTo1">⬅ Back</button>
+        <div class="step-header">
+          <h2 class="step-title">2. Select Target Location</h2>
+          <p class="step-subtitle" id="step2Subtitle">Where should the <strong id="step2AlertName">Alert</strong> be displayed?</p>
+        </div>
+        <div class="card-grid" id="areaGrid">
+          <!-- Fetched dynamically -->
+        </div>
+      </section>
 
-    <!-- LIVE SCREEN -->
-    <section class="screen live-screen" id="liveScreen">
-      <div class="pulse-ring">⚠️</div>
-      <h2 class="live-type" id="liveType">FIRE</h2>
-      <p class="live-msg" id="liveMsg">Evacuate immediately.</p>
-      <div class="live-meta" id="liveMeta">Target: All Displays</div>
+      <!-- STEP 3: Compose & Send -->
+      <section class="screen" id="step3">
+        <button class="sleek-back" id="backTo2">⬅ Back</button>
+        <div class="step-header">
+          <h2 class="step-title">3. Broadcast Details</h2>
+          <p class="step-subtitle">Review the message and voice settings.</p>
+        </div>
+        
+        <div class="field">
+          <label>Message (English)</label>
+          <textarea id="message" maxlength="240"></textarea>
+        </div>
       
-      <button class="btn btn-send" id="clearBtn" style="margin-top: 40px; padding: 24px 48px; background: #10b981; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
-        Clear & Deactivate Alert
-      </button>
-    </section>
+
+        <div class="field">
+          <label>Tablet Voice & Auto-Translation</label>
+          <div class="tts-row">
+            <select id="ttsLang">
+              <option value="none">🔇 Siren Only (No Voice)</option>
+              <option value="en-IN">🗣️ English</option>
+              <option value="hi-IN">🗣️ Hindi (Auto-Translate)</option>
+              <option value="mr-IN">🗣️ Marathi (Auto-Translate)</option>
+              <option value="gu-IN">🗣️ Gujarati (Auto-Translate)</option>
+            </select>
+            <button type="button" class="btn btn-test" id="testVoiceBtn">Test Audio</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-cancel" id="cancelComposeBtn">Cancel</button>
+          <button class="btn btn-send" id="sendBtn">Broadcast Alert Now</button>
+        </div>
+      </section>
+
+      <!-- LIVE SCREEN -->
+      <section class="screen live-screen" id="liveScreen">
+        <div class="pulse-ring">⚠️</div>
+        <h2 class="live-type" id="liveType">FIRE</h2>
+        <p class="live-msg" id="liveMsg">Evacuate immediately.</p>
+        <div class="live-meta" id="liveMeta">Target: All Displays</div>
+        
+        <button class="btn btn-send" id="clearBtn" style="margin-top: 40px; padding: 24px 48px; background: #10b981; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+          Clear & Deactivate Alert
+        </button>
+      </section>
+    </div>
+
+    <!-- 🎯 FIXED: COPYRIGHT FOOTER LOCKED TO BOTTOM -->
+    <div style="text-align: center; color: var(--text-muted); font-size: 13px; font-weight: 500; padding: 20px; flex-shrink: 0; background-color: transparent; border-top: 1px solid rgba(0,0,0,0.05);">
+      &copy; 2026 VRL Digital Signage. All rights reserved.
+    </div>
 
     <!-- Settings Sheet -->
     <div class="sheet" id="settingsSheet">
       <div class="sheet-content">
         <div class="sheet-head">
           <h2>Manage Alert Types</h2>
-          <button class="settings-fab" id="closeSettingsBtn" style="position: static;">✕</button>
+          <button class="settings-fab" id="closeSettingsBtn" style="position: static; border: 1px solid #e2e8f0; box-shadow: none;">✕</button>
         </div>
         <div class="sheet-body">
           <div id="typeList" style="margin-bottom: 16px;"></div>
@@ -214,7 +224,6 @@
             <h3 style="margin-top: 0;">Add New Alert</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
               <div class="field"><label>Name</label><input id="newTypeLabel" type="text" placeholder="Gas Leak"></div>
-              
             </div>
             <div class="field" style="margin-bottom: 12px;"><label>Color</label><input id="newTypeColor" type="color" value="#c62828" style="padding: 4px; height: 48px;"></div>
             <div class="field" style="margin-bottom: 16px;"><label>Default Message</label><textarea id="newTypeMessage" style="min-height: 80px;"></textarea></div>
@@ -224,7 +233,7 @@
       </div>
     </div>
 
-    <!-- Audio Resume Overlay (Browser Autoplay Policy Fix) -->
+    <!-- Audio Resume Overlay -->
     <div id="resumeOverlay" class="resume-overlay hidden">
       <h2 style="margin-bottom: 8px;">Active Emergency Running</h2>
       <p style="color: var(--text-muted); margin-bottom: 24px;">The dashboard was refreshed.</p>
@@ -234,6 +243,12 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.js"></script>
   <script>
+    // 🎯 HIDE OLD SETTINGS BUTTON IF LOADED FROM UNIFIED NAVY HEADER
+    if (window.location.search.includes('mode=bypass')) {
+      const oldSettingsBtn = document.getElementById('settingsBtn');
+      if (oldSettingsBtn) oldSettingsBtn.style.display = 'none';
+    }
+    
     const pb = new PocketBase("http://127.0.0.1:8090");
 
     const DEFAULT_TYPES = [
@@ -271,7 +286,9 @@
       els.step1.classList.remove("active"); els.step2.classList.remove("active"); 
       els.step3.classList.remove("active"); els.live.classList.remove("active");
       els[screen].classList.add("active");
-      els.settingsBtn.style.display = screen === 'live' ? 'none' : 'flex';
+      if (els.settingsBtn) {
+        els.settingsBtn.style.display = 'none'; // Keep it permanently hidden
+      }
     }
 
     /* STEP 1: Render Alerts */

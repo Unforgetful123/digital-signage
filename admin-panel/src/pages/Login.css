@@ -58,24 +58,26 @@ input {
 }
 
 input:focus {
-  border-color: #0078d4;
-  box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.15);
+  border-color: #00a887;
+  box-shadow: 0 0 0 3px rgba(0, 168, 135, 0.15);
 }
 
+/* Update the login button to VRL Teal */
 .login-btn {
   width: 100%;
-  background-color: #0078d4;
+  background-color: #00a887;
   color: #fff;
   font-size: 1rem;
-  padding: 10px 0;
+  padding: 12px 0;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: bold;
 }
 
 .login-btn:hover {
-  background-color: #005a9e;
+  background-color: #008f73;
 }
 
 .login-btn:disabled {
@@ -107,15 +109,16 @@ input:focus {
 .forgot-link {
   background: none;
   border: none;
-  color: #007bff;
+  color: #00a887;
   font-size: 0.85rem;
   cursor: pointer;
   padding: 0;
+  font-weight: 600;
   text-decoration: underline;
 }
 
 .forgot-link:hover {
-  color: #0056b3;
+  color: #008f73;
 }
 
 .forgot-link:disabled {

@@ -254,3 +254,49 @@
   background-color: #94a3b8;
   cursor: not-allowed;
 }
+
+/* 🎯 Update layout height to fit under the top bar */
+.admin-layout {
+  display: flex;
+  height: 100%; /* Changed from 100vh */
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f1f5f9; 
+}
+
+/* 🎯 Update Sidebar Title */
+.sidebar-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #00a887; /* Changed from blue to Teal */
+}
+
+/* 🎯 Update Active Nav Button */
+.nav-btn.active {
+  background-color: #00a887; /* Changed to Teal */
+  color: #ffffff; /* Changed to White */
+  font-weight: bold;
+}
+
+/* 🎯 Update Action Tabs (Upload Media, Add Birthday, etc) */
+.action-btn.active-action {
+  color: #00a887; /* Changed to Teal */
+  border-bottom-color: #00a887;
+  background-color: white;
+}
+
+/* 🎯 Update Form Inputs Focus */
+.form-control:focus {
+  outline: none;
+  border-color: #00a887;
+  box-shadow: 0 0 0 3px rgba(0, 168, 135, 0.2);
+}
+
+/* 🎯 Update Primary Submit Buttons */
+.btn-primary { 
+  background-color: #00a887; /* Changed from blue to Teal */
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #008f73;
+}

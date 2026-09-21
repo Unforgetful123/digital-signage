@@ -71,7 +71,12 @@ export default function Login({ onLogin }) {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-title">VRL Smart Digital Signage</h1>
+        {/* 🎯 NEW: Logo Injection */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <img src="/logo.png" alt="VRL Logo" style={{ height: '60px', objectFit: 'contain' }} onError={(e) => e.target.style.display='none'} />
+        </div>
+        
+        <h1 className="login-title" style={{ color: '#172533' }}>VRL Smart Digital Signage</h1>
         <h2 className="login-subtitle">Admin Login</h2>
 
         <form onSubmit={handleLogin}>
@@ -97,7 +102,6 @@ export default function Login({ onLogin }) {
             />
           </div>
 
-          {/* 🔗 Forgot Password Link */}
           <div className="forgot-password-container">
             <button 
               type="button" 
@@ -113,12 +117,12 @@ export default function Login({ onLogin }) {
           {message && <p className="success-text">{message}</p>}
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Processing..." : "Login"}
+            {loading ? "Processing..." : "Secure Login"}
           </button>
         </form>
 
-        <footer className="login-footer">© {new Date().getFullYear()} VRLogical Technologies</footer>
+        <footer className="login-footer">© {new Date().getFullYear()} VRL Digital Signage. All rights reserved.</footer>
       </div>
     </div>
-  );  
+  );
 }

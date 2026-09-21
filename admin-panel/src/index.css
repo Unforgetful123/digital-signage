@@ -110,3 +110,18 @@ button.danger:hover {
   background: linear-gradient(135deg, #c53030, #9b2c2c);
   transform: translateY(-2px);
 }
+
+.btn-primary, button[type="submit"] {
+  background-color: #00a887 !important; /* VRL Teal */
+  border-color: #00a887 !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover, button[type="submit"]:hover {
+  background-color: #008f73 !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: #00a887 !important;
+  border-bottom: 3px solid #00a887 !important;
+}

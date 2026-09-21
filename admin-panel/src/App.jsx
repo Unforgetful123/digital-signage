@@ -57,21 +57,30 @@ export default function App() {
   }, []);
 
   /* =========================================
-     🎯 NEW: TABLET SELECTION SCREEN
+     🎯 TABLET SELECTION SCREEN (THEMED)
   ========================================= */
   if (!appMode) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#0f172a', padding: '40px', boxSizing: 'border-box', fontFamily: 'system-ui' }}>
-        <h1 style={{ color: '#ffffff', textAlign: 'center', marginBottom: '40px', fontSize: '2.5rem' }}>VRL Digital Signage</h1>
-        <div style={{ display: 'flex', gap: '30px', flex: 1 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#172533', padding: '40px', boxSizing: 'border-box', fontFamily: 'system-ui', position: 'relative' }}>
+        
+        {/* BRANDING HEADER */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '50px' }}>
+          {/* Logo reads from public/logo.png */}
+          <img src="/logo.png" alt="VRL" style={{ height: '60px', objectFit: 'contain' }} onError={(e) => e.target.style.display='none'} />
+          <h1 style={{ color: '#ffffff', margin: 0, fontSize: '2.5rem' }}>VRL Smart Digital Signage</h1>
+        </div>
+
+        <div style={{ display: 'flex', gap: '30px', flex: 1, paddingBottom: '60px' }}>
+          {/* TEAL ADMIN BUTTON */}
           <button 
             onClick={() => setAppMode('admin')} 
-            style={{ flex: 1, backgroundColor: '#1e293b', color: 'white', borderRadius: '24px', border: '2px solid #334155', fontSize: '2rem', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', transition: 'background 0.2s' }}
+            style={{ flex: 1, backgroundColor: '#00a887', color: 'white', borderRadius: '24px', border: 'none', fontSize: '2rem', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', boxShadow: '0 10px 25px rgba(0, 168, 135, 0.3)' }}
           >
             <span style={{ fontSize: '5rem' }}>🔐</span>
             Admin Panel
           </button>
           
+          {/* DANGER EMERGENCY BUTTON */}
           <button 
             onClick={() => setAppMode('emergency')} 
             style={{ flex: 1, backgroundColor: '#dc2626', color: 'white', borderRadius: '24px', border: 'none', fontSize: '2rem', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px', boxShadow: '0 10px 25px rgba(220, 38, 38, 0.4)' }}
@@ -80,25 +89,81 @@ export default function App() {
             Emergency Alert
           </button>
         </div>
+
+        {/* COPYRIGHT FOOTER */}
+        <div style={{ position: 'absolute', bottom: '20px', width: '100%', left: 0, textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem', fontWeight: '500' }}>
+          &copy; {new Date().getFullYear()} VRL Smart Digital Signage. All rights reserved.
+        </div>
       </div>
     );
   }
 
   /* =========================================
-     🚨 NEW: EMERGENCY BYPASS ROUTE
+     🚨 EMERGENCY BYPASS ROUTE
   ========================================= */
   if (appMode === 'emergency') {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9' }}>
-        <div style={{ padding: '20px', backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center' }}>
-          <button onClick={() => setAppMode(null)} style={{ padding: '12px 24px', fontSize: '1.2rem', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer' }}>
-            ⬅️ Back to Menu
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f8fafc' }}>
+        
+        {/* 🎯 SYMMETRICAL NAVY/TEAL HEADER */}
+        <div style={{ height: '72px', backgroundColor: '#172533', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 24px', borderBottom: '4px solid #00a887', zIndex: 10, position: 'relative' }}>
+          
+          {/* ABSOLUTE LEFT: Back Button */}
+          <button 
+            onClick={() => setAppMode(null)} 
+            style={{ 
+              position: 'absolute', left: '24px',
+              padding: '8px 16px', fontSize: '0.95rem', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Menu
           </button>
-          <h2 style={{ margin: '0 0 0 20px', color: '#dc2626' }}>Emergency Operations</h2>
+          
+          {/* CENTER: Logo & Title */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <img src="/logo.png" alt="VRL Logo" style={{ height: '36px', objectFit: 'contain' }} onError={(e) => e.target.style.display='none'} />
+            <h1 style={{ margin: 0, fontSize: '1.5rem', color: '#ffffff', fontWeight: '800', letterSpacing: '0.5px' }}>Emergency Operations</h1>
+          </div>
+
+          {/* ABSOLUTE RIGHT: Settings Button */}
+          <button 
+            onClick={() => {
+              // Reaches into the iframe and clicks the hidden settings button
+              const iframe = document.getElementById('emergency-iframe');
+              if (iframe && iframe.contentWindow) {
+                const btn = iframe.contentWindow.document.getElementById('settingsBtn');
+                if (btn) btn.click();
+              }
+            }}
+            style={{ 
+              position: 'absolute', right: '24px',
+              padding: '8px 16px', fontSize: '0.95rem', backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Settings
+          </button>
         </div>
         
-        <div style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
-          <EmergencyAlert />
+        {/* Iframe for the wizard */}
+        <div style={{ flex: 1, width: '100%', overflow: 'hidden' }}>
+          <iframe 
+            id="emergency-iframe"
+            src="/emergency-alert.html" 
+            style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+            title="Emergency Operations"
+          />
         </div>
       </div>
     );
@@ -111,19 +176,100 @@ export default function App() {
     return (
       <div style={{ position: 'relative', height: '100vh', backgroundColor: '#f1f5f9' }}>
         <Toaster position="top-center" />
-        <button onClick={() => setAppMode(null)} style={{ position: 'absolute', top: '20px', left: '20px', padding: '10px 20px', fontSize: '1rem', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', zIndex: 10 }}>
-          ⬅️ Back
+        
+        {/* 🎯 PREMIUM FLOATING BACK BUTTON */}
+        <button 
+          onClick={() => setAppMode(null)} 
+          style={{ 
+            position: 'absolute',
+            top: '24px',
+            left: '24px',
+            padding: '10px 20px', 
+            fontSize: '0.95rem', 
+            backgroundColor: '#ffffff', 
+            border: '1px solid #e2e8f0', 
+            borderRadius: '999px', /* Modern pill shape */
+            cursor: 'pointer', 
+            fontWeight: '600', 
+            color: '#172533', /* VRL Navy */
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            transition: 'all 0.2s ease',
+            zIndex: 10
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = '#f8fafc';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Menu
         </button>
+        
         <Login onLogin={setUser} />
       </div>
     );
   }
 
+  // 🎯 NEW: Unified Logout Function
+  const handleLogout = () => {
+    pb.authStore.clear();
+    setUser(null);
+    setAppMode('admin'); 
+  };
+
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f1f5f9', overflow: 'hidden' }}>
       <Toaster position="top-center" />
-      <Dashboard user={user} />
-      <AlertScheduler />
-    </>
+      
+      {/* 🎯 HIGH-CONTRAST HEADER */}
+      <header style={{ 
+        backgroundColor: '#ffffff', 
+        padding: '0 24px', 
+        height: '72px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        borderBottom: '4px solid #00a887', 
+        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+        flexShrink: 0 
+      }}>
+         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+           <img src="/logo.png" alt="VRL" style={{ height: '36px', objectFit: 'contain' }} onError={(e) => e.target.style.display='none'} />
+           {/* Navy Text for maximum readability against white */}
+           <h1 style={{ color: '#172533', margin: 0, fontSize: '1.5rem', fontWeight: '800' }}>VRL Smart Signage Dashboard</h1>
+         </div>
+         
+         <button onClick={handleLogout} style={{ 
+           padding: '8px 20px', 
+           borderRadius: '8px', 
+           backgroundColor: '#fef2f2', 
+           border: '1px solid #f87171', 
+           color: '#dc2626', 
+           cursor: 'pointer', 
+           fontWeight: 'bold',
+           transition: 'all 0.2s'
+         }}>
+           Logout
+         </button>
+      </header>
+
+      {/* Main Admin Content */}
+      <div style={{ flex: 1, height: 'calc(100vh - 76px)' }}>
+        <Dashboard user={user} />
+        <AlertScheduler />
+      </div>
+    </div>
   );
 }

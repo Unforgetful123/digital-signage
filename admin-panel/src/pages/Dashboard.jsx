@@ -37,10 +37,6 @@ export default function Dashboard({ user }) {
     };
   }, []);
 
-  const handleLogout = () => {
-    pb.authStore.clear();
-    window.location.reload();
-  };
 
   // 🎯 NEW: Unified Action Center for the Home Tab
   const renderHomeActions = () => (
@@ -96,9 +92,7 @@ export default function Dashboard({ user }) {
     <div className="admin-layout">
       {/* ===== Left Sidebar ===== */}
       <aside className="sidebar">
-        <div className="sidebar-header">
-          <h2 className="sidebar-title">VRL Digital Signage</h2>
-        </div>
+        
         
         <nav className="sidebar-nav">
           <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
@@ -118,10 +112,6 @@ export default function Dashboard({ user }) {
           </button>
         </nav>
 
-        <div className="sidebar-footer">
-          <div className="admin-email">👤 {user?.email}</div>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
       </aside>
 
       {/* ===== Right Main Content Area ===== */}
