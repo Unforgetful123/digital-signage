@@ -61,16 +61,16 @@ export default function App() {
   ========================================= */
   if (!appMode) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#172533', padding: '40px', boxSizing: 'border-box', fontFamily: 'system-ui', position: 'relative' }}>
+      <div className="entry-screen" style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#172533', padding: '40px', boxSizing: 'border-box', fontFamily: 'system-ui', position: 'relative' }}>
         
         {/* BRANDING HEADER */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '50px' }}>
+        <div className="entry-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '50px' }}>
           {/* Logo reads from public/logo.png */}
           <img src="/logo.png" alt="VRL" style={{ height: '60px', objectFit: 'contain' }} onError={(e) => e.target.style.display='none'} />
           <h1 style={{ color: '#ffffff', margin: 0, fontSize: '2.5rem' }}>VRL Smart Digital Signage</h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '30px', flex: 1, paddingBottom: '60px' }}>
+        <div className="entry-options" style={{ display: 'flex', gap: '30px', flex: 1, paddingBottom: '60px' }}>
           {/* TEAL ADMIN BUTTON */}
           <button 
             onClick={() => setAppMode('admin')} 
@@ -106,7 +106,7 @@ export default function App() {
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f8fafc' }}>
         
         {/* 🎯 SYMMETRICAL NAVY/TEAL HEADER */}
-        <div style={{ height: '72px', backgroundColor: '#172533', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 24px', borderBottom: '4px solid #00a887', zIndex: 10, position: 'relative' }}>
+        <div className="emergency-header" style={{ height: '72px', backgroundColor: '#172533', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 24px', borderBottom: '4px solid #00a887', zIndex: 10, position: 'relative' }}>
           
           {/* ABSOLUTE LEFT: Back Button */}
           <button 
@@ -158,7 +158,7 @@ export default function App() {
         
         {/* Iframe for the wizard */}
         <div style={{ flex: 1, width: '100%', overflow: 'hidden' }}>
-          <iframe 
+          <iframe allow="microphone; autoplay" 
             id="emergency-iframe"
             src="/emergency-alert.html" 
             style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
@@ -234,7 +234,7 @@ export default function App() {
       <Toaster position="top-center" />
       
       {/* 🎯 HIGH-CONTRAST HEADER */}
-      <header style={{ 
+      <header className="app-header" style={{ 
         backgroundColor: '#ffffff', 
         padding: '0 24px', 
         height: '72px', 
@@ -266,7 +266,7 @@ export default function App() {
       </header>
 
       {/* Main Admin Content */}
-      <div style={{ flex: 1, height: 'calc(100vh - 76px)' }}>
+      <div className="app-body" style={{ flex: 1 }}>
         <Dashboard user={user} />
         <AlertScheduler />
       </div>

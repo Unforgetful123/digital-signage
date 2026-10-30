@@ -134,6 +134,15 @@ export default function BirthdayUpload() {
     }
   };
 
+  function downloadTemplate() {
+    const wb=XLSX.utils.book_new();
+    const sheet=XLSX.utils.aoa_to_sheet([['Name', 'Designation', 'DOB']]);
+    sheet['!cols']=['Name', 'Designation', 'DOB'].map(()=>({wch:24}));
+    XLSX.utils.book_append_sheet(wb,sheet,'Upload');
+    const help=XLSX.utils.aoa_to_sheet([['Instructions'],['Enter data on the Upload sheet. Keep the header names unchanged.'],['Dates: YYYY-MM-DD. Date/time: YYYY-MM-DD HH:mm.'],['Name and DOB are required. Designation is optional. Example DOB: 1995-04-23.']]);
+    help['!cols']=[{wch:100}];XLSX.utils.book_append_sheet(wb,help,'Instructions');
+    XLSX.writeFile(wb,'birthdays-template.xlsx');
+  }
   return (
     <form onSubmit={handleSubmit} className="compact-form">
       <div className="form-row">
@@ -180,6 +189,7 @@ export default function BirthdayUpload() {
           <button type="button" disabled={loading} onClick={() => fileInputRef.current.click()} className="btn-secondary" style={{ marginLeft: '10px', color: '#ffffff', backgroundColor: '#16a34a', border: '1px solid #16a34a' }}>
             📄 Upload CSV / Excel
           </button>
+          <button type="button" className="btn-secondary" onClick={downloadTemplate}>Download template</button>
         </div>
         <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0, textAlign: 'right' }}>
           <strong>Excel Format Should Contain Headers:</strong> Name, Designation, DOB

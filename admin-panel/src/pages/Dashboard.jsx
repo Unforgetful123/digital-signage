@@ -5,12 +5,13 @@ import ContentUpload from "../components/ContentUpload";
 import BirthdayUpload from "../components/BirthdayUpload";
 import EmergencyAlert from "../components/EmergencyAlert";
 import DisplayMonitor from "../components/DisplayMonitor";
-import PlaylistManager from "../components/PlaylistManager";
+
 import EventLog from "../components/EventLog";
 import About from "../components/About";
 import "./Dashboard.css";
 
 export default function Dashboard({ user }) {
+  const [navOpen, setNavOpen] = useState(() => window.innerWidth >= 1024);
   const [activeTab, setActiveTab] = useState("home");
   
   // 🎯 NEW: Sub-tab state for the Home screen
@@ -74,8 +75,6 @@ export default function Dashboard({ user }) {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "playlist":
-        return <PlaylistManager />;
       case "monitor":
         return <DisplayMonitor />;
       case "events":
@@ -89,17 +88,15 @@ export default function Dashboard({ user }) {
   };
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout ${navOpen ? "nav-open" : "nav-closed"}`}>
       {/* ===== Left Sidebar ===== */}
-      <aside className="sidebar">
+      <aside id="admin-navigation" className="sidebar" hidden={!navOpen}>
+        <div className="sidebar-header"><strong>Workspace</strong><small>Manage your signage</small></div>
         
         
         <nav className="sidebar-nav">
           <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
             Home
-          </button>
-          <button className={`nav-btn ${activeTab === 'playlist' ? 'active' : ''}`} onClick={() => setActiveTab('playlist')}>
-            Live Playlist
           </button>
           <button className={`nav-btn ${activeTab === 'monitor' ? 'active' : ''}`} onClick={() => setActiveTab('monitor')}>
             Display Monitor
@@ -117,9 +114,9 @@ export default function Dashboard({ user }) {
       {/* ===== Right Main Content Area ===== */}
       <main className="main-content">
         <header className="content-header">
+          <button className="nav-toggle" aria-label={navOpen ? "Hide navigation" : "Show navigation"} aria-expanded={navOpen} aria-controls="admin-navigation" onClick={() => setNavOpen(!navOpen)}>☰</button>
           <h1>
             {activeTab === 'home' && "Content & Alert Management"}
-            {activeTab === 'playlist' && "Live Playlist Manager"}
             {activeTab === 'monitor' && "Display Monitor"}
             {activeTab === 'events' && "Event Log"}
             {activeTab === 'about' && "About & Updates"}

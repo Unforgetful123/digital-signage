@@ -258,3 +258,10 @@ canvas.confetti {
 button, a, .interactive-elements {
   -webkit-app-region: no-drag;
 }
+/* Birthday: balanced, readable and fully inside the screen. */
+.birthday-ad{display:grid!important;grid-template-columns:minmax(0,0.85fr) minmax(0,1.15fr);gap:clamp(16px,4vw,64px);padding:clamp(16px,4vmin,56px);width:100%;height:100dvh;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;position:relative}
+.birthday-photo{min-height:0;min-width:0;height:100%;background:none;z-index:2}.birthday-photo img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;border-radius:20px;box-shadow:none}
+.birthday-text{min-width:0;min-height:0;gap:clamp(12px,3vmin,32px);padding:0;z-index:2;align-items:center;text-align:center;justify-content:center;overflow-wrap:anywhere}
+.birthday-heading{font-size:clamp(24px,5.5vmin,76px);line-height:1.12;margin:0;font-weight:800}.birthday-name{font-size:clamp(24px,7vmin,92px);line-height:1.12;margin:0;font-weight:700}.birthday-designation{font-size:clamp(16px,3.4vmin,44px);line-height:1.3;margin:0;max-width:100%}.birthday-ad.without-photo{grid-template-columns:1fr}
+@media(orientation:portrait){.birthday-ad.with-photo{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,0.8fr);gap:16px}.birthday-text{gap:12px}.birthday-heading{font-size:clamp(22px,7vw,45px)}.birthday-name{font-size:clamp(24px,9vw,58px)}.birthday-designation{font-size:clamp(16px,4.5vw,30px)}}
+.birthday-ad,.birthday-ad *{box-sizing:border-box}

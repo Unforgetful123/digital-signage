@@ -6,6 +6,7 @@ import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 import pb from "../services/pocketbase"; // ✅ PocketBase client
+import AnnouncementPlayer from "./AnnouncementPlayer";
 import SetupScreen from "./SetupScreen"; // ✅ ensure this is imported at the top
 import "../App.css";
 
@@ -190,11 +191,20 @@ export default function Player() {
         // 🎯 NEW: Fetch the initial state IMMEDIATELY on boot/refresh
         try {
             const initialRecord = await pb.collection("displays").getOne(config.id, { requestKey: null });
+            if (initialRecord.location && initialRecord.location !== config.location) {
+                const nextConfig = {...config, location: initialRecord.location};
+                setDisplayConfig(nextConfig); setConfig(nextConfig);
+            }
             if (initialRecord.current_type === "alert") {
                 setEmergency({
                     type: (initialRecord.current_command || "alert").toLowerCase(),
                     message: initialRecord.current_title || "",
-                    lang: record.current_lang || "none"
+                    lang: initialRecord.current_lang || "none",
+                    expiresAt: initialRecord.current_alert_expires, alertId: initialRecord.current_alert_id,
+                    scope: initialRecord.current_scope || initialRecord.location || 'Global', mode: initialRecord.current_announcement_mode,
+                    audioUrl: initialRecord.current_audio ? pb.files.getURL(initialRecord, initialRecord.current_audio) : '',
+                    repeatMinutes: initialRecord.current_repeat_minutes, offer: initialRecord.current_offer,
+                    alertLabel: initialRecord.current_alert_label
                 });
             }
         } catch (err) {
@@ -213,8 +223,14 @@ export default function Player() {
                       return;
                   }
 
+                    if (record.location && record.location !== getDisplayConfig()?.location) {
+                      const nextConfig = {...config, location: record.location};
+                      setDisplayConfig(nextConfig);
+                      setConfig(nextConfig);
+                    }
+
                     // 2. Create a "signature" of the current important data
-                    const currentSignature = `${record.current_type}|${record.current_command}|${record.current_title}`;
+                    const currentSignature = `${record.current_type}|${record.current_command}|${record.current_title}|${record.current_lang}|${record.current_alert_expires}|${record.current_alert_id}|${record.current_announcement_mode}|${record.current_audio}|${record.current_repeat_minutes}|${record.current_offer}|${record.current_scope}`;
 
                     // 3. SILENCE THE SPAM: 
                     // If the data is exactly the same as the last time (just a heartbeat update), stop here.
@@ -252,7 +268,12 @@ export default function Player() {
                       setEmergency({
                         type: (current_command || "alert").toLowerCase(),
                         message: current_title || "",
-                        lang: record.current_lang || "none"
+                        lang: record.current_lang || "none",
+                        expiresAt: record.current_alert_expires, alertId: record.current_alert_id,
+                    scope: record.current_scope || record.location || 'Global', mode: record.current_announcement_mode,
+                    audioUrl: record.current_audio ? pb.files.getURL(record, record.current_audio) : '',
+                    repeatMinutes: record.current_repeat_minutes, offer: record.current_offer,
+                    alertLabel: record.current_alert_label
                       });
                       return;
                     }
@@ -342,11 +363,13 @@ useEffect(() => {
                 if (!hasStarted) console.warn(`   ❌ REJECTED: Has not started yet!`);
                 if (!hasNotEnded) console.warn(`   ❌ REJECTED: Content has expired!`);
 
-                return hasStarted && hasNotEnded;
+                const target = (item.location || 'Global').trim().toLowerCase();
+                return hasStarted && hasNotEnded && (target === 'global' || target === currentLocation.trim().toLowerCase());
             });
 
             console.log("2. DATA AFTER DATE FILTER:", activeContent);
             setContent(activeContent);
+            setCurrent(0);
 
             // 2. Fetch Birthdays (Bulletproof Date Check!)
             const today = new Date();
@@ -459,6 +482,7 @@ useEffect(() => {
 
   // 2. Prepare clean birthday list
   const birthdayList = birthdays.map((b) => ({
+    id: b.id, duration: b.duration || 10, location: "Global",
     type: "birthday",
     title: b.name,
     designation: b.designation,
@@ -504,6 +528,9 @@ useEffect(() => {
         try {
             const existingRecord = await pb.collection("displays").getOne(cfg.id, { requestKey: null });
             const updateData = { last_seen: new Date().toISOString() };
+            if (existingRecord.current_type === 'alert' && existingRecord.current_alert_expires && Date.parse(existingRecord.current_alert_expires) <= Date.now()) {
+              Object.assign(updateData,{current_type:'idle',current_title:'',current_command:'',current_lang:'',current_scope:'',current_duration:0,current_alert_expires:'',current_alert_id:'',current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:''});
+            }
 
             if(
               existingRecord.current_type !== "command" &&
@@ -511,6 +538,8 @@ useEffect(() => {
             ) {
               updateData.current_type = item?.type || "idle";      // ✅ use item (not currentItem)
               updateData.current_title = item?.title || "No Content";
+              updateData.current_duration = ['image', 'ppt', 'birthday'].includes(item?.type) ? (Number(item.duration) || 10) : 0;
+              updateData.current_scope = item ? (item.location || 'Global') : '';
             }
 
             await pb.collection("displays").update(cfg.id, updateData, { requestKey: null });
@@ -526,7 +555,7 @@ useEffect(() => {
     sendHeartbeat();
     const interval = setInterval(() => { if (!isCancelled) sendHeartbeat(); }, 30000);
     return () => { isCancelled = true; clearInterval(interval); };
-  }, [item, emergency]); // Syncs whenever the item changes
+  }, [item?.id, item?.type, item?.title, item?.duration, item?.location, emergency]); // Report only playback changes
 
 
   /* ============================================================
@@ -547,7 +576,8 @@ useEffect(() => {
       canvas.style.width = "100%";
       canvas.style.height = "100%";
       canvas.style.pointerEvents = "none";
-      canvas.style.zIndex = "9999";
+      canvas.style.zIndex = "1";
+      canvas.style.opacity = "0.35";
       document.body.appendChild(canvas);
       
       const myConfetti = confetti.create(canvas, { resize: true });
@@ -588,26 +618,49 @@ useEffect(() => {
     return m ? m[1] : null;
   };
 
+  useEffect(() => {
+    if (!emergency?.expiresAt) return;
+    const deadline = Date.parse(emergency.expiresAt);
+    if (!Number.isFinite(deadline)) return;
+    let timer;
+    async function expire() {
+      setEmergency(null);
+      try {
+        const record = await pb.collection('displays').getOne(config.id, {requestKey:null});
+        if (record.current_type === 'alert' && record.current_alert_id === emergency.alertId && record.current_alert_expires === emergency.expiresAt) {
+          await pb.collection('displays').update(config.id, {current_type:'idle',current_title:'',current_command:'',current_lang:'',current_scope:'',current_duration:0,current_alert_expires:'',current_alert_id:'',current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:''}, {requestKey:null});
+        }
+      } catch (error) { console.warn('Alert ended locally; backend sync will retry on heartbeat.', error); }
+    }
+    function check() { if (Date.now() >= deadline) expire(); else timer=setTimeout(check,Math.min(deadline-Date.now(),1000)); }
+    check(); return () => clearTimeout(timer);
+  }, [emergency?.expiresAt, emergency?.alertId, config?.id]);
+
   /* ============================================================
      🔊 TV VOICE TRANSLATOR & SIREN DUCKING
   ============================================================ */
   useEffect(() => {
-      if (!emergency) {
-          window.speechSynthesis.cancel();
+      if (!emergency || emergency.mode || (emergency.expiresAt && Date.parse(emergency.expiresAt) <= Date.now())) {
+          window.speechSynthesis?.cancel();
           return;
       }
 
       let voiceLoopActive = true;
+      let settleSpeech;
+      const siren = document.getElementById('tv-siren');
+      if (siren) { siren.volume=0.25; siren.pause(); }
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
       async function playVoiceLoop() {
-          let textToSpeak = emergency.message;
+          const spokenMessage = `${emergency.alertLabel || emergency.type} alert. Location: ${emergency.scope === 'Global' ? 'all locations' : emergency.scope}. ${emergency.message}`;
+          let textToSpeak = spokenMessage;
 
           // 1. Translate the text once if a regional language is selected
           if (emergency.lang && emergency.lang !== "none" && emergency.lang !== "en-IN") {
               const map = { 'hi-IN': 'hi', 'mr-IN': 'mr', 'gu-IN': 'gu' };
               const targetLang = map[emergency.lang];
               try {
-                  const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(emergency.message)}`);
+                  const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(spokenMessage)}`);
                   const data = await res.json();
                   textToSpeak = data[0].map(x => x[0]).join(''); // Stitch sentences together
               } catch (e) {
@@ -620,10 +673,12 @@ useEffect(() => {
               if (emergency.lang && emergency.lang !== "none") {
                   const sirenEl = document.getElementById("tv-siren");
                   
-                  // 🔉 Duck siren volume down to 20%
-                  if (sirenEl) sirenEl.volume = 0.2; 
+                  // Keep the spoken message free of siren overlap.
+                  if (sirenEl) sirenEl.pause(); 
                   
+                  if (!voiceLoopActive) break;
                   await new Promise(resolve => {
+                      settleSpeech=resolve;
                       const utterance = new SpeechSynthesisUtterance(textToSpeak);
                       utterance.lang = emergency.lang;
                       utterance.rate = 0.85; // Speak slightly slower for emergencies
@@ -632,14 +687,22 @@ useEffect(() => {
                       window.speechSynthesis.speak(utterance);
                   });
                   
-                  // 🔊 Restore siren volume to 100%
-                  if (sirenEl) sirenEl.volume = 1.0; 
+                  // A short, quiet siren burst between announcements.
+                  if (!voiceLoopActive) break;
+                  await wait(2000);
+                  if (!voiceLoopActive) break;
+                  if (sirenEl) { sirenEl.volume=0.25; sirenEl.currentTime=0; sirenEl.play().catch(()=>{}); }
+                  await wait(2000);
+                  if (sirenEl) sirenEl.pause(); 
                   
                   if (!voiceLoopActive) break;
-                  await new Promise(r => setTimeout(r, 4000)); // Wait 4 seconds before repeating
+                  await new Promise(r => setTimeout(r, 8000)); // Leave a quiet interval before repeating.
               } else {
-                  // If "none" is selected, just wait and let the siren play normally
-                  await new Promise(r => setTimeout(r, 1000));
+                  // Siren-only mode uses short bursts, not a continuous loop.
+                  if (siren) { siren.volume=0.25; siren.play().catch(()=>{}); }
+                  await wait(2000);
+                  if(siren)siren.pause();
+                  await wait(8000);
               }
           }
       }
@@ -649,7 +712,9 @@ useEffect(() => {
       // Cleanup when emergency ends
       return () => {
           voiceLoopActive = false;
-          window.speechSynthesis.cancel();
+          settleSpeech?.();
+          if(siren)siren.pause();
+          window.speechSynthesis?.cancel();
       };
   }, [emergency]);
 
@@ -660,15 +725,28 @@ useEffect(() => {
     }} />;
   }
 
-  if (emergency) {
+  if (emergency && (!emergency.expiresAt || Date.parse(emergency.expiresAt) > Date.now())) {
+    if (emergency.mode) return <AnnouncementPlayer key={emergency.alertId} announcement={emergency} displayId={config.id}/>;
     return (
       <div className={`emergency-overlay ${emergency?.type || ""}`}>
         <div className="emergency-content">
           <h1>{emergency.type?.toUpperCase()} ALERT!</h1>
+
+          <div style={{
+            fontSize: "clamp(20px, 3vw, 42px)",
+            fontWeight: 600,
+            margin: "16px 0",
+            overflowWrap: "anywhere"
+          }}>
+            Location: {emergency.scope === "Global"
+              ? "All locations"
+              : emergency.scope || "Unassigned"}
+          </div>
+
           <p>{emergency.message}</p>
         </div>
         {/* 🎯 NEW: Bulletproof audio element that forces playback on mount */}
-        <audio id="tv-siren" src="/audio/siren.wav" autoPlay loop />
+        <audio id="tv-siren" src="/audio/siren.wav" loop />
       </div>
     );
   }
@@ -685,35 +763,13 @@ useEffect(() => {
   return (
     <>
       {item.type === "birthday" ? (
-        <div className="birthday-ad" style={{ 
-          display: 'flex', 
-          flexDirection: item.media_url ? 'row' : 'column', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          width: '100vw', 
-          height: '100vh', 
-          margin: 0,
-          boxSizing: 'border-box'
-        }}>
-          {item.media_url && (
-            <div className="birthday-photo" style={{ marginRight: '4rem' }}>
-              <img src={item.media_url} alt={item.title} />
-            </div>
-          )}
-          
-          {/* Bulletproof Flexbox for the text */}
-          <div className="birthday-text" style={{ 
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: item.media_url ? 'flex-start' : 'center',
-            textAlign: item.media_url ? 'left' : 'center',
-            margin: 0
-          }}>
-            <h1 className="birthday-heading">🎉 Happy Birthday!</h1>
+        <div className={`birthday-ad ${item.media_url ? 'with-photo' : 'without-photo'}`}>
+          {item.media_url && <div className="birthday-photo"><img src={item.media_url} alt={item.title} /></div>}
+          <div className="birthday-text">
+            <h1 className="birthday-heading">Happy Birthday!</h1>
             <h2 className="birthday-name">{item.title}</h2>
             <p className="birthday-designation">{item.designation}</p>
           </div>
-          
           <audio src="/audio/happy-birthday.mp3" autoPlay loop />
         </div>
       ) : (

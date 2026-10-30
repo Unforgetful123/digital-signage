@@ -33,7 +33,7 @@ export default function AlertScheduler() {
                    // Only clear it if this specific alert is currently playing
                    if (display.current_type === 'alert' && display.current_title === alert.message) {
                        await pb.collection('displays').update(display.id, {
-                           current_type: 'idle',
+                           current_type: 'idle',current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',
                            current_command: null,
                            current_title: null
                        }, { requestKey: null });
@@ -57,9 +57,13 @@ export default function AlertScheduler() {
                    if (display.current_type !== 'alert' || display.current_title !== alert.message) {
                        console.log(`🚨 Triggering scheduled alert: ${alert.message}`);
                        await pb.collection('displays').update(display.id, {
-                           current_type: 'alert',
+                           current_type: 'alert',current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_alert_label:alert.type,current_lang:'en-IN',
                            current_command: alert.type,
-                           current_title: alert.message
+                           current_title: alert.message,
+                           current_scope: alert.location || "Global",
+                           current_alert_expires: alert.end_time || "",
+                           current_alert_id: alert.id,
+                           current_duration: 0
                        }, { requestKey: null });
                    }
                }

@@ -128,3 +128,6 @@
   background: #e2e8f0;
   color: #334155;
 }
+
+.event-log-table-wrap{max-height:none;overflow:visible}.event-log-table{table-layout:fixed}.event-log-table td{overflow-wrap:anywhere}.event-time{white-space:normal}.event-badge{white-space:normal}
+@media(max-width:1000px){.event-log-table thead{display:none}.event-log-table,.event-log-table tbody{display:block}.event-log-table tr{display:grid;grid-template-columns:1fr 1fr;padding:12px;border-bottom:1px solid #e2e8f0;gap:10px}.event-log-table td{display:block;border:0;padding:0;max-width:none}.event-log-table td::before{content:attr(data-label);display:block;font-size:11px;color:#64748b;font-weight:600;margin-bottom:5px}.event-log-table td:last-child{grid-column:1/-1}}

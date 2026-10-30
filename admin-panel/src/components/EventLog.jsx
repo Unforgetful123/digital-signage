@@ -141,18 +141,18 @@ export default function EventLog() {
             <tbody>
               {visible.map((event) => (
                 <tr key={event.id}>
-                  <td className="event-time">
+                  <td data-label="Time" className="event-time">
                     {event.created ? new Date(event.created).toLocaleString() : '—'}
                   </td>
-                  <td>
+                  <td data-label="Action">
                     <span className={`event-badge tone-${ACTION_TONES[event.action] || 'neutral'}`}>
                       {ACTION_LABELS[event.action] || event.action}
                     </span>
                   </td>
-                  <td>{event.actor_email || '—'}</td>
-                  <td>{event.source === 'display_monitor' ? 'Display Monitor' : 'Admin Panel'}</td>
-                  <td>{event.target || '—'}</td>
-                  <td className="event-details">{event.details || '—'}</td>
+                  <td data-label="Admin">{event.actor_email || '—'}</td>
+                  <td data-label="Source">{event.source === 'display_monitor' ? 'Display Monitor' : 'Admin Panel'}</td>
+                  <td data-label="Target">{event.target || '—'}</td>
+                  <td data-label="Details" className="event-details">{event.details || '—'}</td>
                 </tr>
               ))}
             </tbody>

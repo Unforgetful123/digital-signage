@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Emergency Alert Controller</title>
   <style>
     :root {
@@ -124,7 +124,99 @@
     .btn-sm.ok { background: #10b981; color: white; padding: 12px 24px; }
     .resume-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
     .resume-overlay.hidden { display: none; }
-  </style>
+
+    .screen{gap:16px}.card-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px}.card-btn{padding:18px 14px;min-height:108px;border-radius:12px;position:relative}.card-btn .icon{font-size:28px}.card-btn .label{font-size:16px;overflow-wrap:anywhere}.card-btn.selected{border-color:#008b74;background:#e2f6ef;box-shadow:0 0 0 2px #008b741a}.selection-check{font-size:18px;color:#008b74}.selection-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:16px}.btn-next{background:#008b74;color:white;min-width:120px}.btn:disabled{opacity:.45;cursor:not-allowed}.sleek-back{position:static;align-self:flex-start;padding:8px 12px}.btn{padding:13px 16px;font-size:14px}.step-title{font-size:21px}textarea,select,input{padding:11px;min-width:0}.tts-row{flex-wrap:wrap}.tts-row select{min-width:180px}.actions{grid-template-columns:1fr 2fr}.card-btn:focus-visible,.btn:focus-visible{outline:3px solid #008b74;outline-offset:3px}.live-type{font-size:32px}.live-msg{font-size:19px}.shell>div:first-of-type{padding:20px 14px!important}.shell>div:nth-of-type(2){padding:10px!important}.sheet{position:fixed}.screen{padding-bottom:10px}
+    @media(max-width:480px){.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card-btn{padding:12px 8px}.card-btn .label{font-size:14px}.actions{grid-template-columns:1fr}.step-title{font-size:19px}.step-subtitle{font-size:13px}.live-meta{font-size:14px}.selection-footer{font-size:13px}.sheet{padding:8px}}
+    .duration-presets{display:flex;gap:8px;flex-wrap:wrap}.duration-presets button{border:1px solid #cbd5e1;border-radius:8px;background:white;padding:10px 14px;color:#172533;cursor:pointer;font-weight:600}.duration-presets button[aria-pressed="true"]{background:#007d68;color:white;border-color:#007d68}#durationHelp{color:#64748b;line-height:1.4}#alertMinutes:disabled{opacity:.5}
+    #customPanel{padding:16px;background:#edf7f5;border:1px solid #beded4;border-radius:12px}#customPanel[hidden],#recordControls[hidden],#messageField[hidden],#voiceField[hidden]{display:none}#micStatus{font-weight:600;color:#006d58}.duration-presets button:disabled{opacity:.5}#customPanel label{display:block;margin:14px 0 8px;font-size:13px}
+  .screen{position:relative;padding:0 56px 14px}.step-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:64px;border:1px solid #cbd5e1;border-radius:14px;background:white;color:#007d68;font-size:36px;cursor:pointer}.step-arrow:disabled{opacity:.35;cursor:not-allowed}.backward{left:0}.forward{right:0}.sheet-body .field,.sheet-body #customPanel,.sheet-body>.duration-presets{margin-bottom:18px}.sheet-body{overflow-y:auto}.sheet-head{flex-shrink:0}@media(max-width:480px){.screen{padding-left:38px;padding-right:38px}.step-arrow{width:32px;height:52px;font-size:28px}}
+    .step-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+}
+
+.step-arrow.backward {
+  left: 8px;
+  right: auto;
+}
+
+.step-arrow.forward {
+  right: 8px;
+  left: auto;
+}
+
+/* Keep cards comfortably away from the arrows. */
+.screen {
+  padding-left: 72px;
+  padding-right: 72px;
+}
+
+@media (max-width: 480px) {
+  .screen {
+    padding-left: 44px;
+    padding-right: 44px;
+  }
+
+  .step-arrow.backward {
+    left: 4px;
+  }
+
+  .step-arrow.forward {
+    right: 4px;
+  }
+}
+
+.card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
+.card-btn {
+  min-height: 160px;
+  padding: 26px 20px;
+  border-radius: 16px;
+}
+
+.card-btn .icon {
+  font-size: 40px;
+}
+
+.card-btn .label {
+  font-size: 21px;
+}
+
+.card-btn .sub-label {
+  font-size: 15px;
+}
+
+.step-arrow {
+  font-family: Arial, sans-serif;
+  font-size: 42px;
+  font-weight: 400;
+}
+
+@media (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .card-btn {
+    min-height: 140px;
+    padding: 18px 10px;
+  }
+
+  .card-btn .label {
+    font-size: 17px;
+  }
+
+  .card-btn .icon {
+    font-size: 32px;
+  }
+}
+</style>
 </head>
 <body>
   <audio id="sirenAudio" src="/audio/siren.wav" loop></audio>
@@ -140,15 +232,15 @@
       <!-- STEP 1: Select Alert Type -->
       <section class="screen active" id="step1">
         <div class="step-header">
-          <h2 class="step-title">1. Select Emergency Type</h2>
+          <h2 class="step-title">1. Select Alert or Announcement</h2>
           <p class="step-subtitle">What type of alert are you broadcasting?</p>
         </div>
-        <div class="card-grid" id="typeGrid"></div>
+        <div class="card-grid" id="typeGrid"></div><button class="step-arrow forward" id="forwardTo2" aria-label="Next: target locations" disabled>&gt;</button>
       </section>
 
       <!-- STEP 2: Select Target Area -->
-      <section class="screen" id="step2">
-        <button class="sleek-back" id="backTo1">⬅ Back</button>
+      <section class="screen" id="step2"><button class="step-arrow backward" id="backTo1" aria-label="Previous: alert types">&lt;</button>
+        
         <div class="step-header">
           <h2 class="step-title">2. Select Target Location</h2>
           <p class="step-subtitle" id="step2Subtitle">Where should the <strong id="step2AlertName">Alert</strong> be displayed?</p>
@@ -156,40 +248,7 @@
         <div class="card-grid" id="areaGrid">
           <!-- Fetched dynamically -->
         </div>
-      </section>
-
-      <!-- STEP 3: Compose & Send -->
-      <section class="screen" id="step3">
-        <button class="sleek-back" id="backTo2">⬅ Back</button>
-        <div class="step-header">
-          <h2 class="step-title">3. Broadcast Details</h2>
-          <p class="step-subtitle">Review the message and voice settings.</p>
-        </div>
-        
-        <div class="field">
-          <label>Message (English)</label>
-          <textarea id="message" maxlength="240"></textarea>
-        </div>
-      
-
-        <div class="field">
-          <label>Tablet Voice & Auto-Translation</label>
-          <div class="tts-row">
-            <select id="ttsLang">
-              <option value="none">🔇 Siren Only (No Voice)</option>
-              <option value="en-IN">🗣️ English</option>
-              <option value="hi-IN">🗣️ Hindi (Auto-Translate)</option>
-              <option value="mr-IN">🗣️ Marathi (Auto-Translate)</option>
-              <option value="gu-IN">🗣️ Gujarati (Auto-Translate)</option>
-            </select>
-            <button type="button" class="btn btn-test" id="testVoiceBtn">Test Audio</button>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-cancel" id="cancelComposeBtn">Cancel</button>
-          <button class="btn btn-send" id="sendBtn">Broadcast Alert Now</button>
-        </div>
+        <div class="selection-footer"><span id="selectionSummary" role="status">Select one or more locations</span><button class="btn btn-next" id="sendBtn" disabled>Broadcast</button></div>
       </section>
 
       <!-- LIVE SCREEN -->
@@ -214,10 +273,45 @@
     <div class="sheet" id="settingsSheet">
       <div class="sheet-content">
         <div class="sheet-head">
-          <h2>Manage Alert Types</h2>
+          <h2>Announcement Settings</h2>
           <button class="settings-fab" id="closeSettingsBtn" style="position: static; border: 1px solid #e2e8f0; box-shadow: none;">✕</button>
         </div>
         <div class="sheet-body">
+<div class="field"><label for="settingsType">Alert type</label><select id="settingsType"></select></div>
+        <div class="duration-presets" aria-label="Announcement mode"><button id="presetMode" type="button" aria-pressed="true">Predefined alert</button><button id="customMode" type="button" aria-pressed="false">Custom announcement</button></div>
+        <section id="customPanel" hidden>
+          <div class="duration-presets"><button id="recordMode" type="button" aria-pressed="true">Record and broadcast</button></div>
+          <p id="micHelp">Use a connected microphone. Recordings can be previewed before broadcasting.</p>
+          <div id="recordControls"><button type="button" class="btn btn-next" id="startRecording">Start recording</button> <button type="button" class="btn btn-cancel" id="stopRecording" disabled>Stop recording</button><audio id="recordPreview" controls hidden style="width:100%;margin-top:12px"></audio><label for="repeatMinutes">Repeat interval (minutes after each playback; 0 = play once)</label><input id="repeatMinutes" type="number" min="0" max="1440" step="1" value="1" /><div class="duration-presets" id="repeatPresets"><button type="button" class="btn btn-test" data-repeat="0">Once</button><button type="button" class="btn btn-test" data-repeat="1">1 min</button><button type="button" class="btn btn-test" data-repeat="10">10 min</button><button type="button" class="btn btn-test" data-repeat="20">20 min</button><button type="button" class="btn btn-test" data-repeat="30">30 min</button></div></div>
+          <p id="micStatus" role="status"></p>
+        </section>
+        <div class="field" id="messageField">
+          <label>Message (English)</label>
+          <textarea id="message" maxlength="240"></textarea>
+        </div>
+      
+
+        <div class="field" id="voiceField">
+          <label>Voice & Auto-Translation</label>
+          <div class="tts-row">
+            <select id="ttsLang">
+              <option value="none">🔇 Siren Only (No Voice)</option>
+              <option value="en-IN" selected>🗣️ English</option>
+              <option value="hi-IN">🗣️ Hindi (Auto-Translate)</option>
+              <option value="mr-IN">🗣️ Marathi (Auto-Translate)</option>
+              <option value="gu-IN">🗣️ Gujarati (Auto-Translate)</option>
+            </select>
+            <button type="button" class="btn btn-test" id="testVoiceBtn">Test Audio</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="alertMinutes">Alert duration (minutes)</label>
+          <div class="duration-presets" aria-label="Duration presets"><button type="button" data-minutes="10" aria-pressed="true">10 min</button><button type="button" data-minutes="20" aria-pressed="false">20 min</button><button type="button" data-minutes="30" aria-pressed="false">30 min</button><button type="button" data-minutes="infinity" aria-pressed="false">∞ Until cleared</button></div>
+          <input id="alertMinutes" type="number" value="10" min="1" max="1440" step="1" inputmode="numeric" aria-describedby="durationHelp" />
+          <small id="durationHelp">Enter 1–1440 minutes, or select infinity to keep the alert active until cleared.</small>
+        </div>
+<h3>Manage Alert Types</h3>
           <div id="typeList" style="margin-bottom: 16px;"></div>
           
           <div style="background: var(--surface); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
@@ -249,7 +343,7 @@
       if (oldSettingsBtn) oldSettingsBtn.style.display = 'none';
     }
     
-    const pb = new PocketBase("http://127.0.0.1:8090");
+    const pb = new PocketBase(window.parent.signageBackendUrl || `http://${window.location.hostname || '127.0.0.1'}:8090`);
 
     const DEFAULT_TYPES = [
       { id: "fire", label: "Fire", icon: "🔥", color: "#ef4444", preset: "Fire emergency. Evacuate immediately. Do not use elevators." },
@@ -262,9 +356,9 @@
 
     const $ = (id) => document.getElementById(id);
     const els = {
-      step1: $("step1"), step2: $("step2"), step3: $("step3"), live: $("liveScreen"),
+      step1: $("step1"), step2: $("step2"), live: $("liveScreen"),
       typeGrid: $("typeGrid"), areaGrid: $("areaGrid"), msg: $("message"), 
-      backTo1: $("backTo1"), backTo2: $("backTo2"), cancelBtn: $("cancelComposeBtn"), sendBtn: $("sendBtn"), clearBtn: $("clearBtn"),
+      backTo1: $("backTo1"), sendBtn: $("sendBtn"), clearBtn: $("clearBtn"),
       step2AlertName: $("step2AlertName"),
       liveType: $("liveType"), liveMsg: $("liveMsg"), liveMeta: $("liveMeta"),
       ttsLang: $("ttsLang"), testVoiceBtn: $("testVoiceBtn"), sirenAudio: $("sirenAudio"),
@@ -277,14 +371,40 @@
     let alertTypes = JSON.parse(localStorage.getItem("gsc_types") || "null") || DEFAULT_TYPES;
     let selectedType = null;
     let selectedTarget = null; // { id: 'all' | 'record_id', name: 'string' }
+    let selectedLocations = new Set();
+    let globalSelected = false;
+    let availableDisplays = [];
+    let activeIds = [];
+    let infiniteDuration = false;
+    let activeAlertId = "";
+    let expiryTimer;
     let voiceLoopActive = false;
 
+    function syncPresets() {
+      document.querySelectorAll('[data-minutes]').forEach(b=>b.setAttribute('aria-pressed',String(infiniteDuration?b.dataset.minutes==='infinity':b.dataset.minutes===$('alertMinutes').value)));
+      $('alertMinutes').disabled=infiniteDuration;
+    }
+    document.querySelectorAll('[data-minutes]').forEach(b=>b.addEventListener('click',()=>{
+      infiniteDuration=b.dataset.minutes==='infinity';
+      if(!infiniteDuration)$('alertMinutes').value=b.dataset.minutes;
+      syncPresets();
+    }));
+    $('alertMinutes').addEventListener('input',syncPresets);
+    function watchExpiry(expiresAt) {
+      clearInterval(expiryTimer);
+      if(!expiresAt)return;
+      expiryTimer=setInterval(()=>{
+        const remaining=Date.parse(expiresAt)-Date.now();
+        if(remaining<=0){if(!els.clearBtn.disabled){clearInterval(expiryTimer);els.clearBtn.click();}}
+        else els.liveMeta.textContent=`Target: ${JSON.parse(localStorage.getItem('active_alert')||'{}').areaName||''} · Ends in ${Math.ceil(remaining/60000)} min`;
+      },1000);
+    }
     function saveTypes() { localStorage.setItem("gsc_types", JSON.stringify(alertTypes)); }
     function escapeHtml(str) { return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"); }
 
     function switchScreen(screen) {
       els.step1.classList.remove("active"); els.step2.classList.remove("active"); 
-      els.step3.classList.remove("active"); els.live.classList.remove("active");
+      els.live.classList.remove("active");
       els[screen].classList.add("active");
       if (els.settingsBtn) {
         els.settingsBtn.style.display = 'none'; // Keep it permanently hidden
@@ -294,63 +414,89 @@
     /* STEP 1: Render Alerts */
     function renderTypes() {
       els.typeGrid.innerHTML = alertTypes.map(t => `
-        <div class="card-btn" data-id="${t.id}" style="--hover-color: ${t.color}">
+        <button type="button" class="card-btn" data-id="${t.id}" style="--hover-color: ${t.color}">
           <div class="icon">${escapeHtml(t.icon || "⚠️")}</div>
           <div class="label" style="color: ${t.color}">${escapeHtml(t.label)}</div>
-        </div>
-      `).join("");
+        </button>
+      `).join("") + '<button type="button" class="card-btn" data-id="live-announcement"><div class="icon">🎙️</div><div class="label">Live announcement</div></button>';
     }
 
     /* STEP 2: Render Targets */
+    function renderTargets() {
+      els.areaGrid.replaceChildren();
+      const groups = [...new Set(availableDisplays.map(d => (d.location || '').trim()))].sort();
+      function card(key,label,detail,selected) {
+        const button=document.createElement('button');
+        button.type='button'; button.className='card-btn area-card' + (selected?' selected':'');
+        button.dataset.key=key; button.setAttribute('aria-pressed',String(selected));
+        const title=document.createElement('span'); title.className='label'; title.textContent=label;
+        const sub=document.createElement('span');sub.className='sub-label';sub.textContent=detail;
+        const check=document.createElement('span');check.className='selection-check';check.textContent=selected?'✓':'＋';
+        button.append(check,title,sub);els.areaGrid.append(button);
+      }
+      card('__global__','Global · All displays',`${availableDisplays.length} displays`,globalSelected);
+      groups.forEach((location,index)=>card(String(index),location||'Unassigned',`${availableDisplays.filter(d=>(d.location||'').trim()===location).length} displays`,selectedLocations.has(location)));
+      const count=globalSelected?availableDisplays.length:availableDisplays.filter(d=>selectedLocations.has((d.location||'').trim())).length;
+      $('selectionSummary').textContent=globalSelected?`Global broadcast · ${count} displays`:`${selectedLocations.size} locations · ${count} displays selected`;
+      els.sendBtn.disabled=count===0;
+      els.areaGrid.onclick=e=>{
+        const button=e.target.closest('.area-card');if(!button)return;
+        if(button.dataset.key==='__global__'){globalSelected=!globalSelected;selectedLocations.clear();}
+        else{globalSelected=false;const location=groups[Number(button.dataset.key)];if(selectedLocations.has(location))selectedLocations.delete(location);else selectedLocations.add(location);}
+        renderTargets();
+      };
+    }
     async function fetchDisplays() {
+      els.sendBtn.disabled=true;
       try {
-        const displays = await pb.collection('displays').getFullList({ requestKey: null });
-        let html = `
-          <div class="card-btn area-card" data-id="all" data-name="All Displays Globally" style="--hover-color: var(--text)">
-            <div class="icon">🌎</div>
-            <div class="label">All Displays</div>
-            <div class="sub-label">Global Broadcast</div>
-          </div>
-        `;
-        displays.forEach(d => {
-          html += `
-            <div class="card-btn area-card" data-id="${d.id}" data-name="${escapeHtml(d.name)}" style="--hover-color: var(--primary)">
-              <div class="icon">📺</div>
-              <div class="label">${escapeHtml(d.name)}</div>
-              <div class="sub-label">${escapeHtml(d.location)}</div>
-            </div>
-          `;
-        });
-        els.areaGrid.innerHTML = html;
-      } catch (err) { 
-        els.areaGrid.innerHTML = `<div class="card-btn area-card" data-id="all" data-name="All Displays">Error loading displays. Click to target ALL.</div>`; 
+        availableDisplays=await pb.collection('displays').getFullList({requestKey:null});
+        renderTargets();
+      } catch(err) {
+        els.areaGrid.textContent='Could not load locations. Check the backend connection and try again.';
+        const retry=document.createElement('button');retry.textContent='Retry';retry.onclick=fetchDisplays;els.areaGrid.append(retry);
+        $('selectionSummary').textContent='Locations unavailable';
       }
     }
 
-    /* WIZARD NAVIGATION EVENTS */
-    els.typeGrid.addEventListener("click", (e) => {
-      const card = e.target.closest(".card-btn");
-      if (!card) return;
-      selectedType = alertTypes.find(t => t.id === card.dataset.id);
-      els.step2AlertName.textContent = selectedType.label;
-      els.step2AlertName.style.color = selectedType.color;
-      switchScreen('step2');
+    /* Two-step navigation. Forward never sends a broadcast. */
+    let liveSelected = false;
+    let broadcastSettings = JSON.parse(localStorage.getItem('gsc_broadcast_settings') || '{}');
+    function applySettings(type) {
+      const prefs=broadcastSettings[type.id] || {};
+      els.msg.value=prefs.message ?? type.preset;
+      els.ttsLang.value=prefs.lang || 'en-IN';
+      $('alertMinutes').value=prefs.minutes || 10;
+      infiniteDuration=!!prefs.infinite;
+      $('repeatMinutes').value=prefs.repeat ?? 1;
+      syncPresets();
+      window.setAnnouncementMode?.(type.id==='live-announcement'?'live':(prefs.record?'record':'preset'));
+      $('presetMode').parentElement.hidden=type.id==='live-announcement';
+      if(type.id==='live-announcement'){$('customPanel').hidden=true;$('messageField').hidden=true;$('voiceField').hidden=true;}
+    }
+    function rememberSettings() {
+      const id=$('settingsType').value;
+      if(!id)return;
+      broadcastSettings[id]={message:els.msg.value,lang:els.ttsLang.value,minutes:$('alertMinutes').value,infinite:infiniteDuration,repeat:$('repeatMinutes').value,record:$('customMode').getAttribute('aria-pressed')==='true'};
+      localStorage.setItem('gsc_broadcast_settings',JSON.stringify(broadcastSettings));
+    }
+    function goTargets(){
+      if(!selectedType)return;
+      els.step2AlertName.textContent=selectedType.label;
+      els.step2AlertName.style.color=selectedType.color;
+      fetchDisplays();switchScreen('step2');
+    }
+    els.typeGrid.addEventListener('click',e=>{
+      const card=e.target.closest('[data-id]');if(!card)return;
+      liveSelected=card.dataset.id==='live-announcement';
+      selectedType=liveSelected?{id:'live-announcement',label:'Live announcement',color:'#007d68',preset:''}:alertTypes.find(t=>t.id===card.dataset.id);
+      selectedTarget=null;selectedLocations.clear();globalSelected=false;
+      applySettings(selectedType);$('forwardTo2').disabled=false;goTargets();
     });
-
-    els.areaGrid.addEventListener("click", (e) => {
-      const card = e.target.closest(".area-card");
-      if (!card) return;
-      selectedTarget = { id: card.dataset.id, name: card.dataset.name };
-      els.msg.value = selectedType.preset; // Set default message based on step 1 choice
-      switchScreen('step3');
-    });
-
-    els.backTo1.addEventListener("click", () => switchScreen('step1'));
-    els.backTo2.addEventListener("click", () => switchScreen('step2'));
-    els.cancelBtn.addEventListener("click", () => {
-      selectedType = null; selectedTarget = null;
-      switchScreen('step1');
-    });
+    $('forwardTo2').onclick=goTargets;
+    els.backTo1.onclick=()=>switchScreen('step1');
+    els.sendBtn.addEventListener('click',()=>{
+      selectedTarget={id:globalSelected?'all':'locations',locations:[...selectedLocations],name:globalSelected?'All displays globally':[...selectedLocations].map(l=>l||'Unassigned').join(', ')};
+    },true);
 
     /* 🌍 TRANSLATION API & TTS (Restored Logic) */
     async function getTranslation(text, langCode) {
@@ -380,18 +526,26 @@
 
     async function runAlertAudio(msg, lang) {
       voiceLoopActive = true;
-      els.sirenAudio.volume = 1.0;
-      els.sirenAudio.play().catch(e => console.warn("Siren blocked by browser:", e));
+      els.sirenAudio.volume = 0.25;
+      els.sirenAudio.pause();
 
       while (voiceLoopActive) {
         if (lang !== "none") {
-          els.sirenAudio.volume = 0.3; // Duck volume
+          els.sirenAudio.pause();
           await speakTranslatedText(msg, lang);
-          els.sirenAudio.volume = 1.0; // Restore
+          if(!voiceLoopActive)break;
+          await new Promise(r=>setTimeout(r,2000));
+          if(!voiceLoopActive)break;
+          els.sirenAudio.volume=0.25;
+          els.sirenAudio.play().catch(()=>{});
+          await new Promise(r=>setTimeout(r,2000));
+          els.sirenAudio.pause();
           if (!voiceLoopActive) break;
-          await new Promise(r => setTimeout(r, 4000));
+          await new Promise(r => setTimeout(r, 8000));
         } else {
-          await new Promise(r => setTimeout(r, 1000));
+          els.sirenAudio.play().catch(()=>{});
+          await new Promise(r=>setTimeout(r,2000));els.sirenAudio.pause();
+          await new Promise(r=>setTimeout(r,8000));
         }
       }
     }
@@ -403,8 +557,8 @@
     }
 
     els.testVoiceBtn.addEventListener("click", async () => {
-      const msg = els.msg.value.trim(); const lang = els.ttsLang.value;
-      if (!msg || lang === "none") return alert("Enter message & select a language.");
+      const msg = `${selectedType?.label || "Alert"} alert. Location: ${selectedTarget?.name || "selected locations"}. ${els.msg.value.trim()}`; const lang = els.ttsLang.value;
+      if (!els.msg.value.trim() || lang === "none") return alert("Enter message & select a language.");
       els.testVoiceBtn.textContent = "Translating...";
       await speakTranslatedText(msg, lang);
       els.testVoiceBtn.textContent = "Test Audio";
@@ -414,21 +568,25 @@
     els.sendBtn.addEventListener("click", async () => {
       const msg = els.msg.value.trim(); const lang = els.ttsLang.value;
       if (!msg) return alert("Message is required.");
+      const minutes=Number($('alertMinutes').value);
+      if(!infiniteDuration && (!Number.isInteger(minutes)||minutes<1||minutes>1440))return alert('Enter a whole number from 1 to 1440 minutes.');
+      const expiresAt=infiniteDuration?'':new Date(Date.now()+minutes*60000).toISOString();
+      activeAlertId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
 
       els.sendBtn.disabled = true; els.sendBtn.textContent = "Broadcasting...";
 
       try {
-        const updateData = { current_type: "alert", current_command: selectedType.id, current_title: msg, current_lang: lang };
-        if (selectedTarget.id === "all") {
-          const all = await pb.collection("displays").getFullList({ requestKey: null });
-          await Promise.all(all.map(d => pb.collection("displays").update(d.id, updateData)));
-        } else {
-          await pb.collection("displays").update(selectedTarget.id, updateData);
-        }
+        if(!selectedTarget)throw new Error('Select a target first.');
+        const all=await pb.collection('displays').getFullList({requestKey:null});
+        const targets=all.filter(d=>selectedTarget.id==='all'||selectedTarget.locations.includes((d.location||'').trim()));
+        if(!targets.length)throw new Error('No displays remain in the selected locations.');
+        const updateData={current_type:'alert',current_command:selectedType.id,current_alert_label:selectedType.label,current_title:msg,current_lang:lang,current_duration:0,current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_alert_expires:expiresAt,current_alert_id:activeAlertId,current_scope:selectedTarget.id==='all'?'Global':selectedTarget.name};
+        const results=await Promise.allSettled(targets.map(d=>pb.collection('displays').update(d.id,updateData,{requestKey:null})));
+        activeIds=targets.filter((d,i)=>results[i].status==='fulfilled').map(d=>d.id);
+        if(!activeIds.length)throw new Error('No displays accepted the alert. Check permissions and connection.');
+        localStorage.setItem('active_alert',JSON.stringify({typeLabel:selectedType.label,message:msg,areaName:selectedTarget.name,lang,ids:activeIds,expiresAt,alertId:activeAlertId}));
+        if(activeIds.length<targets.length)alert(`Alert delivered to ${activeIds.length} of ${targets.length} displays. Some deliveries failed. Clear the delivered alert before retrying.`);
 
-        // Save local state for refresh recovery
-        localStorage.setItem("active_alert", JSON.stringify({ typeLabel: selectedType.label, message: msg, areaName: selectedTarget.name, lang }));
-        
         // Setup Live UI
         els.liveType.textContent = selectedType.label.toUpperCase();
         els.liveType.style.color = selectedType.color;
@@ -436,28 +594,37 @@
         els.liveMeta.textContent = `Target: ${selectedTarget.name}`;
         
         switchScreen("live");
+        watchExpiry(expiresAt);
       } catch (err) { 
-        alert("Failed to push alert to TVs."); 
+        alert(err.message || "Failed to push alert to TVs."); 
       } finally { 
-        els.sendBtn.disabled = false; els.sendBtn.textContent = "Broadcast Alert Now"; 
+        els.sendBtn.disabled = false; els.sendBtn.textContent = "Broadcast"; 
       }
     });
 
     els.clearBtn.addEventListener("click", async () => {
       els.clearBtn.textContent = "Clearing...";
       try {
-        const updateData = { current_type: "idle", current_command: null, current_title: null, current_lang: "" };
-        const all = await pb.collection("displays").getFullList({ requestKey: null });
-        await Promise.all(all.map(d => pb.collection("displays").update(d.id, updateData)));
-
+        els.clearBtn.disabled=true;
+        if(!activeIds.length)throw new Error('This older saved alert has no target list. Clear it from Display Monitor.');
+        const updateData={current_type:'idle',current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_command:'',current_title:'',current_lang:'',current_scope:'',current_duration:0};
+        const results=await Promise.allSettled(activeIds.map(async id=>{
+          const record=await pb.collection('displays').getOne(id,{requestKey:null});
+          if(record.current_type!=='alert'||record.current_alert_id!==activeAlertId)return;
+          return pb.collection('displays').update(id,{...updateData,current_alert_expires:'',current_alert_id:''},{requestKey:null});
+        }));
+        const failed=activeIds.filter((id,i)=>results[i].status==='rejected'&&results[i].reason?.status!==404);
+        if(failed.length){activeIds=failed;const saved=JSON.parse(localStorage.getItem('active_alert')||'{}');saved.ids=failed;localStorage.setItem('active_alert',JSON.stringify(saved));throw new Error(`Could not clear ${failed.length} displays. Try again.`);}
+        activeIds=[];
+        clearInterval(expiryTimer);
         localStorage.removeItem("active_alert");
         stopAlertAudio();
         selectedType = null; selectedTarget = null;
         switchScreen("step1");
       } catch (err) { 
-        alert("Failed to clear displays."); 
+        alert(err.message || "Failed to clear displays."); 
       } finally { 
-        els.clearBtn.textContent = "Clear & Deactivate Alert"; 
+        els.clearBtn.disabled=false; els.clearBtn.textContent = "Clear & Deactivate Alert"; 
       }
     });
 
@@ -471,16 +638,29 @@
       `).join("");
     }
 
-    els.settingsBtn.addEventListener("click", () => { renderManageLists(); els.settingsSheet.classList.add("open"); });
-    els.closeSettingsBtn.addEventListener("click", () => els.settingsSheet.classList.remove("open"));
+    els.settingsBtn.addEventListener("click", () => {
+      renderManageLists();
+      $('settingsType').replaceChildren(...alertTypes.map(t=>new Option(t.label,t.id)),new Option('Live announcement','live-announcement'));
+      $('settingsType').value=selectedType?selectedType.id:alertTypes[0].id;
+      const type=(alertTypes.find(t=>t.id===$('settingsType').value)||{id:'live-announcement',preset:''});
+      const wasLive=liveSelected;liveSelected=false;applySettings(type);liveSelected=wasLive;
+      els.settingsSheet.classList.add('open');
+    });
+    $('settingsType').onchange=()=>{const wasLive=liveSelected;liveSelected=false;applySettings((alertTypes.find(t=>t.id===$('settingsType').value)||{id:'live-announcement',preset:''}));liveSelected=wasLive;};
+    els.settingsSheet.addEventListener('input',rememberSettings);
+    els.settingsSheet.addEventListener('click',e=>{if(e.target.closest('[data-minutes],[data-repeat],#presetMode,#customMode,#recordMode'))rememberSettings();});
+    els.closeSettingsBtn.addEventListener('click',()=>{
+      rememberSettings();els.settingsSheet.classList.remove('open');
+      if(selectedType)applySettings(selectedType);
+    });
 
     els.addTypeBtn.addEventListener("click", () => {
-      const label = els.newTypeLabel.value.trim(); const icon = els.newTypeIcon.value.trim() || "⚠️";
+      const label = els.newTypeLabel.value.trim(); const icon = els.newTypeIcon?.value?.trim() || "⚠️";
       const color = els.newTypeColor.value || "#c62828"; const preset = els.newTypeMessage.value.trim();
       if (!label || !preset) return alert("Enter name and message");
       alertTypes.push({ id: "type_" + Date.now(), label, icon, color, preset });
       saveTypes();
-      els.newTypeLabel.value = ""; els.newTypeIcon.value = ""; els.newTypeMessage.value = "";
+      els.newTypeLabel.value = "";  els.newTypeMessage.value = "";
       renderManageLists(); renderTypes();
     });
 
@@ -496,7 +676,7 @@
     els.resumeAudioBtn.addEventListener("click", () => {
       els.resumeOverlay.classList.add("hidden");
       const saved = JSON.parse(localStorage.getItem("active_alert"));
-      runAlertAudio(saved.message, saved.lang);
+      if(!saved.mode)runAlertAudio(`${saved.typeLabel} alert. Location: ${saved.areaName}. ${saved.message}`, saved.lang);
     });
 
     fetchDisplays();
@@ -506,14 +686,19 @@
     const savedAlert = localStorage.getItem("active_alert");
     if (savedAlert) {
       const parsed = JSON.parse(savedAlert);
+      activeIds = parsed.ids || [];
+      activeAlertId=parsed.alertId || "";
+      watchExpiry(parsed.expiresAt);
       els.liveType.textContent = parsed.typeLabel.toUpperCase();
       els.liveMsg.textContent = parsed.message;
       els.liveMeta.textContent = `Target: ${parsed.areaName}`;
       switchScreen("live");
-      els.resumeOverlay.classList.remove("hidden"); // Force browser interaction
+      if(!parsed.mode)els.resumeOverlay.classList.remove("hidden");
+      if(parsed.mode==='live')els.liveMsg.textContent='Live microphone stopped when this page closed. Clear this session before starting another announcement.';
     } else {
       switchScreen("step1");
     }
   </script>
+  <script src="/announcements.js"></script>
 </body>
 </html>

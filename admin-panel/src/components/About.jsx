@@ -58,7 +58,7 @@ export default function About() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif' }}>
+    <div className="about-card">
       <div style={{ background: '#ffffff', borderRadius: '12px', padding: '30px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
         <h2 style={{ margin: '0 0 5px 0', color: '#0f172a', fontSize: '24px' }}>Ad Player Pro</h2>
         <p style={{ margin: '0 0 20px 0', color: '#64748b' }}>Developed by VRL Technologies</p>
