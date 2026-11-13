@@ -1,0 +1,26 @@
+{
+  "name":"vrl-pc-receiver",
+  "version":"1.0.0",
+  "description":"VRLogical background broadcast receiver for Windows PCs",
+  "author":"VRLogical Technologies",
+  "private":true,
+  "main":"main.cjs",
+  "scripts":{
+    "start":"electron .",
+    "build:ui":"npm --prefix ../display-window run build",
+    "build:win":"npm run build:ui && electron-builder --win nsis --x64 --publish never",
+    "test":"node --test test/*.test.cjs"
+  },
+  "devDependencies":{"electron":"32.0.1","electron-builder":"26.4.0"},
+  "build":{
+    "appId":"com.vrlogical.pc-receiver",
+    "productName":"VRL PC Receiver",
+    "asar":true,
+    "files":["main.cjs","preload.cjs","window-state.cjs","icon.ico","package.json"],
+    "extraResources":[{"from":"../display-window/dist","to":"receiver-ui"}],
+    "directories":{"output":"release"},
+    "win":{"target":"nsis","icon":"icon.ico","requestedExecutionLevel":"asInvoker"},
+    "nsis":{"oneClick":false,"perMachine":false,"allowToChangeInstallationDirectory":true,"createDesktopShortcut":true,"runAfterFinish":true},
+    "artifactName":"VRL-PC-Receiver-${version}-Setup.${ext}"
+  }
+}

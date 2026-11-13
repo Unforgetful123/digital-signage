@@ -1,3 +1,7 @@
+# New: background PC receiver
+
+See `PC-RECEIVER-SETUP.md` for the central-server migration, Windows receiver setup, builds and validation limits.
+
 # Voice, microphone announcements, and templates — 28 October 2026
 
 Update BOTH app folders and copy all supplied `pb_migrations` files into your existing installation. Keep your existing `pb_data` and environment settings. Stop PocketBase, run `pocketbase.exe migrate up`, then restart it with `pocketbase.exe serve --http=0.0.0.0:8090`. The new migration is `1793235600_announcements.js`; it adds optional announcement/audio/signaling fields and preserves collection permissions.

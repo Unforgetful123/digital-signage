@@ -4,7 +4,8 @@ import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
   // 1. This ensures the TV can find the CSS and JS files
-  base: './', 
+  base: './',
+  build: { rollupOptions: { input: { signage: 'index.html', receiver: 'receiver.html' } } }, 
   
   plugins: [
     react(),

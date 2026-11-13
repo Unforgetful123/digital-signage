@@ -15,6 +15,7 @@ function duration(d) {
 export default function DisplayMonitor() {
   const [displays,setDisplays] = useState([]);
   const [filter,setFilter] = useState('all');
+  const [deviceRole,setDeviceRole] = useState('all');
   const [error,setError] = useState('');
   const [loading,setLoading] = useState(true);
   const [busy,setBusy] = useState(false);
@@ -51,7 +52,7 @@ export default function DisplayMonitor() {
       let payload, details;
       if(action==='refresh'){payload={current_type:'command',current_title:'REFRESH'};details='Refresh requested';}
       if(action==='move'){payload={location:location.trim()};details=`${d.location||'Unassigned'} → ${location.trim()}`;}
-      if(action==='alert'){payload={current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_lang:'en-IN',current_alert_label:alertType,current_type:'alert',current_title:message.trim(),current_command:alertType,current_scope:`Display: ${name(d)}`,current_duration:0,current_alert_expires:'',current_alert_id:''};details=message.trim();}
+      if(action==='alert'){payload={current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_lang:'en-IN',current_alert_label:alertType,current_type:'alert',current_title:message.trim(),current_command:alertType,current_scope:`Display: ${name(d)}`,current_duration:0,current_alert_expires:'',current_alert_id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)};details=message.trim();}
       if(action==='clear_alert'){payload={current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_type:'idle',current_title:'',current_command:'',current_lang:'',current_scope:'',current_duration:0};details='Alert cleared';}
       if(action==='remove')await pb.collection('displays').delete(d.id);
       else await pb.collection('displays').update(d.id,payload,{requestKey:null});
@@ -62,14 +63,14 @@ export default function DisplayMonitor() {
     }catch(e){setError(e.message||'Action failed. Please try again.');}finally{setBusy(false);}
   }
   const sorted=[...displays].sort((a,b)=>(a.location||'').localeCompare(b.location||'')||name(a).localeCompare(name(b)));
-  const visible=sorted.filter(d=>filter==='all'||(filter==='online')===online(d));
+  const visible=sorted.filter(d=>(filter==='all'||(filter==='online')===online(d))&&(deviceRole==='all'||(deviceRole==='pc_receiver'?d.device_role==='pc_receiver':d.device_role!=='pc_receiver')));
   return <section className="display-monitor">
-    <div className="monitor-toolbar"><div><p className="subtitle">Playback and controls across your locations</p><small>{displays.length} displays · {displays.filter(online).length} online</small></div>
-    <div className="status-filters" aria-label="Display status">{['all','online','offline'].map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'selected':''} onClick={()=>setFilter(f)}>{f}</button>)}</div></div>
+    <div className="monitor-toolbar"><div><p className="subtitle">Displays and PC receivers across your locations</p><small>{displays.length} devices · {displays.filter(online).length} online</small></div>
+    <label>Device type <select aria-label="Device type" value={deviceRole} onChange={e=>setDeviceRole(e.target.value)}><option value="all">All devices</option><option value="display">Signage displays</option><option value="pc_receiver">PC receivers</option></select></label><div className="status-filters" aria-label="Display status">{['all','online','offline'].map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'selected':''} onClick={()=>setFilter(f)}>{f}</button>)}</div></div>
     {error&&!modal&&<p role="alert" className="monitor-error">{error}</p>}
     {loading?<p role="status">Loading displays…</p>:visible.length===0?<div className="empty-state">No {filter==='all'?'':filter+' '}displays found.</div>:null}
     <div className="monitor-grid">{visible.map(d=><article className={`display-card ${online(d)?"card-online":"card-offline"}`} key={d.id}>
-      <div className="display-card-head"><div><h2>{name(d)}</h2><small>{d.code||'No code'} · {d.location||'Unassigned'}</small></div><span className={`status-badge ${online(d)?'online':'offline'}`}>{online(d)?'Online':'Offline'}</span></div>
+      <div className="display-card-head"><div><h2>{name(d)}</h2><small>{d.device_role==='pc_receiver'?'PC Receiver':'Signage Display'} · {d.code||'No code'} · {d.location||'Unassigned'}</small></div><span className={`status-badge ${online(d)?'online':'offline'}`}>{online(d)?'Online':'Offline'}</span></div>
       <div className="now-playing"><span>{online(d)?'NOW PLAYING':'LAST REPORTED'}</span><strong>{d.current_title||'Idle'}</strong><small>{d.current_type||'No content'}</small></div>
       <dl className="playback-details"><div><dt>Duration</dt><dd>{duration(d)}</dd></div><div><dt>Playback target</dt><dd>{['idle','command'].includes(d.current_type)?'—':d.current_scope||'Not reported'}</dd></div></dl>
       <div className="display-card-footer"><small>Last seen<br/>{d.last_seen?new Date(d.last_seen).toLocaleString():'Never'}</small>

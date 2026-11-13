@@ -11,3 +11,4 @@ build/
 
 # Env
 .env
+/desktop app/
