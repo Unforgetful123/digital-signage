@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import pb from '../services/pocketbase';
 
-export default function AnnouncementPlayer({announcement:a, displayId, client=pb, onEnded}) {
+export default function AnnouncementPlayer({announcement:a, displayId}) {
   const audio=useRef(null);
-  const endedCallback=useRef(onEnded);endedCallback.current=onEnded;
   const [status,setStatus]=useState('Connecting…');
   const [blocked,setBlocked]=useState(false);
   const [ended,setEnded]=useState(false);
@@ -15,10 +14,9 @@ export default function AnnouncementPlayer({announcement:a, displayId, client=pb
     async function finish(){
       if(disposed)return;
       element.pause();peer?.close();clearInterval(watchdog);setEnded(true);
-      if(endedCallback.current){endedCallback.current();return;}
       try{
-        const d=await client.collection('displays').getOne(displayId,{requestKey:null});
-        if(d.current_alert_id===a.alertId&&d.current_type==='alert')await client.collection('displays').update(displayId,{current_type:'idle',current_title:'',current_command:'',current_announcement_mode:'',current_offer:'',current_answer:'',current_audio:'',current_alert_id:'',current_alert_expires:''},{requestKey:null});
+        const d=await pb.collection('displays').getOne(displayId,{requestKey:null});
+        if(d.current_alert_id===a.alertId&&d.current_type==='alert')await pb.collection('displays').update(displayId,{current_type:'idle',current_title:'',current_command:'',current_announcement_mode:'',current_offer:'',current_answer:'',current_audio:'',current_alert_id:'',current_alert_expires:''},{requestKey:null});
       }catch{say('Announcement ended. Waiting for connection.');}
     }
     async function start(){
@@ -46,16 +44,16 @@ export default function AnnouncementPlayer({announcement:a, displayId, client=pb
           peer.addEventListener('icegatheringstatechange',check);
         });
         if(disposed)return;
-        const d=await client.collection('displays').getOne(displayId,{requestKey:null});
+        const d=await pb.collection('displays').getOne(displayId,{requestKey:null});
         if(disposed||d.current_alert_id!==a.alertId)return;
-        await client.collection('displays').update(displayId,{current_answer:JSON.stringify(peer.localDescription)},{requestKey:null});
+        await pb.collection('displays').update(displayId,{current_answer:JSON.stringify(peer.localDescription)},{requestKey:null});
         let lastContact=Date.now();
         watchdog=setInterval(async()=>{
           if(checking||disposed)return;checking=true;
           try{
-            const d=await client.collection('displays').getOne(displayId,{requestKey:null});
+            const d=await pb.collection('displays').getOne(displayId,{requestKey:null});
             if(disposed)return;
-            if(d.current_alert_id!==a.alertId||d.current_type!=='alert'){element.pause();peer.close();clearInterval(watchdog);setEnded(true);endedCallback.current?.();return;}
+            if(d.current_alert_id!==a.alertId||d.current_type!=='alert'){element.pause();peer.close();clearInterval(watchdog);setEnded(true);return;}
             lastContact=Date.parse(d.current_live_seen)||lastContact;
           }catch{/* The local watchdog also ends audio when the backend is unreachable. */}
           finally{checking=false;}
@@ -65,6 +63,6 @@ export default function AnnouncementPlayer({announcement:a, displayId, client=pb
     }
     setEnded(false);start();
     return()=>{disposed=true;clearTimeout(repeatTimer);clearInterval(watchdog);peer?.close();element.pause();element.srcObject=null;element.removeAttribute('src');element.onended=null;element.onerror=null;};
-  },[a.alertId,a.mode,a.audioUrl,a.offer,a.repeatMinutes,displayId,client]);
+  },[a.alertId,a.mode,a.audioUrl,a.offer,a.repeatMinutes,displayId]);
   return <div className="emergency-overlay" style={{background:'#102b46',color:'#fff'}}><div className="emergency-content"><h1>{ended?'Announcement ended':a.mode==='live'?'Live announcement':'Recorded announcement'}</h1><p>{a.scope==='Global'?'All locations':a.scope}</p><p style={{fontSize:'clamp(16px,2vw,28px)'}}>{status}</p></div><audio ref={audio}/></div>;
 }
