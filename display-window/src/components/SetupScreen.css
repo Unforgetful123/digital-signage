@@ -1,0 +1,150 @@
+.setup-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #0f172a; /* Deep Navy Dark */
+  font-family: 'Inter', sans-serif;
+  padding: 20px;
+}
+
+.setup-card {
+  background: #1e293b;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  color: white;
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.setup-logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.setup-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.setup-header p {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.register-btn {
+  width: 100%;
+  padding: 14px;
+  background: #38bdf8;
+  border: none;
+  border-radius: 6px;
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.register-btn:hover {
+  background: #7dd3fc;
+}
+
+.register-btn:active {
+  transform: scale(0.98);
+}
+
+.register-btn:disabled {
+  background: #475569;
+  cursor: not-allowed;
+}
+
+.setup-footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #475569;
+}
+
+/* New: Layout for the IP input + Button on one line */
+.input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.input-row input {
+  flex: 1; /* Makes input take remaining space */
+}
+
+/* New: Smaller button for the IP save action */
+.small-btn {
+  padding: 0 15px;
+  background: transparent;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  color: #38bdf8;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.small-btn:hover {
+  background: #334155;
+  border-color: #38bdf8;
+}
+
+/* New: Divider line */
+.divider {
+  height: 1px;
+  background: #334155;
+  margin: 25px 0;
+  width: 100%;
+}
+
+/* New: Sub-text for current connection status */
+.status-text {
+  display: block;
+  font-size: 0.7rem;
+  color: #475569;
+  margin-top: 6px;
+  font-family: monospace;
+}

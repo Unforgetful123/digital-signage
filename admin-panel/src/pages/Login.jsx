@@ -1,0 +1,128 @@
+import React, { useState } from "react";
+import pb from "../services/pocketbase";
+import { logEvent } from "../services/eventLog";
+import "./Login.css";
+
+export default function Login({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(""); // New state for success messages
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+    setLoading(true);
+    try {
+      const authData = await pb.collection("admins").authWithPassword(email, password);
+
+      // Best-effort legacy login log — never block successful auth
+      try {
+        await pb.collection("login_logs").create({
+          user: authData.record.id,
+          email: authData.record.email,
+          time: new Date().toISOString(),
+        });
+      } catch (logErr) {
+        console.warn("login_logs write skipped:", logErr?.message || logErr);
+      }
+
+      await logEvent({
+        action: "login",
+        target: "admin_panel",
+        details: `${authData.record.email} signed in`,
+        source: "admin_panel",
+      });
+
+      onLogin(authData.record);
+    } catch (err) {
+      setError("Invalid email or password");
+      console.error("Login failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 📧 New Forgot Password Handler
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address first.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setMessage("");
+
+    try {
+      // PocketBase built-in reset request
+      await pb.collection("admins").requestPasswordReset(email);
+      setMessage("Password reset email sent! Please check your inbox.");
+    } catch (err) {
+      setError("Failed to send reset email. Verify the email is correct.");
+      console.error("Reset error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        {/* 🎯 NEW: Logo Injection */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <img src="/logo.png" alt="VRL Logo" style={{ height: '60px', objectFit: 'contain' }} onError={(e) => e.target.style.display='none'} />
+        </div>
+        
+        <h1 className="login-title" style={{ color: '#172533' }}>VRL Smart Digital Signage</h1>
+        <h2 className="login-subtitle">Admin Login</h2>
+
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <div className="forgot-password-container">
+            <button 
+              type="button" 
+              className="forgot-link" 
+              onClick={handleForgotPassword}
+              disabled={loading}
+            >
+              Forgot Password?
+            </button>
+          </div>
+
+          {error && <p className="error-text">{error}</p>}
+          {message && <p className="success-text">{message}</p>}
+
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Processing..." : "Secure Login"}
+          </button>
+        </form>
+
+        <footer className="login-footer">© {new Date().getFullYear()} VRL Digital Signage. All rights reserved.</footer>
+      </div>
+    </div>
+  );
+}
