@@ -1,0 +1,24 @@
+ .gitignore                                         |    3 [32m+[m[31m-[m
+ PC-RECEIVER-SETUP.md                               |   96 [32m+[m
+ admin-panel/.env.local                             |    1 [31m-[m
+ admin-panel/src/components/DisplayMonitor.jsx      |   11 [32m+[m[31m-[m
+ display-window/receiver.html                       |    1 [32m+[m
+ .../src/components/AnnouncementPlayer.jsx          |   18 [32m+[m[31m-[m
+ display-window/src/receiver/EmergencyPopup.jsx     |   33 [32m+[m
+ display-window/src/receiver/Receiver.jsx           |  101 [32m+[m
+ display-window/src/receiver/alert-state.mjs        |   16 [32m+[m
+ display-window/src/receiver/main.jsx               |    4 [32m+[m
+ display-window/src/receiver/receiver.css           |    1 [32m+[m
+ display-window/vite.config.js                      |    3 [32m+[m[31m-[m
+ pb_migrations/1793872800_pc_receiver.js            |    5 [32m+[m
+ pc-receiver/icon.ico                               |  Bin [31m0[m -> [32m172578[m bytes
+ pc-receiver/main.cjs                               |   80 [32m+[m
+ pc-receiver/package-lock.json                      | 5029 [32m++++++++++++++++++++[m
+ pc-receiver/package.json                           |   26 [32m+[m
+ pc-receiver/preload.cjs                            |    8 [32m+[m
+ pc-receiver/test/alert-state.test.cjs              |   30 [32m+[m
+ pc-receiver/test/native-main.test.cjs              |   34 [32m+[m
+ pc-receiver/test/window-state.test.cjs             |   14 [32m+[m
+ pc-receiver/window-state.cjs                       |   12 [32m+[m
+ update_instructions.md                             |    4 [32m+[m
+ 23 files changed, 5514 insertions(+), 16 deletions(-)
