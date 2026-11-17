@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import {automaticBackend} from '../../../shared/backend-url.mjs';
 import pb from "../services/pocketbase";
 import { setDisplayConfig } from "./Player";
 import "./SetupScreen.css";
 
 export default function SetupScreen({ onComplete }) {
-  const [ip, setIp] = useState(localStorage.getItem('server_url') || "http://192.168.1.X:8090");
+  const [ip, setIp] = useState(localStorage.getItem('server_url') || automaticBackend(window.location));
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,7 +57,7 @@ export default function SetupScreen({ onComplete }) {
               <button onClick={saveServer} className="small-btn">Connect</button>
             </div>
             <span className="status-text">
-              Current: {localStorage.getItem('server_url') || "localhost"}
+              Current: {pb.baseURL}
             </span>
           </div>
 

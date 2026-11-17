@@ -1,5 +1,6 @@
 // src/components/Player.jsx
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import {QUEUE_ID, buildQueue, keyOf, queuePosition} from "../../../shared/playback.mjs";
 import YouTube from "react-youtube";
 import confetti from "canvas-confetti";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
@@ -157,7 +158,10 @@ export default function Player() {
   const [config, setConfig] = useState(getDisplayConfig());
   const [content, setContent] = useState([]);
   const [birthdays, setBirthdays] = useState([]);
-  const [current, setCurrent] = useState(0);
+  const [currentKey, setCurrentKey] = useState('');
+  const [playTurn,setPlayTurn] = useState(0);
+  const [queueIds, setQueueIds] = useState([]);
+  const [clock, setClock] = useState(Date.now());
   const [emergency, setEmergency] = useState(null);
   const [isOnline, setIsOnline] = useState(true);
   const videoRef = useRef(null);
@@ -165,7 +169,7 @@ export default function Player() {
   // inside Player component
   // This should be whichever state or variable you have that represents
   // the currently playing item. Adjust the name if yours is different.
-  const currentItem = content[current] || null;  // example
+  
 
   // Inside the Player component, after the existing useEffects:
   useEffect(() => {
@@ -191,8 +195,8 @@ export default function Player() {
         // 🎯 NEW: Fetch the initial state IMMEDIATELY on boot/refresh
         try {
             const initialRecord = await pb.collection("displays").getOne(config.id, { requestKey: null });
-            if (initialRecord.location && initialRecord.location !== config.location) {
-                const nextConfig = {...config, location: initialRecord.location};
+            if (initialRecord.location !== config.location || initialRecord.name !== config.name) {
+                const nextConfig = {...config, location: initialRecord.location, name: initialRecord.name};
                 setDisplayConfig(nextConfig); setConfig(nextConfig);
             }
             if (initialRecord.current_type === "alert") {
@@ -223,8 +227,8 @@ export default function Player() {
                       return;
                   }
 
-                    if (record.location && record.location !== getDisplayConfig()?.location) {
-                      const nextConfig = {...config, location: record.location};
+                    if (record.location !== getDisplayConfig()?.location || record.name !== getDisplayConfig()?.name) {
+                      const nextConfig = {...getDisplayConfig(), location: record.location, name: record.name};
                       setDisplayConfig(nextConfig);
                       setConfig(nextConfig);
                     }
@@ -315,206 +319,62 @@ export default function Player() {
   useEffect(() => {
     if (isOnline) {
       console.log("🔄 Internet restored — reloading playlist...");
-      setCurrent(0);
+      // Keep the current item when the network returns.
     }
   }, [isOnline]);
 
-  // In Player.jsx (assuming config and socket are defined)
-  // 🌐 Ensure the player joins its location room on load
-  
-
-  /* ============================================================
-  1. FIX: Content Fetching and Real-time Subscription
-============================================================ */
-useEffect(() => {
-    if (!config?.location) return;
-    const location = config.location;
-
-  const loadContent = async (currentLocation) => {
-        try {
-            // 1. Fetch Content
-            const records = await pb.collection('content').getList(1, 100, {
-                // 🚨 TEMPORARILY REMOVED THE FILTER TO FORCE IT TO FETCH EVERYTHING
-                filter: "", 
-                sort: '-created', 
-                requestKey: null
-            });
-
-            console.log("1. RAW DATA FROM DATABASE:", records);
-
-            const dataArray = Array.isArray(records) ? records : (records.items || []);
-
-            const activeContent = dataArray.filter(item => {
-                const now = new Date();
-                
-                // Clean up the strings just in case they have weird spaces
-                const startStr = (item.start_time || "").trim();
-                const endStr = (item.end_time || "").trim();
-
-                // Check the dates
-                const hasStarted = !startStr || new Date(startStr) <= now;
-                const hasNotEnded = !endStr || new Date(endStr) >= now;
-
-                // 🚨 X-RAY DEBUGGER: This prints exactly why an item is kept or rejected
-                console.log(`[DEBUG] Checking item: "${item.title || item.id}"`);
-                console.log(`   👉 hasStarted? ${hasStarted} (Start time: ${startStr || "None"})`);
-                console.log(`   👉 hasNotEnded? ${hasNotEnded} (End time: ${endStr || "None"})`);
-                
-                if (!hasStarted) console.warn(`   ❌ REJECTED: Has not started yet!`);
-                if (!hasNotEnded) console.warn(`   ❌ REJECTED: Content has expired!`);
-
-                const target = (item.location || 'Global').trim().toLowerCase();
-                return hasStarted && hasNotEnded && (target === 'global' || target === currentLocation.trim().toLowerCase());
-            });
-
-            console.log("2. DATA AFTER DATE FILTER:", activeContent);
-            setContent(activeContent);
-            setCurrent(0);
-
-            // 2. Fetch Birthdays (Bulletproof Date Check!)
-            const today = new Date();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            
-            const bAll = await pb.collection("birthday").getFullList({ requestKey: null });
-            const todays = (bAll || []).filter((row) => {
-                if (!row?.dob) return false;
-                
-                // Safely slice out the "YYYY-MM-DD" no matter how the database formatted it
-                const datePart = row.dob.split(' ')[0].split('T')[0]; 
-                const [, bMonth, bDay] = datePart.split('-');
-                
-                return bMonth === mm && bDay === dd;
-            });
-            setBirthdays(todays);
-            
-        } catch (error) {
-            console.error("Failed to load content:", error);
+  // Full records are retained so schedule boundaries and midnight birthdays work
+  // without a database update. Realtime plus polling handles reconnects.
+  useEffect(() => {
+    if (!config?.id) return;
+    let disposed=false, reading=false;
+    const unsubs=[];
+    async function load() {
+      if (reading) return; reading=true;
+      try {
+        const [media, people] = await Promise.all([
+          pb.collection('content').getFullList({requestKey:null}),
+          pb.collection('birthday').getFullList({requestKey:null}),
+        ]);
+        if (!disposed) {
+          setContent(previous=>JSON.stringify(previous)===JSON.stringify(media)?previous:media);
+          setBirthdays(previous=>JSON.stringify(previous)===JSON.stringify(people)?previous:people);
         }
-    };
-
-    // --- A. INITIAL LOAD ---
-    loadContent(location);
-
-    // --- B. REAL-TIME SUBSCRIPTIONS ---
-    const unsubContent = pb.collection('content').subscribe('*', () => {
-        loadContent(location);
-    });
-    const unsubBirthday = pb.collection('birthday').subscribe('*', () => {
-        loadContent(location);
-    });
-
-    // Cleanup subscriptions
-    return () => {
-        pb.collection("content").unsubscribe("*");
-        pb.collection("birthday").unsubscribe("*");
-    };
-    
-  }, [config?.location]);
-
-
-  // 🚨 Emergency events
-
-
-  // Helper: valid date range
-  const isActive = (item) => {
-    if (!item.start_time || !item.end_time) return true;
-    const now = new Date();
-    const start = new Date(item.start_time);
-    const end = new Date(item.end_time);
-    return now >= start && now <= end;
-  };
-
-  // 📡 Fetch PocketBase content + cache
-  // useEffect(() => {
-  //   const fetchAll = async () => {
-  //     try {
-  //       const cData = await pb.collection("content").getFullList({ sort: "-created", requestKey: null });
-  //       const validContent = cData.filter(isActive);
-
-  //       const today = new Date();
-  //       const mm = today.getMonth() + 1;
-  //       const dd = today.getDate();
-  //       const bAll = await pb.collection("birthday").getFullList( {requestKey: null});
-  //       const todays = (bAll || []).filter((row) => {
-  //         if (!row?.dob) return false;
-  //         const d = new Date(row.dob);
-  //         return d.getMonth() + 1 === mm && d.getDate() === dd;
-  //       });
-
-  //       setContent(validContent);
-  //       setBirthdays(todays);
-
-  //       localStorage.setItem("cachedContent", JSON.stringify(validContent));
-  //       localStorage.setItem("cachedBirthdays", JSON.stringify(todays));
-
-  //       console.log("✅ Synced latest valid content from PocketBase");
-  //     } catch (err) {
-  //       console.warn("⚠️ PocketBase unreachable — using cached data");
-  //       const cachedC = JSON.parse(localStorage.getItem("cachedContent") || "[]");
-  //       const cachedB = JSON.parse(localStorage.getItem("cachedBirthdays") || "[]");
-  //       const validCached = cachedC.filter(isActive);
-  //       setContent(validCached);
-  //       setBirthdays(cachedB);
-  //     }
-  //   };
-
-  //   fetchAll();
-  //   const iv = setInterval(fetchAll, 30000);
-  //   return () => clearInterval(iv);
-  // }, []);
-
-  /* ============================================================
-     🧩 BUILD UNIFIED PLAYLIST (Interleaved)
-  ============================================================ */
-  // 1. Prepare clean content list
-  const baseContent = content
-    .filter((i) => {
-      if (!isOnline && i.type === "youtube") return false;
-      return i.type !== "alert" && isActive(i);
-    })
-    .map((i) => ({
-      ...i,
-      media_url: i.file ? pb.files.getURL(i, i.file) 
-                : i.ppt_file ? pb.files.getURL(i, i.ppt_file) 
-                : i.youtube_url || null,
-    }));
-
-  // 2. Prepare clean birthday list
-  const birthdayList = birthdays.map((b) => ({
-    id: b.id, duration: b.duration || 10, location: "Global",
-    type: "birthday",
-    title: b.name,
-    designation: b.designation,
-    media_url: b.photo ? pb.files.getURL(b, b.photo) : null,
-  }));
-
-  // 3. Combine them: Interleave a birthday after every 3rd content item
-  let carouselItems = [];
-  let bIndex = 0;
-
-  if (baseContent.length > 0) {
-    baseContent.forEach((item, index) => {
-      carouselItems.push(item);
-      // Inject 1 birthday after every 3rd slide if birthdays are available
-      if ((index + 1) % 3 === 0 && bIndex < birthdayList.length) {
-        carouselItems.push(birthdayList[bIndex]);
-        bIndex++;
-      }
-    });
-    // Add any remaining birthdays at the end
-    while (bIndex < birthdayList.length) {
-      carouselItems.push(birthdayList[bIndex]);
-      bIndex++;
+        try {
+          const queue=await pb.collection('playback_queues').getOne(QUEUE_ID,{requestKey:null});
+          if(!disposed)setQueueIds(previous=>JSON.stringify(previous)===JSON.stringify(queue.content_ids||[])?previous:queue.content_ids||[]);
+        } catch(e) { console.warn('Queue unavailable; keeping last known order.',e.status); }
+      } catch(e) {console.warn('Could not refresh playlist; retaining loaded records.',e.status);}
+      finally {reading=false;}
     }
-  } else {
-    // If no content, just show birthdays
-    carouselItems = birthdayList;
-  }
+    async function start(){
+      for (const collection of ['content','birthday','playback_queues']) {
+        try {
+          const unsub=await pb.collection(collection).subscribe('*',load);
+          if(disposed)unsub();else unsubs.push(unsub);
+        } catch { /* Polling still refreshes after reconnect. */ }
+      }
+    }
+    load();start();
+    const poll=setInterval(load,15000), timer=setInterval(()=>setClock(Date.now()),1000);
+    return ()=>{disposed=true;clearInterval(poll);clearInterval(timer);unsubs.forEach(fn=>fn());};
+  },[config?.id]);
 
-  // 4. THIS IS THE CRITICAL SYNC FIX:
-  // Both the screen AND the heartbeat now use 'item'
-  const item = carouselItems[current] || null;
+  const carouselItems = useMemo(() => buildQueue(content,birthdays,queueIds,config?.location,clock,isOnline).map(i=>({
+    ...i,
+    media_url:i.type==='birthday' ? (i.photo?pb.files.getURL(i,i.photo):null)
+      :i.file?pb.files.getURL(i,i.file):i.ppt_file?pb.files.getURL(i,i.ppt_file):i.youtube_url||null,
+  })),[content,birthdays,queueIds,config?.location,clock,isOnline]);
+  const {item, next} = queuePosition(carouselItems,currentKey);
+  const itemKey=keyOf(item), nextKey=keyOf(next);
+  useEffect(()=>{if(currentKey!==itemKey)setCurrentKey(itemKey);},[currentKey,itemKey]);
+  const playbackRef=useRef({items:carouselItems,currentKey:itemKey});
+  playbackRef.current={items:carouselItems,currentKey:itemKey};
+  const advance=useCallback(()=>{
+    const {items,currentKey:key}=playbackRef.current;
+    setCurrentKey(keyOf(queuePosition(items,key).next));
+    setPlayTurn(n=>n+1);
+  },[]);
 
   /* ============================================================
      💓 UPDATED HEARTBEAT (Now using the correct 'item')
@@ -527,7 +387,12 @@ useEffect(() => {
 
         try {
             const existingRecord = await pb.collection("displays").getOne(cfg.id, { requestKey: null });
-            const updateData = { last_seen: new Date().toISOString() };
+            const updateData = {
+              last_seen: new Date().toISOString(),
+              next_item_key: emergency ? itemKey : nextKey,
+              next_title: (emergency ? item : next)?.title || '',
+              next_type: (emergency ? item : next)?.type || '',
+            };
             if (existingRecord.current_type === 'alert' && existingRecord.current_alert_expires && Date.parse(existingRecord.current_alert_expires) <= Date.now()) {
               Object.assign(updateData,{current_type:'idle',current_title:'',current_command:'',current_lang:'',current_scope:'',current_duration:0,current_alert_expires:'',current_alert_id:'',current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:''});
             }
@@ -536,6 +401,7 @@ useEffect(() => {
               existingRecord.current_type !== "command" &&
               existingRecord.current_type !== "alert"
             ) {
+              updateData.current_item_key = itemKey;
               updateData.current_type = item?.type || "idle";      // ✅ use item (not currentItem)
               updateData.current_title = item?.title || "No Content";
               updateData.current_duration = ['image', 'ppt', 'birthday'].includes(item?.type) ? (Number(item.duration) || 10) : 0;
@@ -555,13 +421,13 @@ useEffect(() => {
     sendHeartbeat();
     const interval = setInterval(() => { if (!isCancelled) sendHeartbeat(); }, 30000);
     return () => { isCancelled = true; clearInterval(interval); };
-  }, [item?.id, item?.type, item?.title, item?.duration, item?.location, emergency]); // Report only playback changes
+  }, [itemKey, item?.type, item?.title, item?.duration, item?.location, nextKey, next?.title, next?.type, emergency]); // Report only playback changes
 
 
   /* ============================================================
      🎉 HELPERS & RENDERING
   ============================================================ */
-  const advance = () => setCurrent((prev) => (prev + 1) % (carouselItems.length || 1));
+
 
   // Confetti Effect (Plays continuously for the whole slide)
   useEffect(() => {
@@ -598,7 +464,7 @@ useEffect(() => {
         canvas.remove();
       };
     }
-  }, [item]);
+  }, [itemKey, item?.type]);
 
   // Auto-cycle timer
   useEffect(() => {
@@ -610,7 +476,7 @@ useEffect(() => {
       timer = setTimeout(advance, displayDuration);
     }
     return () => clearTimeout(timer);
-  }, [item, emergency, carouselItems.length]);
+  }, [itemKey, item?.type, item?.duration, emergency, advance, playTurn]);
 
   const getYouTubeId = (url) => {
     if (!url) return null;
@@ -777,11 +643,11 @@ useEffect(() => {
           {item.type === "image" && <img src={item.media_url} className="display-media" />}
           
           {item.type === "video" && (
-            <video key={item.media_url} ref={videoRef} src={item.media_url} autoPlay controls onEnded={advance} className="display-media" />
+            <video key={`${itemKey}:${playTurn}`} ref={videoRef} src={item.media_url} autoPlay controls onEnded={advance} className="display-media" />
           )}
 
           {item.media_url?.toLowerCase().endsWith(".pdf") && (
-            <PdfSlideshow url={item.media_url} duration={(item.duration || 10) * 1000} onFinish={advance} />
+            <PdfSlideshow key={`${itemKey}:${playTurn}`} url={item.media_url} duration={(item.duration || 10) * 1000} onFinish={advance} />
           )}
 
           {item.type === "youtube" && (

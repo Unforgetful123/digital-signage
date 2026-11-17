@@ -7,6 +7,8 @@ import EmergencyAlert from "../components/EmergencyAlert";
 import DisplayMonitor from "../components/DisplayMonitor";
 
 import EventLog from "../components/EventLog";
+import ContentQueue from "../components/ContentQueue";
+import ServerConnection from "../components/ServerConnection";
 import About from "../components/About";
 import "./Dashboard.css";
 
@@ -75,6 +77,10 @@ export default function Dashboard({ user }) {
 
   const renderContent = () => {
     switch (activeTab) {
+      case "queue":
+        return <ContentQueue />;
+      case "connection":
+        return <ServerConnection />;
       case "monitor":
         return <DisplayMonitor />;
       case "events":
@@ -98,6 +104,8 @@ export default function Dashboard({ user }) {
           <button className={`nav-btn ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}>
             Home
           </button>
+          <button className={`nav-btn ${activeTab === 'queue' ? 'active' : ''}`} onClick={() => setActiveTab('queue')}>Content &amp; Queue</button>
+          <button className={`nav-btn ${activeTab === 'connection' ? 'active' : ''}`} onClick={() => setActiveTab('connection')}>Server Connection</button>
           <button className={`nav-btn ${activeTab === 'monitor' ? 'active' : ''}`} onClick={() => setActiveTab('monitor')}>
             Display Monitor
           </button>
@@ -117,6 +125,8 @@ export default function Dashboard({ user }) {
           <button className="nav-toggle" aria-label={navOpen ? "Hide navigation" : "Show navigation"} aria-expanded={navOpen} aria-controls="admin-navigation" onClick={() => setNavOpen(!navOpen)}>☰</button>
           <h1>
             {activeTab === 'home' && "Content & Alert Management"}
+            {activeTab === 'queue' && "Content & Queue"}
+            {activeTab === 'connection' && "Server Connection"}
             {activeTab === 'monitor' && "Display Monitor"}
             {activeTab === 'events' && "Event Log"}
             {activeTab === 'about' && "About & Updates"}

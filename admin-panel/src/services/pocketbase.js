@@ -1,6 +1,12 @@
 import PocketBase from 'pocketbase';
-const fallback = `http://${window.location.hostname || '127.0.0.1'}:8090`;
-const url = import.meta.env.VITE_POCKETBASE_URL || fallback;
-// Same-origin emergency iframe reads the same backend configuration.
+import { resolveBackend } from '../../../shared/backend-url.mjs';
+export const BACKEND_KEY = 'signage_backend_url';
+let url;
+try {
+  url = resolveBackend(window.location, localStorage.getItem(BACKEND_KEY), import.meta.env.VITE_POCKETBASE_URL);
+} catch {
+  // Keep the connection screen reachable if a saved or legacy address is invalid.
+  url = resolveBackend(window.location, null);
+}
 window.signageBackendUrl = url;
 export default new PocketBase(url);

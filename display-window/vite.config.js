@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import legacy from '@vitejs/plugin-legacy'
@@ -5,6 +6,7 @@ import legacy from '@vitejs/plugin-legacy'
 export default defineConfig({
   // 1. This ensures the TV can find the CSS and JS files
   base: './',
+  server: { fs: { allow: [fileURLToPath(new URL('..', import.meta.url))] } },
   build: { rollupOptions: { input: { signage: 'index.html', receiver: 'receiver.html' } } }, 
   
   plugins: [

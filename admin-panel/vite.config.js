@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 // vite.config.js
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -11,6 +12,7 @@ export default defineConfig({
     })
   ],
   server:{
+    fs: { allow: [fileURLToPath(new URL('..', import.meta.url))] },
     host:'0.0.0.0',
     port:3000,
     strictPort: true

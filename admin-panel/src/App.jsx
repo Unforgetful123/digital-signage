@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import pb from "./services/pocketbase";
+import ServerConnection from "./components/ServerConnection";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AlertScheduler from "./components/AlertScheduler";
@@ -59,6 +60,7 @@ export default function App() {
   /* =========================================
      🎯 TABLET SELECTION SCREEN (THEMED)
   ========================================= */
+  if (appMode === 'connection') return <div style={{padding:24,background:'#eef4f7',minHeight:'100vh'}}><button onClick={()=>setAppMode(null)} style={{marginBottom:20}}>Back to menu</button><ServerConnection /></div>;
   if (!appMode) {
     return (
       <div className="entry-screen" style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#172533', padding: '40px', boxSizing: 'border-box', fontFamily: 'system-ui', position: 'relative' }}>
@@ -90,6 +92,7 @@ export default function App() {
           </button>
         </div>
 
+        <button style={{alignSelf:'center',marginBottom:35}} onClick={()=>setAppMode('connection')}>Server connection</button>
         {/* COPYRIGHT FOOTER */}
         <div style={{ position: 'absolute', bottom: '20px', width: '100%', left: 0, textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem', fontWeight: '500' }}>
           &copy; {new Date().getFullYear()} VRL Smart Digital Signage. All rights reserved.

@@ -4,6 +4,8 @@ import './EventLog.css';
 
 const ACTION_LABELS = {
   login: 'Login',
+  content_reorder: 'Reorder Queue',
+  display_rename: 'Rename Display',
   alert_trigger: 'Live Alert',
   alert_clear: 'Clear Alert',
   alert_schedule: 'Schedule Alert',
