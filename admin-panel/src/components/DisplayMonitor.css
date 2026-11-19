@@ -3,3 +3,22 @@
 .display-card.card-online{background:#effbf3;border-color:#b9dfc4}.display-card.card-offline{background:#fff2f2;border-color:#efc5c5}.card-online .now-playing{background:#ffffffb3}.card-offline .now-playing{background:#ffffffb3}.status-badge.offline{color:#a43838;background:#fbe0e0}
 
 .playback-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}.playback-pair .now-playing{min-width:0}.display-dialog label{display:block;margin:14px 0 6px}.display-dialog input{box-sizing:border-box;padding:11px;border:1px solid #cbd5e1;border-radius:8px}
+
+.monitor-device-type {
+  display: inline-block;
+  margin: 4px 8px 4px 0;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.monitor-device-type.receiver {
+  color: #55318c;
+  background: #f0e7ff;
+}
+
+.monitor-device-type.website {
+  color: #07566b;
+  background: #dcf3f8;
+}

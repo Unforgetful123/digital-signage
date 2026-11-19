@@ -64,11 +64,16 @@ export default function DisplayMonitor() {
   const visible=sorted.filter(d=>(filter==='all'||(filter==='online')===online(d))&&(deviceRole==='all'||(deviceRole==='pc_receiver'?d.device_role==='pc_receiver':d.device_role!=='pc_receiver')));
   return <section className="display-monitor">
     <div className="monitor-toolbar"><div><p className="subtitle">Displays and PC receivers across your locations</p><small>{displays.length} devices · {displays.filter(online).length} online</small></div>
-    <label>Device type <select aria-label="Device type" value={deviceRole} onChange={e=>setDeviceRole(e.target.value)}><option value="all">All devices</option><option value="display">Signage displays</option><option value="pc_receiver">PC receivers</option></select></label><div className="status-filters" aria-label="Display status">{['all','online','offline'].map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'selected':''} onClick={()=>setFilter(f)}>{f}</button>)}</div></div>
+    <label>Device type <select aria-label="Device type" value={deviceRole} onChange={e=>setDeviceRole(e.target.value)}><option value="all">All devices</option><option value="display">Website displays</option><option value="pc_receiver">PC receivers</option></select></label><div className="status-filters" aria-label="Display status">{['all','online','offline'].map(f=><button key={f} aria-pressed={filter===f} className={filter===f?'selected':''} onClick={()=>setFilter(f)}>{f}</button>)}</div></div>
     {error&&!modal&&<p role="alert" className="monitor-error">{error}</p>}
     {loading?<p role="status">Loading displays…</p>:visible.length===0?<div className="empty-state">No {filter==='all'?'':filter+' '}displays found.</div>:null}
     <div className="monitor-grid">{visible.map(d=><article className={`display-card ${online(d)?"card-online":"card-offline"}`} key={d.id}>
-      <div className="display-card-head"><div><h2>{name(d)}</h2><small>{d.device_role==='pc_receiver'?'PC Receiver':'Signage Display'} · {d.code||'No code'} · {d.location||'Unassigned'}</small></div><span className={`status-badge ${online(d)?'online':'offline'}`}>{online(d)?'Online':'Offline'}</span></div>
+      <div className="display-card-head"><div><h2>{name(d)}</h2><span className={`monitor-device-type ${
+  d.device_role === 'pc_receiver' ? 'receiver' : 'website'
+}`}>
+  {d.device_role === 'pc_receiver' ? 'PC Receiver' : 'Website Display'}
+</span>
+<small>{d.code || 'No code'} · {d.location || 'Unassigned'}</small></div><span className={`status-badge ${online(d)?'online':'offline'}`}>{online(d)?'Online':'Offline'}</span></div>
       <div className="playback-pair"><div className="now-playing"><span>{online(d)?'NOW PLAYING':'LAST REPORTED'}</span><strong>{d.current_title||'Idle'}</strong><small>{d.current_type||'No content'}</small></div>
       <div className="now-playing"><span>{online(d)?'UP NEXT':'LAST REPORTED NEXT'}</span><strong>{d.device_role==='pc_receiver'?'Broadcasts only':d.next_title||'Not reported yet'}</strong><small>{d.device_role==='pc_receiver'?'No media queue':d.current_type==='alert'?'After alert clears':d.next_type||'Refresh the updated player to report its queue'}</small></div></div>
       <dl className="playback-details"><div><dt>Duration</dt><dd>{duration(d)}</dd></div><div><dt>Playback target</dt><dd>{['idle','command'].includes(d.current_type)?'—':d.current_scope||'Not reported'}</dd></div></dl>

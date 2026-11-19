@@ -216,6 +216,139 @@
     font-size: 32px;
   }
 }
+
+.target-heading {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.target-heading .step-title { margin: 0; }
+
+#targetFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+#targetFilters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  cursor: pointer;
+}
+
+#targetFilters input {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  accent-color: #008b74;
+}
+
+#sendBtn { justify-self: end; }
+#sendBtn[hidden] { display: none; }
+
+@media (max-width: 850px) {
+  .target-heading { grid-template-columns: 1fr auto; }
+  #sendBtn { grid-column: 2; grid-row: 1; }
+  #targetFilters { grid-column: 1 / -1; grid-row: 2; }
+}
+
+#step2 .target-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+#step2 .target-heading .step-title {
+  margin: 0;
+}
+
+#step2 #sendBtn {
+  flex: 0 0 auto;
+}
+
+#step2 #targetFilters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  margin: 16px 0 8px;
+}
+
+#step2 #targetFilters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+#step2 .pc-filter {
+  background: #fef3c7;
+  color: #713f12;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+#step2 .pc-filter input {
+  accent-color: #a16207;
+}
+
+#step2 #selectionSummary {
+  margin: 8px 0 0;
+}
+
+#areaGrid .area-card[data-device-role="pc_receiver"] {
+  background: #fffbeb;
+  border-color: #e4c66b;
+}
+
+#areaGrid .area-card[data-device-role="pc_receiver"].selected {
+  background: #fde68a;
+  border-color: #a16207;
+  box-shadow: 0 0 0 2px #a1620726;
+}
+
+#areaGrid .area-card[data-device-role="pc_receiver"] .selection-check,
+#areaGrid .area-card[data-device-role="pc_receiver"] .sub-label {
+  color: #713f12;
+}
+
+/* Website Display — unselected */
+#areaGrid .area-card[data-device-role="display"] {
+  background: #ecfdf3;
+  border-color: #86c99a;
+}
+
+/* Website Display — selected */
+#areaGrid .area-card[data-device-role="display"].selected {
+  background: #468a60;
+  border-color: #14532d;
+  box-shadow: 0 0 0 2px #16653426;
+}
+
+/* Keep the device name, location and checkmark readable */
+#areaGrid .area-card[data-device-role="display"].selected .label,
+#areaGrid .area-card[data-device-role="display"].selected .sub-label,
+#areaGrid .area-card[data-device-role="display"].selected .selection-check {
+  color: #ffffff;
+}
+
+#step1 > .step-header,
+#step2 > .step-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f1f5f9;
+  padding: 10px 0;
+  border-bottom: 1px solid #d7e1e8;
+}
+
 </style>
 </head>
 <body>
@@ -239,16 +372,38 @@
       </section>
 
       <!-- STEP 2: Select Target Area -->
-      <section class="screen" id="step2"><button class="step-arrow backward" id="backTo1" aria-label="Previous: alert types">&lt;</button>
-        
+      <section class="screen" id="step2">
+        <button class="step-arrow backward" id="backTo1"
+                aria-label="Previous: alert types">&lt;</button>
+
         <div class="step-header">
-          <h2 class="step-title">2. Select Target Location</h2>
-          <p class="step-subtitle" id="step2Subtitle">Where should the <strong id="step2AlertName">Alert</strong> be displayed?</p>
+          <div class="target-heading">
+            <h2 class="step-title">2. Select target devices</h2>
+            <button type="button" class="btn btn-next" id="sendBtn" hidden disabled>
+              Broadcast
+            </button>
+          </div>
+
+          <p class="step-subtitle" id="step2Subtitle">
+            Where should the <strong id="step2AlertName">Alert</strong> be displayed?
+          </p>
+
+          <div id="targetFilters" role="group" aria-label="Select devices by type">
+            <label>
+              <input type="checkbox" value="all" checked> Select all
+            </label>
+            <label class="pc-filter">
+              <input type="checkbox" value="pc_receiver"> PC receivers only
+            </label>
+            <label>
+              <input type="checkbox" value="display"> Website displays only
+            </label>
+          </div>
+
+          <p id="selectionSummary" role="status"></p>
         </div>
-        <div class="card-grid" id="areaGrid">
-          <!-- Fetched dynamically -->
-        </div>
-        <div class="selection-footer"><span id="selectionSummary" role="status">Select one or more locations</span><button class="btn btn-next" id="sendBtn" disabled>Broadcast</button></div>
+
+        <div class="card-grid" id="areaGrid"></div>
       </section>
 
       <!-- LIVE SCREEN -->
@@ -371,8 +526,9 @@
     let alertTypes = JSON.parse(localStorage.getItem("gsc_types") || "null") || DEFAULT_TYPES;
     let selectedType = null;
     let selectedTarget = null; // { id: 'all' | 'record_id', name: 'string' }
-    let selectedLocations = new Set();
-    let globalSelected = false;
+    const selectedDeviceIds = new Set();
+    let targetPreset = 'all';
+    let targetLoadVersion = 0;
     let availableDisplays = [];
     let activeIds = [];
     let infiniteDuration = false;
@@ -422,39 +578,115 @@
     }
 
     /* STEP 2: Render Targets */
+    function deviceRole(device) {
+      return device.device_role === 'pc_receiver' ? 'pc_receiver' : 'display';
+    }
+
+    function syncSelection() {
+      const count = selectedDeviceIds.size;
+      const total = availableDisplays.length;
+
+      for (const input of $('targetFilters').querySelectorAll('input')) {
+        input.checked = input.value === targetPreset;
+        input.disabled = total === 0;
+      }
+
+      for (const card of els.areaGrid.querySelectorAll('[data-device-id]')) {
+        const selected = selectedDeviceIds.has(card.dataset.deviceId);
+        card.classList.toggle('selected', selected);
+        card.setAttribute('aria-pressed', String(selected));
+        card.querySelector('.selection-check').textContent = selected ? '✓' : '＋';
+      }
+
+      $('selectionSummary').textContent = total
+        ? `${count} of ${total} devices selected`
+        : 'No registered devices found.';
+      els.sendBtn.hidden = count === 0;
+    }
+
+    function applyTargetPreset(preset) {
+      targetPreset = preset;
+      selectedDeviceIds.clear();
+
+      for (const device of availableDisplays) {
+        if (preset === 'all' || deviceRole(device) === preset) {
+          selectedDeviceIds.add(device.id);
+        }
+      }
+      syncSelection();
+    }
+
+    $('targetFilters').addEventListener('change', event => {
+      const input = event.target;
+      if (input.matches('input[type="checkbox"]')) {
+        applyTargetPreset(input.checked ? input.value : '');
+      }
+    });
+
     function renderTargets() {
       els.areaGrid.replaceChildren();
-      const groups = [...new Set(availableDisplays.map(d => (d.location || '').trim()))].sort();
-      function card(key,label,detail,selected) {
-        const button=document.createElement('button');
-        button.type='button'; button.className='card-btn area-card' + (selected?' selected':'');
-        button.dataset.key=key; button.setAttribute('aria-pressed',String(selected));
-        const title=document.createElement('span'); title.className='label'; title.textContent=label;
-        const sub=document.createElement('span');sub.className='sub-label';sub.textContent=detail;
-        const check=document.createElement('span');check.className='selection-check';check.textContent=selected?'✓':'＋';
-        button.append(check,title,sub);els.areaGrid.append(button);
+
+      for (const device of availableDisplays) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'card-btn area-card';
+        card.dataset.deviceId = device.id;
+        card.dataset.deviceRole = deviceRole(device);
+
+        const check = document.createElement('span');
+        check.className = 'selection-check';
+
+        const title = document.createElement('span');
+        title.className = 'label';
+        title.textContent = device.name || device.code || device.id;
+
+        const detail = document.createElement('span');
+        detail.className = 'sub-label';
+        const type = deviceRole(device) === 'pc_receiver'
+          ? 'PC Receiver'
+          : 'Website Display';
+        detail.textContent = `${type} · ${device.location || 'Unassigned'}`;
+
+        card.append(check, title, detail);
+        card.onclick = () => {
+          if (selectedDeviceIds.has(device.id)) selectedDeviceIds.delete(device.id);
+          else selectedDeviceIds.add(device.id);
+
+          targetPreset = selectedDeviceIds.size === availableDisplays.length ? 'all' : '';
+          syncSelection();
+        };
+        els.areaGrid.append(card);
       }
-      card('__global__','Global · All displays',`${availableDisplays.length} displays`,globalSelected);
-      groups.forEach((location,index)=>card(String(index),location||'Unassigned',`${availableDisplays.filter(d=>(d.location||'').trim()===location).length} displays`,selectedLocations.has(location)));
-      const count=globalSelected?availableDisplays.length:availableDisplays.filter(d=>selectedLocations.has((d.location||'').trim())).length;
-      $('selectionSummary').textContent=globalSelected?`Global broadcast · ${count} displays`:`${selectedLocations.size} locations · ${count} displays selected`;
-      els.sendBtn.disabled=count===0;
-      els.areaGrid.onclick=e=>{
-        const button=e.target.closest('.area-card');if(!button)return;
-        if(button.dataset.key==='__global__'){globalSelected=!globalSelected;selectedLocations.clear();}
-        else{globalSelected=false;const location=groups[Number(button.dataset.key)];if(selectedLocations.has(location))selectedLocations.delete(location);else selectedLocations.add(location);}
-        renderTargets();
-      };
     }
+
     async function fetchDisplays() {
-      els.sendBtn.disabled=true;
+      const version = ++targetLoadVersion;
+      availableDisplays = [];
+      selectedDeviceIds.clear();
+      els.areaGrid.replaceChildren();
+      syncSelection();
+      els.sendBtn.disabled = true;
+      $('selectionSummary').textContent = 'Loading devices…';
+
       try {
-        availableDisplays=await pb.collection('displays').getFullList({requestKey:null});
+        const devices = await pb.collection('displays').getFullList({
+          sort: 'location,name',
+          requestKey: null
+        });
+        if (version !== targetLoadVersion) return;
+
+        availableDisplays = devices;
         renderTargets();
-      } catch(err) {
-        els.areaGrid.textContent='Could not load locations. Check the backend connection and try again.';
-        const retry=document.createElement('button');retry.textContent='Retry';retry.onclick=fetchDisplays;els.areaGrid.append(retry);
-        $('selectionSummary').textContent='Locations unavailable';
+        applyTargetPreset('all');
+        els.sendBtn.disabled = false;
+      } catch (err) {
+        if (version !== targetLoadVersion) return;
+        $('selectionSummary').textContent = 'Could not load devices.';
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.textContent = 'Retry';
+        retry.onclick = fetchDisplays;
+        els.areaGrid.replaceChildren(retry);
       }
     }
 
@@ -489,14 +721,32 @@
       const card=e.target.closest('[data-id]');if(!card)return;
       liveSelected=card.dataset.id==='live-announcement';
       selectedType=liveSelected?{id:'live-announcement',label:'Live announcement',color:'#007d68',preset:''}:alertTypes.find(t=>t.id===card.dataset.id);
-      selectedTarget=null;selectedLocations.clear();globalSelected=false;
+      selectedTarget=null;
       applySettings(selectedType);$('forwardTo2').disabled=false;goTargets();
     });
     $('forwardTo2').onclick=goTargets;
     els.backTo1.onclick=()=>switchScreen('step1');
-    els.sendBtn.addEventListener('click',()=>{
-      selectedTarget={id:globalSelected?'all':'locations',locations:[...selectedLocations],name:globalSelected?'All displays globally':[...selectedLocations].map(l=>l||'Unassigned').join(', ')};
-    },true);
+    els.sendBtn.addEventListener('click', event => {
+      const devices = availableDisplays.filter(d => selectedDeviceIds.has(d.id));
+
+      if (!devices.length) {
+        selectedTarget = null;
+        event.stopImmediatePropagation();
+        return;
+      }
+
+      const allSelected = devices.length === availableDisplays.length;
+      const locations = [...new Set(devices.map(d => d.location || 'Unassigned'))];
+      const group = targetPreset === 'pc_receiver' ? 'PC receivers'
+        : targetPreset === 'display' ? 'Website displays'
+        : 'Selected devices';
+
+      selectedTarget = {
+        id: allSelected ? 'all' : 'devices',
+        ids: devices.map(d => d.id),
+        name: allSelected ? 'All devices' : `${group} · ${locations.join(', ')}`
+      };
+    }, true);
 
     /* 🌍 TRANSLATION API & TTS (Restored Logic) */
     async function getTranslation(text, langCode) {
@@ -578,7 +828,8 @@
       try {
         if(!selectedTarget)throw new Error('Select a target first.');
         const all=await pb.collection('displays').getFullList({requestKey:null});
-        const targets=all.filter(d=>selectedTarget.id==='all'||selectedTarget.locations.includes((d.location||'').trim()));
+        const targetIds = new Set(selectedTarget.ids);
+        const targets = all.filter(device => targetIds.has(device.id));
         if(!targets.length)throw new Error('No displays remain in the selected locations.');
         const updateData={current_type:'alert',current_command:selectedType.id,current_alert_label:selectedType.label,current_title:msg,current_lang:lang,current_duration:0,current_announcement_mode:'',current_audio:'',current_offer:'',current_answer:'',current_alert_expires:expiresAt,current_alert_id:activeAlertId,current_scope:selectedTarget.id==='all'?'Global':selectedTarget.name};
         const results=await Promise.allSettled(targets.map(d=>pb.collection('displays').update(d.id,updateData,{requestKey:null})));

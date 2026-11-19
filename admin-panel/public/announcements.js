@@ -77,7 +77,8 @@
     try{
       if(mode==='live')stream=await microphone();
       const all=await pb.collection('displays').getFullList({requestKey:null});
-      const targets=all.filter(d=>selectedTarget.id==='all'||selectedTarget.locations.includes((d.location||'').trim()));
+      const targetIds = new Set(selectedTarget.ids);
+      const targets = all.filter(device => targetIds.has(device.id));
       if(!targets.length)throw new Error('No displays in the selected locations.');
       status(mode==='live'?'Connecting microphone to displays…':'Uploading recorded message…');
       const payload={current_type:'alert',current_duration:0,current_command:'announcement',current_title:mode==='live'?'Live announcement':'Recorded announcement',current_lang:'none',current_scope:selectedTarget.id==='all'?'Global':selectedTarget.name,current_alert_expires:expiresAt,current_alert_id:session,current_announcement_mode:mode,current_repeat_minutes:repeat,current_offer:'',current_answer:'',current_live_seen:new Date().toISOString(),current_audio:''};

@@ -47,6 +47,35 @@ export default function ContentQueue() {
     dirty.current=true;setDraft(moveItem(ordered.map(i=>i.id),from,to));setNotice('Unsaved queue order');
   }
   function discard(){dirty.current=false;setDraft(null);base.current=JSON.stringify(ids);setNotice('');setError('');}
+  async function removeContent(item) {
+    if (busy || !ready) return;
+
+    const title = item.title || 'Untitled';
+    const confirmed = window.confirm(
+      `Permanently remove "${title}" from the content library and all monitor queues?`
+    );
+    if (!confirmed) return;
+
+    setBusy(true);
+    setError('');
+    setNotice('');
+
+    try {
+      await pb.collection('content').delete(item.id);
+      setContent(items => items.filter(entry => entry.id !== item.id));
+      setDraft(current => current?.filter(id => id !== item.id) ?? null);
+      setNotice(`Removed "${title}".`);
+      await logEvent({
+        action: 'content_delete',
+        target: title,
+        details: `Removed content ${item.id} from Content & Queue`,
+      });
+    } catch (err) {
+      setError(err.message || `Could not remove "${title}".`);
+    } finally {
+      setBusy(false);
+    }
+  }
   async function save(){
     setBusy(true);setError('');
     try{
@@ -61,16 +90,135 @@ export default function ContentQueue() {
   }
   return <section className="content-queue">
     <div className="queue-heading"><div><h2>Content & Queue</h2><p>Drag rows to reorder. Each screen plays eligible content for its location, in this shared order.</p></div><span className="queue-count">{content.length} uploads</span></div>
-    <div className="queue-controls"><label htmlFor="queue-monitor">Preview a monitor</label><select id="queue-monitor" value={selected} onChange={e=>setSelected(e.target.value)}><option value="">All uploaded content</option>{screens.map(d=><option key={d.id} value={d.id}>{d.name||d.code} — {d.location||'Unassigned'}</option>)}</select><button disabled={!draft||busy||!ready||!!changedElsewhere} onClick={save}>{busy?'Saving…':'Save order'}</button><button className="queue-secondary" disabled={!draft||busy} onClick={discard}>Discard changes</button></div>
+    <div className="queue-controls"><label htmlFor="queue-monitor">Preview a monitor</label><select id="queue-monitor" value={selected} onChange={e=>setSelected(e.target.value)}><option value="">All uploaded content</option>{screens.map(d=><option key={d.id} value={d.id}>{d.name||d.code} — {d.location||'Unassigned'}</option>)}</select><button disabled={!draft||busy||!ready||!!changedElsewhere} onClick={save}>Save order</button><button className="queue-secondary" disabled={!draft||busy} onClick={discard}>Discard changes</button></div>
     {notice&&<p role="status" className="queue-notice">{notice}</p>}{changedElsewhere&&<p role="alert" className="queue-error">Another session changed the saved queue. Discard this draft before editing again.</p>}{error&&<p role="alert" className="queue-error">{error}</p>}
     {device&&<div className="queue-preview"><h3>{device.name||device.code} · {device.location}</h3><p>{deviceOnline(device,now)?'Now playing':'Last reported'}: <strong>{device.current_title||'Idle'}</strong> · {deviceOnline(device,now)?'Up next':'Last reported next'}: <strong>{device.next_title||'Not reported yet'}</strong></p><p>{draft?'Preview of unsaved order':'Eligible playback order'} · Birthday cards are inserted automatically after every third media item.</p><ol>{preview.map(i=><li key={keyOf(i)}>{i.title} <small>({typeName(i.type)})</small></li>)}</ol>{!preview.length&&<p>No eligible content for this monitor.</p>}</div>}
-    {loading?<p role="status">Loading content…</p>:!content.length?<p className="queue-empty">No content uploaded yet. Add media from Home.</p>:<div className="queue-table-wrap"><table><thead><tr><th>Order</th><th>Content</th><th>Target</th><th>Status / schedule</th><th>Playing on</th><th>Up next on</th></tr></thead><tbody>{ordered.map((item,index)=>{
-      const playing=devices.filter(d=>deviceOnline(d,now)&&d.current_type!=='alert'&&d.current_type!=='command'&&d.current_item_key===keyOf(item));
-      const upcoming=devices.filter(d=>deviceOnline(d,now)&&d.device_role!=='pc_receiver'&&d.next_item_key===keyOf(item));
-      return <tr key={item.id} draggable={!busy&&ready} className={dragging===item.id?'queue-dragging':''} onDragStart={e=>{drag.current=item.id;setDragging(item.id);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',item.id);}} onDragOver={e=>{e.preventDefault();e.dataTransfer.dropEffect='move';}} onDrop={e=>{e.preventDefault();const from=ordered.findIndex(i=>i.id===drag.current);if(from>=0)reorder(from,index);drag.current=null;setDragging('');}} onDragEnd={()=>{drag.current=null;setDragging('');}}>
-      <td><div className="queue-order"><span aria-hidden="true">⠿ {index+1}</span><button aria-label={`Move ${item.title} up`} disabled={index===0||busy||!ready} onClick={()=>reorder(index,index-1)}>↑</button><button aria-label={`Move ${item.title} down`} disabled={index===ordered.length-1||busy||!ready} onClick={()=>reorder(index,index+1)}>↓</button></div></td>
-      <td><strong>{item.title||'Untitled'}</strong><small>{typeName(item.type)} · {item.duration>0?`${item.duration}s${item.type==='ppt'?' / page':''}`:'Full video'}</small></td><td>{item.location||'Global'}</td><td><span className={`queue-status ${contentStatus(item,now).toLowerCase().replace(' ','-')}`}>{contentStatus(item,now)}</span><small>{item.start_time?`From ${new Date(item.start_time).toLocaleString()}`:'No start limit'}</small><small>{item.end_time?`Until ${new Date(item.end_time).toLocaleString()}`:'No end limit'}</small></td><td>{playing.map(d=>d.name||d.code).join(', ')||'—'}</td><td>{upcoming.map(d=>d.name||d.code).join(', ')||'—'}</td></tr>;
-    })}</tbody></table></div>}
+    {loading ? (
+  <p role="status">Loading content…</p>
+) : !ready ? null : !content.length ? (
+  <p className="queue-empty">No content uploaded yet. Add media from Home.</p>
+) : (
+  <div className="queue-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Content</th>
+          <th>Target</th>
+          <th>Status / schedule</th>
+          <th>Playing on</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {ordered.map((item, index) => {
+          const itemKey = keyOf(item);
+          const status = contentStatus(item, now);
+
+          const playing = devices.filter(d =>
+            deviceOnline(d, now) &&
+            d.current_type !== 'alert' &&
+            d.current_type !== 'command' &&
+            d.current_item_key === itemKey
+          );
+
+          return (
+            <tr
+              key={item.id}
+              draggable={!busy && ready}
+              className={dragging === item.id ? 'queue-dragging' : ''}
+              onDragStart={e => {
+                drag.current = item.id;
+                setDragging(item.id);
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', item.id);
+              }}
+              onDragOver={e => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+              }}
+              onDrop={e => {
+                e.preventDefault();
+                const from = ordered.findIndex(entry => entry.id === drag.current);
+                if (from >= 0 && from !== index) reorder(from, index);
+                drag.current = null;
+                setDragging('');
+              }}
+              onDragEnd={() => {
+                drag.current = null;
+                setDragging('');
+              }}
+            >
+              <td>
+                <div className="queue-order">
+                  <span aria-hidden="true">⠿ {index + 1}</span>
+                  <button
+                    type="button"
+                    aria-label={`Move ${item.title || 'untitled content'} up`}
+                    disabled={index === 0 || busy || !ready}
+                    onClick={() => reorder(index, index - 1)}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Move ${item.title || 'untitled content'} down`}
+                    disabled={index === ordered.length - 1 || busy || !ready}
+                    onClick={() => reorder(index, index + 1)}
+                  >
+                    ↓
+                  </button>
+                </div>
+              </td>
+
+              <td>
+                <strong>{item.title || 'Untitled'}</strong>
+                <small>
+                  {typeName(item.type)} · {item.duration > 0
+                    ? `${item.duration}s${item.type === 'ppt' ? ' / page' : ''}`
+                    : 'Full video'}
+                </small>
+              </td>
+
+              <td>{item.location || 'Global'}</td>
+
+              <td>
+                <span className={`queue-status ${status.toLowerCase().replace(' ', '-')}`}>
+                  {status}
+                </span>
+                <small>
+                  {item.start_time
+                    ? `From ${new Date(item.start_time).toLocaleString()}`
+                    : 'No start limit'}
+                </small>
+                <small>
+                  {item.end_time
+                    ? `Until ${new Date(item.end_time).toLocaleString()}`
+                    : 'No end limit'}
+                </small>
+              </td>
+
+              <td>{playing.map(d => d.name || d.code).join(', ') || '—'}</td>
+              
+
+              <td>
+                <button
+                  type="button"
+                  disabled={busy || !ready}
+                  aria-label={`Remove ${item.title || 'untitled content'}`}
+                  onClick={() => removeContent(item)}
+                >
+                  Remove content
+                </button>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+)}
     <p className="queue-footnote">Use ↑ / ↓ on touch screens or with a keyboard. New uploads join the end of a saved queue. Offline monitors show no live playback assignments. Save order affects media only; emergency alerts retain priority.</p>
   </section>;
 }
