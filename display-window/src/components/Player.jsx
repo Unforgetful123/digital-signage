@@ -1,6 +1,7 @@
 // src/components/Player.jsx
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import {QUEUE_ID, buildQueue, keyOf, queuePosition} from "../../../shared/playback.mjs";
+import {createAlertVoice} from "./alertVoice";
 import YouTube from "react-youtube";
 import confetti from "canvas-confetti";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
@@ -507,12 +508,12 @@ export default function Player() {
   ============================================================ */
   useEffect(() => {
       if (!emergency || emergency.mode || (emergency.expiresAt && Date.parse(emergency.expiresAt) <= Date.now())) {
-          window.speechSynthesis?.cancel();
+          
           return;
       }
 
       let voiceLoopActive = true;
-      let settleSpeech;
+      const voice = createAlertVoice();
       const siren = document.getElementById('tv-siren');
       if (siren) { siren.volume=0.25; siren.pause(); }
       const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -543,15 +544,7 @@ export default function Player() {
                   if (sirenEl) sirenEl.pause(); 
                   
                   if (!voiceLoopActive) break;
-                  await new Promise(resolve => {
-                      settleSpeech=resolve;
-                      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                      utterance.lang = emergency.lang;
-                      utterance.rate = 0.85; // Speak slightly slower for emergencies
-                      utterance.onend = resolve; // Wait until it is fully finished speaking!
-                      utterance.onerror = resolve;
-                      window.speechSynthesis.speak(utterance);
-                  });
+                  await voice.speak(textToSpeak, emergency.lang);
                   
                   // A short, quiet siren burst between announcements.
                   if (!voiceLoopActive) break;
@@ -578,9 +571,9 @@ export default function Player() {
       // Cleanup when emergency ends
       return () => {
           voiceLoopActive = false;
-          settleSpeech?.();
+          voice.stop();
           if(siren)siren.pause();
-          window.speechSynthesis?.cancel();
+          
       };
   }, [emergency]);
 
@@ -652,9 +645,10 @@ export default function Player() {
 
           {item.type === "youtube" && (
             isOnline ? (
-              <YouTube 
+              <YouTube key={`${itemKey}:${playTurn}`}
                 videoId={getYouTubeId(item.media_url)} 
-                opts={{ width: "100%", height: "100%", playerVars: { autoplay: 1, mute: 0 } }} 
+                opts={{ width: "100%", height: "100%", playerVars: { autoplay: 1, mute: 0, playsinline: 1 } }} 
+                onReady={({target}) => { target.unMute(); target.playVideo(); }}
                 onEnd={advance} 
                 className="youtube-iframe" 
               />
